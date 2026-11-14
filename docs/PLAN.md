@@ -47,7 +47,7 @@ Pełne listy kontrolne zamkniętych etapów i podjęte decyzje: [archiwum/ETAPY.
 
 | Wątek | Hasłowo | Szczegóły |
 |---|---|---|
-| Instalacja dla innych i publikacja | Docker z HTTPS, wariant z systemd, skrypt aktualizacji, wydania w GHCR, ustawienia publicznego repozytorium; zrobione: czysta historia, licencja MIT, ogólna instrukcja wdrożenia (14 listopada 2026) | [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md) |
+| Instalacja dla innych i publikacja | Docker z HTTPS, wariant z systemd, skrypt aktualizacji, wydania w GHCR, ustawienia publicznego repozytorium; zrobione: czysta historia, licencja MIT, ogólna instrukcja wdrożenia, `SECURITY.md`, wydanie `v0.9.0-beta` (14 listopada 2026) | [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md) |
 | Testy po 1.0 | Testy jednostkowe `ShoppingSync`, zegar w e2e, e2e sesji i blokady, dostępność (T2–T4, T8); zrobione: e2e demo (T7) | [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md) |
 | Kieszonkowe: dokończenie | Nagroda w regułach cyklicznych, cofnięcie wypłaty, ukrycie bez dzieci | [plany/ROZWOJ.md](plany/ROZWOJ.md) |
 | Pomysły | Częstotliwość wypłaty, środowisko UAT, zdjęcie jako potwierdzenie i inne; zrobione: kolor karteczki (14 listopada 2026) | [plany/ROZWOJ.md](plany/ROZWOJ.md) |
@@ -59,7 +59,7 @@ Każda decyzja jest zapisana w jednym miejscu: w pliku planu, którego dotyczy (
 | Plik | Najważniejsze otwarte pytania |
 |---|---|
 | [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md), „Decyzje” | Analiza statyczna w CI, sterowanie czasem w e2e |
-| [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md), rozdział 4 | Kanał aktualizacji, `rclone` w obrazie, proxy w przykładzie Dockera |
+| [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md), rozdział 4 | `rclone` w obrazie, proxy w przykładzie Dockera |
 
 ## Ustalenia
 
