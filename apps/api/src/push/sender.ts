@@ -1,4 +1,4 @@
-import webpush from 'web-push';
+import { sendNotification } from 'web-push';
 
 export type PushTarget = { endpoint: string; p256dh: string; auth: string };
 export type PushPayload = { title: string; body: string; url: string; tag?: string };
@@ -36,7 +36,7 @@ export function createWebPushSettings(keys: { publicKey: string; privateKey: str
     publicKey: keys.publicKey,
     async send(target, payload) {
       try {
-        await webpush.sendNotification(
+        await sendNotification(
           { endpoint: target.endpoint, keys: { p256dh: target.p256dh, auth: target.auth } },
           JSON.stringify(payload),
           // Przypomnienie spóźnione o pół dnia jest bezużyteczne, więc usługa push może je porzucić.
