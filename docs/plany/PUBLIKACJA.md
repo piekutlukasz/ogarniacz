@@ -15,7 +15,7 @@ Dwa cele:
 - [ ] Zwykły serwer: `deploy/systemd` z jednostką usługi i przykładem proxy; skrypt aktualizacji z kopią i migracjami na kopii (N1, N2)
 - [ ] Kopia poza serwer w Dockerze, opis aktualizacji, wymagania systemu (D3, D7, N4)
 - [ ] Oznaczone wydania i gotowy obraz w GHCR (D4, N3)
-- [ ] Ustawienia publicznego repozytorium według rozdziału 3
+- [x] Publiczne repozytorium z ustawieniami według rozdziału 3 (14 listopada 2026)
 
 ## 1. Co już jest
 
@@ -78,18 +78,18 @@ Publiczne repozytorium zaczyna się od jednego commita z czystą historią; wcze
 - [x] `gitleaks` na historii publicznego repozytorium: 6 trafień, wszystkie to hasła testowe, wpisane do `.gitleaksignore` (14 listopada 2026)
 - [x] `SECURITY.md`: zgłoszenia przez prywatne zgłaszanie podatności na GitHubie (14 listopada 2026)
 - [x] README dla czytelnika z zewnątrz: czym jest projekt, dla kogo, jak uruchomić demo lokalnie, jak zainstalować (14 listopada 2026)
-- [ ] Ochrona gałęzi `main` i `prod` rulesetami z `.github/rulesets` (opis niżej); merge do `main` przesuwa `prod`, więc w publicznym repozytorium to warunek
-- [ ] Ustawienia Actions: pull requesty z forków bez dostępu do sekretów i z ręczną zgodą na uruchomienie (opis niżej)
-- [ ] Włączone darmowe dla publicznych repozytoriów: skan sekretów z blokadą pusha, alerty Dependabota, prywatne zgłaszanie podatności, CodeQL
+- [x] Ochrona gałęzi `main` i `prod` rulesetami z `.github/rulesets` (opis niżej); merge do `main` przesuwa `prod`, więc w publicznym repozytorium to warunek (14 listopada 2026)
+- [x] Ustawienia Actions: pull requesty z forków bez dostępu do sekretów i z ręczną zgodą na uruchomienie dla każdej osoby z zewnątrz (14 listopada 2026)
+- [x] Włączone darmowe dla publicznych repozytoriów: skan sekretów z blokadą pusha, alerty i poprawki bezpieczeństwa Dependabota, prywatne zgłaszanie podatności, CodeQL w konfiguracji domyślnej (14 listopada 2026)
 - [x] Commity tylko z adresem `noreply` z GitHuba (ustawienie konta „Keep my email addresses private” i `git config user.email`); sprawdzone na całej historii (14 listopada 2026)
 
 ### Ochrona gałęzi
 
-Na prywatnym repozytorium w darmowym planie GitHub nie udostępnia ani ochrony gałęzi, ani rulesetów, więc gotowe ustawienia czekają w `.github/rulesets` i `.github/CODEOWNERS` na upublicznienie:
+Rulesety z `.github/rulesets` i `.github/CODEOWNERS` działają od upublicznienia (14 listopada 2026; na prywatnym repozytorium w darmowym planie GitHub ich nie udostępnia). Pliki są źródłem prawdy: zmiana zasad to PR z plikiem, a potem ta sama zmiana w ustawieniach repozytorium.
 
 | Plik | Gałąź | Zasady | Wyjątek |
 |---|---|---|---|
-| `main-przeglad.json` | `main` | Zmiana tylko przez PR z zatwierdzeniem właściciela kodu (`CODEOWNERS`); nowy commit unieważnia zatwierdzenie, a zatwierdzić trzeba ostatni push | Admin, tylko przy scalaniu PR |
+| `main-przeglad.json` | `main` | Zmiana tylko przez PR, scalany squashem, z zatwierdzeniem właściciela kodu (`CODEOWNERS`); nowy commit unieważnia zatwierdzenie, a zatwierdzić trzeba ostatni push | Admin, tylko przy scalaniu PR |
 | `main-ci.json` | `main` | Zielone `test` i `container` z GitHub Actions, zakaz force pusha i usunięcia | Brak |
 | `prod.json` | `prod` | Zakaz force pusha i usunięcia | Admin, zawsze |
 
@@ -100,14 +100,14 @@ Decyzje:
 - **Bez wymogu aktualnej gałęzi** (`strict_required_status_checks_policy: false`). Inaczej każdy scalony PR Dependabota wymuszałby rebase i nowy przebieg pozostałych. Połączenie zmian sprawdza CI na `main`, a `promote` przesuwa `prod` dopiero po jego zielonym wyniku.
 - **`prod` przesuwa się tylko do przodu.** Zadanie `promote` pushuje tokenem Actions zawsze fast-forward, więc zakaz force pusha go nie blokuje. Ręczne cofnięcie wersji (force push na `prod`) robi admin dzięki wyjątkowi.
 
-Włączenie zaraz po upublicznieniu, z katalogu repozytorium:
+Odtworzenie ustawień (na przykład po usunięciu rulesetów), z katalogu repozytorium:
 
 ```bash
 for f in .github/rulesets/*.json; do gh api -X POST 'repos/{owner}/{repo}/rulesets' --input "$f"; done
 gh api -X PUT 'repos/{owner}/{repo}/actions/permissions/fork-pr-contributor-approval' -f approval_policy=all_external_contributors
 ```
 
-Potem w Settings → Rules → Rulesets sprawdź, że wyjątek w `main: przegląd` i `prod: tylko do przodu` to rola „Repository admin” (identyfikator `5` w plikach), a próbny PR bez zatwierdzenia nie daje się scalić bez zaznaczenia obejścia. Po włączeniu zaktualizuj zdanie o ochronie gałęzi w `PROJEKT.md` (rozdział 9) i dopisz do `CLAUDE.md` (rozdział „Wdrożenie”), że własny PR scala się przez `gh pr merge --admin`.
+Sprawdzone po włączeniu: wyjątek w `main: przegląd` i `prod: tylko do przodu` to rola admina (identyfikator `5`; API pokazuje adminowi `current_user_can_bypass` jako `pull_requests_only` i `always`, a dla `main: CI i historia` jako `never`), a próbny PR bez zatwierdzenia nie dał się scalić bez obejścia.
 
 Loginy typu `tata` i `mama` są w dokumentach i testach przykładami, a imiona w demo i testach są fikcyjne.
 

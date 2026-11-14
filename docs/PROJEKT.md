@@ -268,7 +268,7 @@ Aplikacja przechowuje dane dzieci, harmonogram domu i prywatne linki do kalendar
 - Hasła: `scrypt` z `node:crypto`, bez kolejnej natywnej zależności.
 - Sesja: losowy token w cookie `HttpOnly`, `Secure`, `SameSite=Lax`; wylogowanie usuwa je z tymi samymi atrybutami. W bazie tylko jego skrót.
 - Długa sesja z odnawianiem, bo ponowne logowanie w PWA na iOS jest uciążliwe.
-- Łańcuch dostaw: `npm audit` zależności produkcyjnych (próg: wysokie) w CI, Dependabot dla npm, akcji GitHub i obrazu Docker (bez wersji głównych obrazu `node` i `@types/node`, które zmieniamy ręcznie razem z Node na produkcji), akcja z sekretem przypięta do commitu.
+- Łańcuch dostaw: `npm audit` zależności produkcyjnych (próg: wysokie) w CI, Dependabot dla npm, akcji GitHub i obrazu Docker (bez wersji głównych obrazu `node` i `@types/node`, które zmieniamy ręcznie razem z Node na produkcji), akcja z sekretem przypięta do commitu. Na GitHubie: skan sekretów z blokadą pusha, alerty i poprawki bezpieczeństwa Dependabota, CodeQL, prywatne zgłaszanie podatności ([SECURITY.md](../SECURITY.md)).
 - Ochrona przed zgadywaniem haseł: 5 prób na 15 minut dla pary login i adres klienta (obcy blokuje tylko siebie), 20 prób na 15 minut z jednego adresu (IPv6 liczone po sieci `/64`) i bezpiecznik 100 prób na login na godzinę. Każda próba i początek blokady trafiają do dziennika logowań `auth_events`.
 - Linki ICS traktujemy jak hasła: szyfrowane w bazie (AES-256-GCM, klucz `CALENDAR_ENCRYPTION_KEY` poza bazą i poza kopiami zapasowymi), niewidoczne dla dzieci, nigdy niezwracane przez API i nieobecne w logach. Szyfrowanie chroni przed wyciekiem bazy i kopii z Google Drive, ale nie przed przejęciem serwera, na którym leży klucz.
 - Serwer pobiera adresy podane przez rodzica, więc to potencjalny SSRF: tylko `https`, lista dozwolonych hostów, ręcznie sprawdzane przekierowania, limity czasu i rozmiaru. W trybie demo dodawanie kalendarzy jest wyłączone.
@@ -285,7 +285,7 @@ Aplikacja przechowuje dane dzieci, harmonogram domu i prywatne linki do kalendar
 
 - Własne hasło każdy zmienia w ustawieniach, potwierdzając obecnym. Wymóg wobec hasła (aplikacja i CLI): 8 znaków i bez loginu oraz słów imienia dłuższych niż dwa znaki (`passwordProblem` w `shared`).
 - Skany OWASP ZAP na lokalnej instancji (bazowy oraz aktywny API z sesją rodzica i dziecka; 13 listopada 2026 na demo, 14 listopada 2026 bez `DEMO_MODE`, z trasami zaproszeń, kont, dziennika, zmiany hasła i kreatora) nie znalazły podatności; szczegóły w [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md), rozdział 5.
-- Ochrona gałęzi `main` nie jest dostępna dla prywatnego repozytorium na darmowym planie; wdrożenie chroni zadanie `promote`, które przesuwa `prod` tylko po zielonym CI. Gotowe rulesety do włączenia po upublicznieniu: [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md), rozdział 3.
+- Repozytorium jest publiczne, a gałęzie chronią rulesety z `.github/rulesets`: na `main` tylko PR scalany squashem, z zielonym `test` i `container` oraz zatwierdzeniem właściciela (`CODEOWNERS`; admin może scalić własny PR z obejściem), a `prod` przesuwa się tylko do przodu. CI dla PR-ów z forków rusza po ręcznej zgodzie. Opis i decyzje: [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md), rozdział 3.
 
 - Zaproszenie przenosi token w części adresu po `#` (`/#zaproszenie=…`), więc nie trafia on do logów nginx ani proxy; front od razu usuwa go z adresu, a kod QR rysuje w przeglądarce, bez zewnętrznej usługi.
 
