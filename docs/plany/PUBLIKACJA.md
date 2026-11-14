@@ -78,10 +78,36 @@ Publiczne repozytorium zaczyna się od jednego commita z czystą historią; wcze
 - [ ] `gitleaks` na historii publicznego repozytorium
 - [ ] `SECURITY.md`: jak zgłosić błąd bezpieczeństwa prywatnie
 - [ ] README dla czytelnika z zewnątrz: czym jest projekt, dla kogo, jak uruchomić demo lokalnie, jak zainstalować
-- [ ] Ochrona gałęzi `main`: wymagane CI i przegląd; merge do `main` przesuwa `prod`, więc w publicznym repozytorium to warunek
-- [ ] Ustawienia Actions: pull requesty z forków bez dostępu do sekretów i z ręczną zgodą na uruchomienie
+- [ ] Ochrona gałęzi `main` i `prod` rulesetami z `.github/rulesets` (opis niżej); merge do `main` przesuwa `prod`, więc w publicznym repozytorium to warunek
+- [ ] Ustawienia Actions: pull requesty z forków bez dostępu do sekretów i z ręczną zgodą na uruchomienie (opis niżej)
 - [ ] Włączone darmowe dla publicznych repozytoriów: skan sekretów z blokadą pusha, alerty Dependabota, CodeQL
 - [ ] Commity tylko z adresem `noreply` z GitHuba (ustawienie konta „Keep my email addresses private” i `git config user.email`)
+
+### Ochrona gałęzi
+
+Na prywatnym repozytorium w darmowym planie GitHub nie udostępnia ani ochrony gałęzi, ani rulesetów, więc gotowe ustawienia czekają w `.github/rulesets` i `.github/CODEOWNERS` na upublicznienie:
+
+| Plik | Gałąź | Zasady | Wyjątek |
+|---|---|---|---|
+| `main-przeglad.json` | `main` | Zmiana tylko przez PR z zatwierdzeniem właściciela kodu (`CODEOWNERS`); nowy commit unieważnia zatwierdzenie, a zatwierdzić trzeba ostatni push | Admin, tylko przy scalaniu PR |
+| `main-ci.json` | `main` | Zielone `test` i `container` z GitHub Actions, zakaz force pusha i usunięcia | Brak |
+| `prod.json` | `prod` | Zakaz force pusha i usunięcia | Admin, zawsze |
+
+Decyzje:
+
+- **Wyjątek admina tylko przy PR.** GitHub nie pozwala zatwierdzić własnego PR-a, więc bez wyjątku właściciel nie scaliłby własnych zmian. Tryb `pull_request` pozwala scalić własny PR bez zatwierdzenia (w terminalu `gh pr merge --admin`), ale nie pozwala pushować prosto na `main`. PR-y z forków i od Dependabota wymagają zatwierdzenia.
+- **CI w osobnym rulesecie, bez wyjątku.** Wyjątek obejmuje cały ruleset, więc gdyby wymagane kontrole były w `main-przeglad.json`, własny PR dałoby się scalić z czerwonym CI.
+- **Bez wymogu aktualnej gałęzi** (`strict_required_status_checks_policy: false`). Inaczej każdy scalony PR Dependabota wymuszałby rebase i nowy przebieg pozostałych. Połączenie zmian sprawdza CI na `main`, a `promote` przesuwa `prod` dopiero po jego zielonym wyniku.
+- **`prod` przesuwa się tylko do przodu.** Zadanie `promote` pushuje tokenem Actions zawsze fast-forward, więc zakaz force pusha go nie blokuje. Ręczne cofnięcie wersji (force push na `prod`) robi admin dzięki wyjątkowi.
+
+Włączenie zaraz po upublicznieniu, z katalogu repozytorium:
+
+```bash
+for f in .github/rulesets/*.json; do gh api -X POST 'repos/{owner}/{repo}/rulesets' --input "$f"; done
+gh api -X PUT 'repos/{owner}/{repo}/actions/permissions/fork-pr-contributor-approval' -f approval_policy=all_external_contributors
+```
+
+Potem w Settings → Rules → Rulesets sprawdź, że wyjątek w `main: przegląd` i `prod: tylko do przodu` to rola „Repository admin” (identyfikator `5` w plikach), a próbny PR bez zatwierdzenia nie daje się scalić bez zaznaczenia obejścia. Po włączeniu zaktualizuj zdanie o ochronie gałęzi w `PROJEKT.md` (rozdział 9) i dopisz do `CLAUDE.md` (rozdział „Wdrożenie”), że własny PR scala się przez `gh pr merge --admin`.
 
 Loginy typu `tata` i `mama` są w dokumentach i testach przykładami, a imiona w demo i testach są fikcyjne.
 

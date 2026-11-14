@@ -285,7 +285,7 @@ Aplikacja przechowuje dane dzieci, harmonogram domu i prywatne linki do kalendar
 
 - Własne hasło każdy zmienia w ustawieniach, potwierdzając obecnym. Wymóg wobec hasła (aplikacja i CLI): 8 znaków i bez loginu oraz słów imienia dłuższych niż dwa znaki (`passwordProblem` w `shared`).
 - Skany OWASP ZAP na lokalnej instancji (bazowy oraz aktywny API z sesją rodzica i dziecka; 13 listopada 2026 na demo, 14 listopada 2026 bez `DEMO_MODE`, z trasami zaproszeń, kont, dziennika, zmiany hasła i kreatora) nie znalazły podatności; szczegóły w [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md), rozdział 5.
-- Ochrona gałęzi `main` nie jest dostępna dla prywatnego repozytorium na darmowym planie; wdrożenie chroni zadanie `promote`, które przesuwa `prod` tylko po zielonym CI.
+- Ochrona gałęzi `main` nie jest dostępna dla prywatnego repozytorium na darmowym planie; wdrożenie chroni zadanie `promote`, które przesuwa `prod` tylko po zielonym CI. Gotowe rulesety do włączenia po upublicznieniu: [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md), rozdział 3.
 
 - Zaproszenie przenosi token w części adresu po `#` (`/#zaproszenie=…`), więc nie trafia on do logów nginx ani proxy; front od razu usuwa go z adresu, a kod QR rysuje w przeglądarce, bez zewnętrznej usługi.
 
