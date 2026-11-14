@@ -19,7 +19,7 @@
     "@ogarniacz/shared": "*",
     "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.4",
-    "hono": "^4.13.17",
+    "hono": "^4.13.18",
     "ical.js": "^2.2.1",
     "node-cron": "^4.6.0",
     "web-push": "3.6.7",
