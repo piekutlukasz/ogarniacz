@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
 
+# Domyślnie tylko odczyt, niezależnie od ustawień repozytorium; zapis dostaje wyłącznie zadanie promote.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
