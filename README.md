@@ -28,6 +28,7 @@ Odpowiada na pytanie „co dziś mam ogarnąć?” i przypomina o tym powiadomie
 - [Konfiguracja](#konfiguracja)
 - [Wdrożenie](#wdrożenie)
 - [Dokumentacja](#dokumentacja)
+- [Bezpieczeństwo](#bezpieczeństwo)
 
 ## Co potrafi
 
@@ -205,6 +206,10 @@ Mapa całej dokumentacji: [docs/README.md](docs/README.md).
 | [Dokumentacja projektu](docs/PROJEKT.md) | Cel, funkcje, architektura, model danych, API, role, integracje i bezpieczeństwo |
 | [Instrukcje](docs/README.md#instrukcje) | Wdrożenie, kopie zapasowe, kalendarze, demo |
 | [Testy e2e](e2e/README.md) | Zasady pisania testów Playwright i page objecty |
+
+## Bezpieczeństwo
+
+Błąd bezpieczeństwa zgłoś prywatnie, według [SECURITY.md](SECURITY.md).
 
 ## Licencja
 

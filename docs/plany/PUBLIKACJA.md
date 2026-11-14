@@ -75,13 +75,13 @@ Kolejność: D1, D2, D5 (najkrótsza droga dla kogoś z zewnątrz), potem N1 i N
 
 Publiczne repozytorium zaczyna się od jednego commita z czystą historią; wcześniejsza historia nie jest publikowana. Przed upublicznieniem i zaraz po nim:
 
-- [ ] `gitleaks` na historii publicznego repozytorium
-- [ ] `SECURITY.md`: jak zgłosić błąd bezpieczeństwa prywatnie
-- [ ] README dla czytelnika z zewnątrz: czym jest projekt, dla kogo, jak uruchomić demo lokalnie, jak zainstalować
+- [x] `gitleaks` na historii publicznego repozytorium: 6 trafień, wszystkie to hasła testowe, wpisane do `.gitleaksignore` (14 listopada 2026)
+- [x] `SECURITY.md`: zgłoszenia przez prywatne zgłaszanie podatności na GitHubie (14 listopada 2026)
+- [x] README dla czytelnika z zewnątrz: czym jest projekt, dla kogo, jak uruchomić demo lokalnie, jak zainstalować (14 listopada 2026)
 - [ ] Ochrona gałęzi `main` i `prod` rulesetami z `.github/rulesets` (opis niżej); merge do `main` przesuwa `prod`, więc w publicznym repozytorium to warunek
 - [ ] Ustawienia Actions: pull requesty z forków bez dostępu do sekretów i z ręczną zgodą na uruchomienie (opis niżej)
-- [ ] Włączone darmowe dla publicznych repozytoriów: skan sekretów z blokadą pusha, alerty Dependabota, CodeQL
-- [ ] Commity tylko z adresem `noreply` z GitHuba (ustawienie konta „Keep my email addresses private” i `git config user.email`)
+- [ ] Włączone darmowe dla publicznych repozytoriów: skan sekretów z blokadą pusha, alerty Dependabota, prywatne zgłaszanie podatności, CodeQL
+- [x] Commity tylko z adresem `noreply` z GitHuba (ustawienie konta „Keep my email addresses private” i `git config user.email`); sprawdzone na całej historii (14 listopada 2026)
 
 ### Ochrona gałęzi
 
@@ -115,9 +115,8 @@ Loginy typu `tata` i `mama` są w dokumentach i testach przykładami, a imiona w
 
 | Pytanie | Propozycja |
 |---|---|
-| Kanał aktualizacji dla innych instalacji | Oznaczone wydania (tagi); `prod` dla tych, którzy chcą każdą wersję po CI |
 | `rclone` w obrazie Docker | Tak: jedna droga kopii poza serwer w obu wariantach instalacji |
-| Gotowy obraz w GHCR | Tak, od pierwszego oznaczonego wydania |
+| Gotowy obraz w GHCR | Tak, od wydania 1.0 |
 | Proxy w przykładzie Dockera | Caddy, bo sam zdobywa certyfikat |
 
-Podjęte: licencja MIT (11 listopada 2026), imiona w demo i testach są fikcyjne (11 listopada 2026), publikacja jako nowe repozytorium z czystą historią (14 listopada 2026).
+Podjęte: licencja MIT (11 listopada 2026), imiona w demo i testach są fikcyjne (11 listopada 2026), publikacja jako nowe repozytorium z czystą historią (14 listopada 2026), kanał aktualizacji: oznaczone wydania (tagi `vX.Y.Z`, wersje przed 1.0 z sufiksem `-beta`), a `prod` dla tych, którzy chcą każdą wersję po CI; pierwsze wydanie `v0.9.0-beta` bez obrazu GHCR, przed zamknięciem etapu 8 (14 listopada 2026).
