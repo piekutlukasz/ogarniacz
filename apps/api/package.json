@@ -1,0 +1,37 @@
+{
+  "name": "@ogarniacz/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --import tsx src/index.ts",
+    "build": "esbuild src/index.ts src/cli.ts --bundle --platform=node --target=node22 --format=cjs --external:better-sqlite3 --external:node-cron --outdir=dist --out-extension:.js=.cjs \"--banner:js=if(+process.versions.node.split('.')[0]<22){console.error('Ogarniacz wymaga Node.js 22 lub nowszego, uruchomiono '+process.version+' ('+process.execPath+')');process.exit(1)}\"",
+    "start": "node dist/index.cjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "cli": "node --import tsx src/cli.ts",
+    "vapid": "node --import tsx src/push/vapid.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.6",
+    "@hono/zod-validator": "^0.9.1",
+    "@ogarniacz/shared": "*",
+    "better-sqlite3": "^13.0.3",
+    "drizzle-orm": "^0.45.4",
+    "hono": "^4.13.17",
+    "ical.js": "^2.2.1",
+    "node-cron": "^4.6.0",
+    "web-push": "3.6.7",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^24.0.0",
+    "@types/web-push": "3.6.4",
+    "drizzle-kit": "^0.31.11",
+    "esbuild": "^0.28.2",
+    "tsx": "^4.23.15",
+    "vitest": "^5.1.0"
+  }
+}

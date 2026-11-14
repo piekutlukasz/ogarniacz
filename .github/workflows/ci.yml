@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Tylko zależności produkcyjne i tylko wysokie: niska podatność w narzędziu budowania nie blokuje wdrożeń.
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npm run test:e2e
+      # Test dymny na zbudowanej aplikacji: service worker, start bez sieci, CSP, nagłówki pamięci podręcznej.
+      - run: npm run test:smoke
+      # Ślady i zrzuty z nieudanych testów e2e: `npx playwright show-trace <plik>` albo raport HTML z archiwum.
+      - name: Zapisz ślady Playwright
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-${{ github.run_attempt }}
+          path: |
+            e2e/test-results
+            e2e/playwright-report
+          retention-days: 7
+          if-no-files-found: ignore
+
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker compose up -d --build
+      # Udany build nie wystarcza: kontener musi faktycznie wystartować.
+      - name: Sprawdź start aplikacji
+        run: curl --fail --silent --show-error --retry 15 --retry-delay 2 --retry-all-errors http://localhost:3000/api/health
+      # Świeży kontener ma pustą bazę, więc czeka na kreator pierwszego uruchomienia z kodem w logu (docs/plany/KONTA.md).
+      - name: Sprawdź kreator pierwszego uruchomienia
+        run: |
+          curl --fail --silent --show-error http://localhost:3000/api/setup | grep -q '"needed":true'
+          docker compose logs | grep -Eq 'kod pierwszego uruchomienia: [2-9A-Z]{4}-[2-9A-Z]{4}'
+      - name: Pokaż logi po błędzie
+        if: failure()
+        run: docker compose logs
+
+  # Instalacje śledzące gałąź prod pobierają z niej nowe wersje,
+  # więc trafia tam tylko commit z main, który przeszedł wszystkie testy.
+  promote:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test, container]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    concurrency:
+      group: promote-prod
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Przesuń prod na ten commit
+        run: |
+          # Późno skończony stary przebieg nie może cofnąć prod, gdy nowszy commit już tam jest.
+          if git fetch origin prod 2> /dev/null && ! git merge-base --is-ancestor origin/prod HEAD; then
+            echo "prod wskazuje commit spoza historii tego przebiegu (nowszy albo cofnięty ręcznie), pomijam"
+            exit 0
+          fi
+          git push origin HEAD:refs/heads/prod

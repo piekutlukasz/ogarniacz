@@ -1,0 +1,12 @@
+services:
+  ogarniacz:
+    build: .
+    restart: unless-stopped
+    # Port tylko lokalnie: ruch z internetu przechodzi przez nginx.
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - ogarniacz-data:/data
+
+volumes:
+  ogarniacz-data:

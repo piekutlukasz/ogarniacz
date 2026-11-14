@@ -1,0 +1,11 @@
+# Demo z przykładowymi danymi w kontenerze: docker compose -f docker-compose.demo.yml up --build
+# Aplikacja na http://localhost:3000. Baza żyje tylko w kontenerze i znika razem z nim.
+services:
+  ogarniacz-demo:
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      DEMO_MODE: "true"
+      # Lokalnie serwer działa po http, a cookie Secure by nie zadziałało.
+      COOKIE_SECURE: "false"

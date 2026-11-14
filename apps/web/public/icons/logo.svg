@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Źródło logo: kremowa lodówka z żółtą karteczką przypiętą magnesem. PNG-i powstają przez scripts/icons.mjs. -->
+  <rect width="512" height="512" fill="#c2452a"/>
+  <rect x="146" y="84" width="220" height="368" rx="40" fill="#9c3520"/>
+  <rect x="146" y="72" width="220" height="368" rx="40" fill="#fbf6ec"/>
+  <path d="M146 200 H366" fill="none" stroke="#e9dcc4" stroke-width="10"/>
+  <path d="M180 122 V162 M180 238 V300" fill="none" stroke="#c2452a" stroke-width="14" stroke-linecap="round"/>
+  <g transform="rotate(6 280 316)">
+    <rect x="228" y="264" width="104" height="104" rx="12" fill="#ffc93c"/>
+    <path d="M256 320 L274 338 L306 298" fill="none" stroke="#2b2420" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="280" cy="268" r="14" fill="#c2452a"/>
+  </g>
+</svg>

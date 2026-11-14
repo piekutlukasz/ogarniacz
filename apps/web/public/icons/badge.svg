@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Znak na pasek stanu Androida (badge powiadomienia): sylwetka lodówki z ptaszkiem.
+       Android bierze z niego tylko przezroczystość i maluje go jednym kolorem, dlatego jest biały na przezroczystym tle,
+       a szczegóły to wycięcia. PNG powstaje przez scripts/icons.mjs. -->
+  <defs>
+    <mask id="wyciecia">
+      <rect width="512" height="512" fill="#fff"/>
+      <path d="M112 176 H400" stroke="#000" stroke-width="22"/>
+      <path d="M160 92 V136 M160 222 V288" stroke="#000" stroke-width="26" stroke-linecap="round"/>
+      <path d="M212 352 L250 390 L320 304" fill="none" stroke="#000" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <rect x="112" y="32" width="288" height="448" rx="52" fill="#fff" mask="url(#wyciecia)"/>
+</svg>

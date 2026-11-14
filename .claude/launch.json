@@ -1,0 +1,40 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "ogarniacz",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "PORT=3000",
+        "npm",
+        "run",
+        "dev"
+      ],
+      "port": 5173
+    },
+    {
+      "name": "demo",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "PORT=3100",
+        "npm",
+        "run",
+        "demo",
+        "--",
+        "--no-build"
+      ],
+      "port": 3100
+    },
+    {
+      "name": "kreator",
+      "runtimeExecutable": "env",
+      "runtimeArgs": [
+        "SMOKE_PORT=3095",
+        "SMOKE_EMPTY=true",
+        "node",
+        "e2e/src/setup/smokeServer.mjs"
+      ],
+      "port": 3095
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "ogarniacz",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "e2e"
+  ],
+  "scripts": {
+    "dev": "concurrently --names api,web --prefix-colors blue,green \"npm run dev -w @ogarniacz/api\" \"npm run dev -w @ogarniacz/web\"",
+    "build": "npm run build -w @ogarniacz/web && npm run build -w @ogarniacz/api",
+    "start": "npm run start -w @ogarniacz/api",
+    "demo": "node scripts/demo.mjs",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test -w @ogarniacz/api",
+    "test:e2e": "npm run test -w @ogarniacz/e2e",
+    "test:smoke": "npm run test:smoke -w @ogarniacz/e2e",
+    "db:generate": "npm run db:generate -w @ogarniacz/api"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "@esbuild-kit/core-utils": {
+      "esbuild": "^0.28.2"
+    },
+    "workbox-build": {
+      "glob": "^14.0.3"
+    },
+    "glob": {
+      "minimatch": "^11.0.4"
+    }
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "esbuild@0.25.12": true,
+    "better-sqlite3": false
+  }
+}

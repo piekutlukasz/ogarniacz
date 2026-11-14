@@ -1,0 +1,1 @@
+ALTER TABLE `tasks` ADD `assigned_by` text REFERENCES users(id);

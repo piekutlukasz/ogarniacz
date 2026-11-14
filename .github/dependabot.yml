@@ -1,0 +1,20 @@
+# Cotygodniowe propozycje aktualizacji: zależności npm, akcje GitHub w workflowach i obraz bazowy w Dockerfile.
+# Opis: docs/plany/UTWARDZENIE.md, B9.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # Główna wersja Node idzie razem z produkcją (Node 24, .nvmrc), więc zmieniamy ją ręcznie.
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
