@@ -34,6 +34,46 @@ describe('kopia zapasowa', () => {
     copy.close();
   });
 
+  it('zostawia w katalogu kopii tylko plik kopii, bez plików pośrednich i WAL', async () => {
+    const database = openDatabase(join(dir, 'app.db'), './drizzle');
+    addTask(database.db, 'Przed kopią');
+    const backups = join(dir, 'backups');
+
+    await createBackup(database.sqlite, backups, new Date('2026-11-15T02:30:00Z'));
+    database.close();
+
+    expect(readdirSync(backups)).toEqual(['ogarniacz-2026-11-15.db']);
+  });
+
+  it('sprawdzenie starszej kopii w trybie WAL przed odtworzeniem nie zostawia plików obok niej', () => {
+    // Kopie sprzed poprawki dziedziczyły tryb WAL po bazie.
+    const backups = join(dir, 'backups');
+    mkdirSync(backups);
+    const backup = join(backups, 'ogarniacz-2026-11-14.db');
+    openDatabase(backup, './drizzle').close();
+
+    restoreBackup(backup, join(dir, 'proba', 'odtworzona.db'));
+
+    expect(readdirSync(backups)).toEqual(['ogarniacz-2026-11-14.db']);
+  });
+
+  it('usuwa pliki pośrednie z poprzednich dni, a dzisiejszych nie rusza', () => {
+    const backups = join(dir, 'backups');
+    mkdirSync(backups);
+    const names = [
+      'ogarniacz-2026-11-14.db',
+      'ogarniacz-2026-11-14.db.tmp-shm',
+      'ogarniacz-2026-11-14.db.tmp-wal',
+      'ogarniacz-2026-11-15.db.tmp',
+    ];
+    for (const name of names) writeFileSync(join(backups, name), '');
+
+    const removed = pruneBackups(backups, 14, new Date('2026-11-15T10:00:00Z'));
+
+    expect(removed).toEqual(['ogarniacz-2026-11-14.db.tmp-shm', 'ogarniacz-2026-11-14.db.tmp-wal']);
+    expect(readdirSync(backups).sort()).toEqual(['ogarniacz-2026-11-14.db', 'ogarniacz-2026-11-15.db.tmp']);
+  });
+
   it('usuwa tylko kopie starsze niż limit', () => {
     const backups = join(dir, 'backups');
     mkdirSync(backups);

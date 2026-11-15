@@ -303,7 +303,7 @@ Aplikacja działa w Dockerze albo bezpośrednio na Node.js 24, za proxy z HTTPS.
 **Backup:**
 
 - nocna kopia przez backupowe API SQLite, bo zwykłe kopiowanie pliku w trybie WAL może dać uszkodzoną kopię,
-- zapis w `BACKUP_DIR` (domyślnie `backups` obok bazy),
+- zapis w `BACKUP_DIR` (domyślnie `backups` obok bazy) jako jeden samodzielny plik bez trybu WAL; pliki pośrednie z przerwanej kopii znikają przy następnej,
 - dodatkowa kopia poza serwerem: zaszyfrowana przez rclone na Google Drive, opis w [instrukcje/BACKUP.md](instrukcje/BACKUP.md),
 - próba odtworzenia, bo niesprawdzony backup nie daje pewności.
 

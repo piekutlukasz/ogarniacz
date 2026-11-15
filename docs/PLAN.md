@@ -1,6 +1,6 @@
 # Ogarniacz: plan
 
-Stan na 14 listopada 2026. Tu jest tylko przegląd: co zrobione, co zostało i gdzie są szczegóły. Opis produktu i architektury jest w [PROJEKT.md](PROJEKT.md), a mapa całej dokumentacji w [README.md](README.md).
+Stan na 15 listopada 2026. Tu jest tylko przegląd: co zrobione, co zostało i gdzie są szczegóły. Opis produktu i architektury jest w [PROJEKT.md](PROJEKT.md), a mapa całej dokumentacji w [README.md](README.md).
 
 **Zasady planu:** najpierw ryzyko (hosting i push sprawdzone przed resztą), żadnych danych bez logowania i backupu, każdy etap daje rodzinie działającą funkcję, a uwagi z codziennego używania mogą zmienić kolejność. Rozmiar to szacunek względny: S, M albo L.
 
@@ -10,7 +10,7 @@ Stan na 14 listopada 2026. Tu jest tylko przegląd: co zrobione, co zostało i g
 |---|---|---|---|
 | 0 | Domknięcie fundamentów: repozytorium, CI, obraz Docker | S | Zrobiony |
 | 1 | Test hostingu i push na prawdziwym iPhonie i Androidzie | S | Zrobiony |
-| 2 | Logowanie, backup, wdrożenie | M | Zrobiony, bez kopii na Google Drive |
+| 2 | Logowanie, backup, wdrożenie | M | Zrobiony |
 | 3 | Pełny Kanban i „Dziś” | M | Zamknięty 10 listopada 2026 |
 | 4 | Zadania cykliczne | M | Zamknięty 9 listopada 2026 |
 | 5 | Lista zakupów offline | L | Zamknięty 10 listopada 2026 |
@@ -32,7 +32,7 @@ Pełne listy kontrolne zamkniętych etapów i podjęte decyzje: [archiwum/ETAPY.
 | ✅ | Instalacja na wszystkich telefonach (11 listopada 2026) | — |
 | ⬜ | Dwa tygodnie codziennego używania i zebranie uwag | Liczone od wdrożenia kont w aplikacji |
 | ⬜ | Naprawa problemów z codziennego używania | Zrobione: ikona powiadomienia na Androidzie, przebudowa panelu ustawień na menu z podstronami i blokada przewijania tła pod arkuszem (13 listopada 2026, [plany/ROZWOJ.md](plany/ROZWOJ.md)); do potwierdzenia w Safari na iPhonie |
-| ⬜ | Kopia poza serwer: konfiguracja rclone i Google Drive na serwerze | [instrukcje/BACKUP.md](instrukcje/BACKUP.md) |
+| ✅ | Kopia poza serwer: rclone i zaszyfrowany katalog na Google Drive, próba odtworzenia z Dysku (14 listopada 2026), pierwsza nocna wysyłka (15 listopada 2026) | [instrukcje/BACKUP.md](instrukcje/BACKUP.md) |
 | ✅ | Utwardzenie: sprawdzenia na produkcji, poprawki B1–B6, B8, B9, test tras bez sesji, skan ZAP bez podatności (13 listopada 2026); B7 to konta w aplikacji | [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md) |
 | ✅ | Powtórzenie skanu ZAP z trasami kont w aplikacji, na instancji bez `DEMO_MODE`: bez podatności, poprawione atrybuty usuwanego cookie sesji (14 listopada 2026) | [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md) |
 | ✅ | Testy przed 1.0: test dymny na buildzie (T1), migracje na kopii przed restartem (T5), ślady Playwright w CI (T6), 13 listopada 2026 | [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md) |
@@ -41,7 +41,7 @@ Pełne listy kontrolne zamkniętych etapów i podjęte decyzje: [archiwum/ETAPY.
 | ✅ | Konta w aplikacji, krok 3: kreator pierwszego uruchomienia (13 listopada 2026) | [plany/KONTA.md](plany/KONTA.md) |
 | ✅ | Dokumentacja utrzymania: aktualizacja i powrót do poprzedniej wersji, próba odtworzenia backupu, nowe konto (kreator, zaproszenie, a w razie awarii CLI), 13 listopada 2026 | [instrukcje/WDROZENIE.md](instrukcje/WDROZENIE.md) |
 
-**Kolejność:** utwardzenie, testy T1, T5, T6, wszystkie trzy kroki kont w aplikacji i powtórzenie skanu ZAP są zrobione. Zostają: kopia na Google Drive i dwa tygodnie używania, liczone od wdrożenia kont.
+**Kolejność:** utwardzenie, testy T1, T5, T6, wszystkie trzy kroki kont w aplikacji, powtórzenie skanu ZAP i kopia na Google Drive są zrobione. Zostają dwa tygodnie używania, liczone od wdrożenia kont.
 
 ## Etap 9: rozwój po 1.0
 
