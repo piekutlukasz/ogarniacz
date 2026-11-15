@@ -285,7 +285,7 @@ Aplikacja przechowuje dane dzieci, harmonogram domu i prywatne linki do kalendar
 
 - Własne hasło każdy zmienia w ustawieniach, potwierdzając obecnym. Wymóg wobec hasła (aplikacja i CLI): 8 znaków i bez loginu oraz słów imienia dłuższych niż dwa znaki (`passwordProblem` w `shared`).
 - Skany OWASP ZAP na lokalnej instancji (bazowy oraz aktywny API z sesją rodzica i dziecka; 13 listopada 2026 na demo, 14 listopada 2026 bez `DEMO_MODE`, z trasami zaproszeń, kont, dziennika, zmiany hasła i kreatora) nie znalazły podatności; szczegóły w [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md), rozdział 5.
-- Repozytorium jest publiczne, a gałęzie chronią rulesety z `.github/rulesets`: na `main` tylko PR scalany squashem, z zielonym `test` i `container` oraz zatwierdzeniem właściciela (`CODEOWNERS`; admin może scalić własny PR z obejściem), a `prod` przesuwa się tylko do przodu. CI dla PR-ów z forków rusza po ręcznej zgodzie. Opis i decyzje: [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md), rozdział 3.
+- Repozytorium jest publiczne, a gałęzie chronią rulesety z `.github/rulesets`: na `main` tylko PR scalany squashem, z zielonym `test` i `container`, bez wymogu zatwierdzenia (scala tylko właściciel, także przez auto-merge po zielonym CI), a `prod` przesuwa się tylko do przodu. CI dla PR-ów z forków rusza po ręcznej zgodzie. Opis i decyzje: [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md), rozdział 3.
 
 - Zaproszenie przenosi token w części adresu po `#` (`/#zaproszenie=…`), więc nie trafia on do logów nginx ani proxy; front od razu usuwa go z adresu, a kod QR rysuje w przeglądarce, bez zewnętrznej usługi.
 

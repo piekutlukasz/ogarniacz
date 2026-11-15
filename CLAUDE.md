@@ -97,7 +97,7 @@ Pełny opis: `docs/PROJEKT.md`, rozdział 8.
 
 ## Wdrożenie
 
-- **Merge do `main` to wdrożenie na produkcję.** Po zielonym CI zadanie `promote` przesuwa gałąź `prod`, a instalacje śledzące `prod` same pobierają nową wersję. Pracuj na gałęzi i przez PR; nie pushuj na `main` ani `prod`. Pilnują tego rulesety z `.github/rulesets`: PR do `main` scala się tylko squashem i po zielonych `test` i `container`, PR osoby z zewnątrz wymaga zatwierdzenia właściciela, a własny PR właściciel scala z obejściem (`gh pr merge --squash --admin`).
+- **Merge do `main` to wdrożenie na produkcję.** Po zielonym CI zadanie `promote` przesuwa gałąź `prod`, a instalacje śledzące `prod` same pobierają nową wersję. Pracuj na gałęzi i przez PR; nie pushuj na `main` ani `prod`. Pilnują tego rulesety z `.github/rulesets`: PR do `main` scala się tylko squashem i po zielonych `test` i `container`, bez wymogu zatwierdzenia, a scalić może tylko właściciel. Na PR otwartym dla właściciela włącz auto-merge (`gh pr merge --auto --squash`): scali się sam po zielonym CI, czyli trafi na produkcję bez dodatkowego przeglądu.
 - Obie drogi instalacji muszą działać: Docker (`Dockerfile`, `docker-compose.yml`, budowane i uruchamiane w CI) i Node 24 bez Dockera (opis: `docs/instrukcje/WDROZENIE.md`). Repozytorium nie opisuje żadnej konkretnej instalacji ani dostawcy hostingu.
 - Z produkcji korzystają prawdziwi użytkownicy, a migracje wykonają się na ich danych przy starcie nowej wersji.
 

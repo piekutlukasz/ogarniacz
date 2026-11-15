@@ -89,13 +89,14 @@ Rulesety z `.github/rulesets` i `.github/CODEOWNERS` działają od upublicznieni
 
 | Plik | Gałąź | Zasady | Wyjątek |
 |---|---|---|---|
-| `main-przeglad.json` | `main` | Zmiana tylko przez PR, scalany squashem, z zatwierdzeniem właściciela kodu (`CODEOWNERS`); nowy commit unieważnia zatwierdzenie, a zatwierdzić trzeba ostatni push | Admin, tylko przy scalaniu PR |
+| `main-przeglad.json` | `main` | Zmiana tylko przez PR, scalany squashem; zatwierdzenie nie jest wymagane (od 15 listopada 2026) | Admin, tylko przy scalaniu PR |
 | `main-ci.json` | `main` | Zielone `test` i `container` z GitHub Actions, zakaz force pusha i usunięcia | Brak |
 | `prod.json` | `prod` | Zakaz force pusha i usunięcia | Admin, zawsze |
 
 Decyzje:
 
-- **Wyjątek admina tylko przy PR.** GitHub nie pozwala zatwierdzić własnego PR-a, więc bez wyjątku właściciel nie scaliłby własnych zmian. Tryb `pull_request` pozwala scalić własny PR bez zatwierdzenia (w terminalu `gh pr merge --admin`), ale nie pozwala pushować prosto na `main`. PR-y z forków i od Dependabota wymagają zatwierdzenia.
+- **Bez wymogu zatwierdzenia, z auto-merge (15 listopada 2026).** GitHub nie pozwala zatwierdzić własnego PR-a, a auto-merge nie korzysta z wyjątku admina, więc przy wymaganym zatwierdzeniu własny PR nigdy nie scaliłby się sam. Scalać może tylko właściciel (jedyna osoba z prawem zapisu), więc PR z forka albo od Dependabota i tak wchodzi wyłącznie jego decyzją; `CODEOWNERS` dalej prosi go o przegląd. Auto-merge jest włączony w ustawieniach repozytorium i włącza się go na każdym PR osobno (`gh pr merge --auto --squash`); PR scala się po zielonych `test` i `container`, czyli trafia na produkcję bez ostatniego spojrzenia. Wyjątek admina w trybie `pull_request` zostaje, ale nie pozwala pushować prosto na `main`.
+- Odrzucone: zatwierdzenie wymagane od wszystkich z wyjątkiem admina (stan do 15 listopada 2026). Własne PR-y trzeba było scalać ręcznie przez `gh pr merge --admin`.
 - **CI w osobnym rulesecie, bez wyjątku.** Wyjątek obejmuje cały ruleset, więc gdyby wymagane kontrole były w `main-przeglad.json`, własny PR dałoby się scalić z czerwonym CI.
 - **Bez wymogu aktualnej gałęzi** (`strict_required_status_checks_policy: false`). Inaczej każdy scalony PR Dependabota wymuszałby rebase i nowy przebieg pozostałych. Połączenie zmian sprawdza CI na `main`, a `promote` przesuwa `prod` dopiero po jego zielonym wyniku.
 - **`prod` przesuwa się tylko do przodu.** Zadanie `promote` pushuje tokenem Actions zawsze fast-forward, więc zakaz force pusha go nie blokuje. Ręczne cofnięcie wersji (force push na `prod`) robi admin dzięki wyjątkowi.
@@ -105,9 +106,10 @@ Odtworzenie ustawień (na przykład po usunięciu rulesetów), z katalogu repozy
 ```bash
 for f in .github/rulesets/*.json; do gh api -X POST 'repos/{owner}/{repo}/rulesets' --input "$f"; done
 gh api -X PUT 'repos/{owner}/{repo}/actions/permissions/fork-pr-contributor-approval' -f approval_policy=all_external_contributors
+gh api -X PATCH 'repos/{owner}/{repo}' -F allow_auto_merge=true
 ```
 
-Sprawdzone po włączeniu: wyjątek w `main: przegląd` i `prod: tylko do przodu` to rola admina (identyfikator `5`; API pokazuje adminowi `current_user_can_bypass` jako `pull_requests_only` i `always`, a dla `main: CI i historia` jako `never`), a próbny PR bez zatwierdzenia nie dał się scalić bez obejścia.
+Sprawdzone po włączeniu: wyjątek w `main: przegląd` i `prod: tylko do przodu` to rola admina (identyfikator `5`; API pokazuje adminowi `current_user_can_bypass` jako `pull_requests_only` i `always`, a dla `main: CI i historia` jako `never`), a próbny PR bez zatwierdzenia nie dał się scalić bez obejścia. Od 15 listopada 2026 zatwierdzenie nie jest wymagane (decyzje wyżej).
 
 Loginy typu `tata` i `mama` są w dokumentach i testach przykładami, a imiona w demo i testach są fikcyjne.
 
