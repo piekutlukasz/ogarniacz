@@ -45,7 +45,7 @@ Strona leżała w `apps/push-test` z instrukcją w `docs/TEST-PUSH.md`. Po teśc
 - [x] Role rodzic i dziecko: archiwizuje tylko rodzic, reszta zasad doszła w etapie 3
 - [x] Nocny backup o 3:30 przez backupowe API SQLite, 14 dni kopii i skrypt odtwarzania sprawdzony w testach
 - [x] Wysyłka kopii poza serwer przez rclone do zaszyfrowanego katalogu na Google Drive, 60 dni historii
-- [ ] Konfiguracja rclone i Google Drive na serwerze według [BACKUP.md](../instrukcje/BACKUP.md): odłożona; otwarty punkt przeniesiony do etapu 8 w [PLAN.md](../PLAN.md)
+- [x] Konfiguracja rclone i Google Drive na serwerze według [BACKUP.md](../instrukcje/BACKUP.md): zrobiona w ramach etapu 8, pierwsza nocna wysyłka 15 listopada 2026
 - [x] Próba odtworzenia bazy produkcyjnej z backupu 8 listopada 2026: konta odtworzone z kopii; odtąd `backup verify` w CLI
 - [x] Wdrożenie i aktualizacja sprawdzone w symulacji: [WDROZENIE.md](../instrukcje/WDROZENIE.md)
 - [x] Wdrożenie na produkcję 8 listopada 2026: konta rodziny założone, aplikacja sama wstaje po zatrzymaniu
