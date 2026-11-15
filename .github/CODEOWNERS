@@ -1,2 +1,2 @@
-# Każda zmiana wymaga przeglądu właściciela repozytorium (ruleset „main: przegląd”, .github/rulesets).
+# Właściciel repozytorium dostaje prośbę o przegląd każdego PR. Zatwierdzenie nie jest wymagane do scalenia (ruleset „main: przegląd”, .github/rulesets).
 * @piekutlukasz
