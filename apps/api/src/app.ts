@@ -20,6 +20,7 @@ import { setupRoutes } from './routes/setup';
 import { shoppingRoutes } from './routes/shopping';
 import { taskRoutes } from './routes/tasks';
 import { userRoutes } from './routes/users';
+import { createTestClock } from './testClock';
 
 type AppOptions = {
   db: Db;
@@ -43,6 +44,8 @@ type AppOptions = {
   /** Powiadomienia push. Bez ustawień (brak kluczy VAPID, demo) zapis subskrypcji odpowiada 503. */
   push?: PushSettings;
   now?: () => Date;
+  /** Tylko do testów e2e: nagłówek `X-Test-Now` ustawia „teraz” dla jednego żądania (`testClock.ts`). */
+  testClock?: boolean;
 };
 
 /** Największe prawdziwe żądanie to czyszczenie koszyka z 500 identyfikatorami, około 20 kB. */
@@ -91,13 +94,17 @@ export function createApp({
   demo = false,
   calendars,
   push,
-  now = () => new Date(),
+  now: realNow = () => new Date(),
+  testClock = false,
 }: AppOptions) {
+  const clock = testClock ? createTestClock(realNow) : undefined;
+  const now = clock?.now ?? realNow;
   const cookie = { secure: cookieSecure };
   // Jeden limit prób dla logowania i każdego potwierdzenia hasłem: pomyłki w obu miejscach liczą się razem.
   const accounts = { db, limiter, now, push, clientIpHeader, demo, cookie };
   const api = new Hono<AppEnv>();
 
+  if (clock) api.use('*', clock.middleware);
   // Limit przed czymkolwiek innym: dotyczy także tras publicznych, w tym logowania.
   api.use('*', bodyLimit({ maxSize: MAX_REQUEST_BYTES, onError: (c) => c.json({ error: HTTP_ERROR_MESSAGES[413] }, 413) }));
   // Kolejność ma znaczenie: trasy dodane przed requireSession są publiczne.

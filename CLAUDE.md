@@ -12,7 +12,7 @@ Wymagany Node.js 22.12 lub nowszy (CI i produkcja: 24). Wszystko uruchamiaj z ka
 |---|---|
 | `npm run dev` | Front na `:5173` i API na `:3000`; Vite przekazuje `/api` do API |
 | `npm run typecheck` | `tsc --noEmit` we wszystkich paczkach. To jedyna statyczna kontrola: nie ma ESLinta ani Prettiera, formatowanie wyznacza `.editorconfig` |
-| `npm test` | Vitest: API |
+| `npm test` | Vitest: API i front (`apps/web`: kolejka zakupów `ShoppingSync` z `fake-indexeddb`) |
 | `npm run test:e2e` | Playwright na profilach iPhone 15 i Pixel 7, na własnym serwerze (porty 5180 i 3080) |
 | `npm run test:smoke` | Test dymny na zbudowanej aplikacji (po `npm run build`): service worker, start bez sieci, CSP; port 3090, tryb demo (wejście jednym przyciskiem, baner) na 3091, kreator pierwszego uruchomienia na 3092 i 3093 (puste bazy); jednorazowe bazy |
 | `npm run build` | Front do `apps/api/public`, API do `apps/api/dist` |
@@ -93,7 +93,9 @@ Pełny opis: `docs/PROJEKT.md`, rozdział 8.
 
 **E2E (Playwright).** Przed pisaniem testów przeczytaj `e2e/README.md`. Najważniejsze zasady: `test` i `expect` importuj z `src/fixtures`; selektory tylko w page objectach, po roli i etykiecie; `parent` i `child` to aktorzy w osobnych kontekstach i nie wolno ich wylogowywać; dane przygotowuj przez `actor.api`; baza `apps/api/data/e2e.db` nie jest czyszczona, a projekty `iphone` i `android` biegną naraz, więc nazwy buduj przez `uniqueTitle()`.
 
-**Serwer testów e2e.** Playwright zawsze startuje własny `npm run dev` na portach 5180 (front) i 3080 (API), z bazą `e2e.db`, więc testy można uruchamiać obok serwera deweloperskiego. Porty przekazuje zmiennymi `WEB_PORT` i `PORT`, które czyta `apps/web/vite.config.ts`. Zajęty port kończy testy błędem zamiast użyć cudzego serwera, dlatego dwa worktree nie uruchomią testów e2e jednocześnie.
+**Front (Vitest).** Testy jednostkowe w `apps/web/src/**/*.test.ts` biegną w Node z własnym `vitest.config.ts` (bez wtyczek PWA i Tailwind). IndexedDB daje `fake-indexeddb`, a serwer to atrapa `fetch`; stan modułów resetuje `vi.resetModules()`.
+
+**Serwer testów e2e.** Playwright zawsze startuje własny `npm run dev` na portach 5180 (front) i 3080 (API), z bazą `e2e.db`, więc testy można uruchamiać obok serwera deweloperskiego. Porty przekazuje zmiennymi `WEB_PORT` i `PORT`, które czyta `apps/web/vite.config.ts`. Zajęty port kończy testy błędem zamiast użyć cudzego serwera, dlatego dwa worktree nie uruchomią testów e2e jednocześnie. Serwer ma `TEST_CLOCK=true`, więc test przesuwa czas serwera dla swojej osoby przez `actor.setServerTime(chwila)` (nagłówek `X-Test-Now`); na produkcji ta zmienna blokuje start.
 
 ## Wdrożenie
 

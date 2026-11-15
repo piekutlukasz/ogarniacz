@@ -50,6 +50,8 @@ export default defineConfig({
         CALENDAR_ENCRYPTION_KEY: Buffer.alloc(32, 5).toString('base64'),
         CALENDAR_ALLOWED_HOSTS: `127.0.0.1:${ICS_PORT}`,
         CALENDAR_ALLOW_HTTP: 'true',
+        // Zegar sterowany nagłówkiem X-Test-Now, osobno w każdym żądaniu (Actor.setServerTime). Na produkcji zabroniony.
+        TEST_CLOCK: 'true',
         // Powiadomienia: klucze tylko do pokazania sekcji w ustawieniach. Nic nie jest wysyłane, bo testy nie dają zgody.
         VAPID_PUBLIC_KEY: 'B'.repeat(87),
         VAPID_PRIVATE_KEY: 'k'.repeat(43),

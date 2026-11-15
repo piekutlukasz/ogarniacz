@@ -316,6 +316,7 @@ Aplikacja działa w Dockerze albo bezpośrednio na Node.js 24, za proxy z HTTPS.
 | Poziom | Narzędzie | Zakres |
 |---|---|---|
 | API | Vitest, SQLite w pamięci | Logika, uprawnienia, parser ICS, reguły cykliczne |
+| Front | Vitest, `fake-indexeddb` w miejscu IndexedDB | Kolejka zakupów offline (`ShoppingSync`): kolejność wysyłki, ponawianie, ostateczna odmowa, wygaśnięcie sesji, zmiana konta |
 | Przepływy | Playwright, profile iPhone i Android | Główne ścieżki w przeglądarce, na serwerze deweloperskim |
 | Test dymny | Playwright na zbudowanej aplikacji (`npm run test:smoke`) | Service worker, start bez sieci, CSP, nagłówki pamięci podręcznej; tryb demo: wejście jednym przyciskiem, baner, blokada indeksowania; kreator pierwszego uruchomienia na dwóch serwerach z pustą bazą |
 | Wdrożenie | `backup verify` w CLI, krok aktualizacji z [instrukcje/WDROZENIE.md](instrukcje/WDROZENIE.md) | Migracje nowej wersji na kopii bazy przed restartem |
@@ -325,14 +326,11 @@ Test przekrojowy `routes.test.ts` zbiera wszystkie trasy z aplikacji i sprawdza,
 
 Testy API obejmują też demo (`demo.test.ts`): logowanie na każde konto, zawartość tablicy, zakupów i kieszonkowego, odmowę wgrania do niepustej bazy oraz tryb demo (wejście bez hasła tylko na konta przykładowe, limit wierszy, nagłówki, reset, seed pustej bazy).
 
+Serwer testów e2e startuje z `TEST_CLOCK=true`: nagłówek `X-Test-Now` ustawia „teraz” serwera dla jednego żądania (`apps/api/src/testClock.ts`), więc test przesuwa czas tylko swojej osobie, a równoległe testy działają na prawdziwym zegarze. Tak działa scenariusz „Wypłacone” za zamknięty tydzień. Konfiguracja odmawia startu z `TEST_CLOCK` przy `NODE_ENV=production`, tak samo jak z `CALENDAR_ALLOW_HTTP`.
+
 Playwright nie zastąpi testu push na iPhonie, bo profil telefonu to tylko emulacja.
 
-**Znane luki (stan na 13 listopada 2026: 39 scenariuszy e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, oraz 312 testów API):**
-
-- Front nie ma testów jednostkowych; kolejkę zakupów offline (`ShoppingSync`) pokrywają tylko scenariusze e2e.
-- Serwer testowy używa prawdziwego zegara, więc przepływy zależne od czasu (np. „Wypłacone” za zamknięty tydzień) mają tylko testy API.
-
-Planowane testy (T2–T4, T8): [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md).
+Stan na 15 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 323 testy API i 19 testów frontu. Planowany test dostępności (T8): [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md).
 
 ## 12. Główne ryzyka
 

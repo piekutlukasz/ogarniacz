@@ -28,7 +28,7 @@ test('ustawienia mają podstronę powiadomień: zgoda po kliknięciu albo instru
   await expect(settings.enableNotificationsButton.or(instruction)).toBeVisible();
 });
 
-test('ustawienia powiadomień są osobne dla każdej osoby i zapisują się na serwerze', async ({ parent, colorChild: child }) => {
+test('ustawienia powiadomień są osobne dla każdej osoby i zapisują się na serwerze', async ({ parent, projectChild: child }) => {
   // Zmieniamy konto dziecka przypisanego do projektu, bo konto rodzica jest wspólne dla projektów biegnących naraz.
   const prefs = (actor: typeof parent) => actor.page.request.get('/api/push/prefs').then((response) => response.json());
   await parent.open();

@@ -7,7 +7,7 @@ import { InvitePage } from '../src/pages/InvitePage';
 // więc test wyłącza na końcu swoje konto, a na początku także te, które zostały po przerwanych przebiegach.
 const LOGIN_PREFIX = 'e2e-nowy-';
 
-test('rodzic zaprasza dziecko, wystawia mu nowe hasło i wyłącza konto', async ({ parent, otherDevice }, testInfo) => {
+test('rodzic zaprasza dziecko, wystawia mu nowe hasło i wyłącza konto, a dziecko wraca do logowania', async ({ parent, otherDevice }, testInfo) => {
   const suffix = Math.random().toString(36).slice(2, 8);
   const login = `${LOGIN_PREFIX}${testInfo.project.name}-${suffix}`;
   const name = `Gość ${suffix}`;
@@ -49,12 +49,15 @@ test('rodzic zaprasza dziecko, wystawia mu nowe hasło i wyłącza konto', async
     await expect(invite.greeting(name)).toBeVisible();
     await invite.acceptAs(name, 'testowe-haslo-22');
 
-    // Wyłączenie konta wylogowuje dziecko.
+    // Wyłączenie konta wylogowuje dziecko w trakcie pracy: pierwsze żądanie dostaje 401 i aplikacja pokazuje logowanie.
     await family.accountAction(name, 'Wyłącz konto', PARENT.password);
     await expect(family.notice).toHaveText(`Wyłączono konto: ${name}. To konto jest wylogowane.`);
     await expect(family.account(name)).toContainText('Konto wyłączone');
-    await otherDevice.goto();
+    await new App(otherDevice.page).board.navButton.click();
     await expect(otherDevice.submitButton).toBeVisible();
+    // Hasło już nie wpuszcza, a komunikat nie zdradza, że konto istnieje.
+    await otherDevice.submit(login, 'testowe-haslo-22');
+    await expect(otherDevice.error).toHaveText('Nieprawidłowy login lub hasło');
 
     await family.authLog.click();
     await expect(family.authLogEntries.filter({ hasText: `Nowe konto · ${name}` })).toHaveCount(1);

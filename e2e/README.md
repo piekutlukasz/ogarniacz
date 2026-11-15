@@ -24,7 +24,7 @@ src/
   api/         ApiClient: przygotowanie danych przez API (arrange)
   components/  fragmenty ekranu: AppShell, SettingsSheet, CalendarsPage, FamilyPage, TaskCard, RecurrenceCard, ShoppingRow
   pages/       page objecty: LoginPage, InvitePage, SetupPage, App i ekrany (Dziś, Tablica, Zakupy, Cykliczne, Kieszonkowe, Archiwum)
-  fixtures/    `test` z fixture'ami `app`, `loginPage`, `otherDevice`, `parent`, `child`, `colorChild`
+  fixtures/    `test` z fixture'ami `app`, `loginPage`, `otherDevice`, `parent`, `child`, `projectChild`
   setup/       zakładanie kont testowych w bazie e2e (`seedUsers`, `resetUser`) i serwer plików ICS (`icsServer.mjs`), serwer testu dymnego (`smokeServer.mjs`)
 tests/
   auth.setup.ts  projekt `setup`: zakłada konta i zapisuje ich sesje do `.auth/`
@@ -40,6 +40,7 @@ Hierarchia page objectów:
 - `Screen` → `TaskListScreen` → `TodayPage`, `BoardPage`, `ArchivePage`; `Screen` → `ShoppingPage`, `RecurrencesPage`, `AllowancePage`.
   Ekran zna swój przycisk w nawigacji i sam się otwiera (`open()`). Archiwum nie ma przycisku w nawigacji:
   `ArchivePage.open()` przechodzi przez tablicę, a `back()` na nią wraca.
+- `AllowancePage`: rodzic ma `payoutRow(tydzień, imię)` i `markPaid(tydzień, imię)` (dwa stuknięcia: „Wypłacone”, „Potwierdź”) oraz `paidHistory`, a dziecko `lastPayout`. Tydzień podaje się jak na ekranie, przez `weekLabel(poniedziałek)` z `src/data/dates.ts`.
 - `App` składa ramę i ekrany jednej karty; `Actor` to `App` zalogowanej osoby z własnym `ApiClient`.
 
 ## Zasady
@@ -56,14 +57,23 @@ Hierarchia page objectów:
 - **Każdy test na własnych danych.** Baza nie jest czyszczona, a testy biegną równolegle,
   więc nazwy zadań buduj przez `uniqueTitle()`.
 - **Stan konta zmieniaj tylko na koncie projektu.** Ustawienia konta, np. kolor osoby, dzieliłyby
-  testy z projektów `iphone` i `android`, które biegną naraz. Taki test używa fixture'a `colorChild`: każdy
-  projekt ma w `COLOR_CHILDREN` własne dziecko.
+  testy z projektów `iphone` i `android`, które biegną naraz. Taki test używa fixture'a `projectChild`: każdy
+  projekt ma w `PROJECT_CHILDREN` własne dziecko.
   Motyw jest w `localStorage` kontekstu przeglądarki, więc tego ograniczenia nie ma.
 - **Hasło i sesje tylko na kontach z `ACCOUNT_USERS`.** Zmiana hasła i „Wyloguj inne urządzenia” kończą sesje konta,
   więc każdy z tych testów ma w każdym projekcie własne konto. Test zaczyna od `resetUser(konto)`, żeby ponowna próba
   po błędzie nie trafiła na hasło zmienione przez poprzednią. Drugi telefon to fixture `otherDevice`: `LoginPage`
   w osobnym, niezalogowanym kontekście przeglądarki.
 - **Hasła kont testowych** nie mogą zawierać loginu ani słów imienia, bo tę regułę egzekwuje także CLI.
+- **Czas serwera przesuwaj tylko swojej osobie.** Serwer e2e ma `TEST_CLOCK=true`, a `actor.setServerTime(chwila)` dodaje
+  nagłówek `X-Test-Now` do wszystkich żądań tego aktora, z przeglądarki i z `actor.api`. Inne testy działają dalej na prawdziwym
+  zegarze. Front liczy daty z odpowiedzi serwera, więc zegara przeglądarki nie trzeba ruszać. Zmiany zrobione w przesuniętym czasie
+  zostają w bazie, więc test wybiera chwilę, której jeszcze nie użył, jak scenariusz wypłaty w `allowance.spec.ts`.
+- **Nowe scenariusze sesji dopisuj do istniejących kont.** Kolejne stałe konto zmniejsza zapas limitu 10 aktywnych kont,
+  a konto jednorazowe zajmuje miejsce w trakcie testu i może zablokować test zaproszeń biegnący obok. Dlatego wygaśnięcie
+  sesji w trakcie pracy jest w teście „Wyloguj inne urządzenia”, a wyłączone konto w teście zaproszeń.
+- **Blokadę logowania sprawdzaj na nieistniejącym loginie.** Limit liczy próby na login, więc losowy login nie zablokuje kont
+  innych testów.
 - **Konta z zaproszeń wyłączaj po teście.** Rodzina może mieć najwyżej 10 aktywnych kont, a baza e2e ma ich już 8 i nie jest
   czyszczona. Test zaproszeń zakłada konta z loginem `e2e-nowy-<projekt>-…` i wyłącza je przez `api.disableAccounts(prefiks, hasło rodzica)`
   na początku (pozostałości po przerwanych przebiegach) i w `finally`. Nowe stałe konto testowe zmniejsza ten zapas.
