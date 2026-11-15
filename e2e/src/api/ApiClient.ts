@@ -1,5 +1,5 @@
 import type { APIRequestContext, APIResponse } from '@playwright/test';
-import type { Account, Allowance, Calendar, CalendarScope, FamilyMember, ShoppingItem, Task, UpdateTask } from '@ogarniacz/shared';
+import type { Account, Allowance, Calendar, CalendarScope, FamilyMember, Task, UpdateTask } from '@ogarniacz/shared';
 import type { TestUser } from '../data/users';
 
 export type NewTask = {
@@ -44,10 +44,6 @@ export class ApiClient {
 
   async allowance(): Promise<Allowance> {
     return this.json(this.request.get('/api/allowance'));
-  }
-
-  async shoppingList(): Promise<ShoppingItem[]> {
-    return this.json(this.request.get('/api/shopping'));
   }
 
   async addCalendar(input: { name: string; url: string; scope?: CalendarScope }): Promise<Calendar> {
