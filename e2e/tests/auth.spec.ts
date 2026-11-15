@@ -30,3 +30,16 @@ test('sesja przetrwa odświeżenie, a wylogowanie ją kończy', async ({ loginPa
   await page.reload();
   await expect(loginPage.submitButton).toBeVisible();
 });
+
+test('po kilku złych hasłach logowanie jest zablokowane z komunikatem', async ({ loginPage }, testInfo) => {
+  // Blokada dotyczy loginu, więc test używa własnego, nieistniejącego loginu i nie blokuje kont innych testów.
+  const login = `e2e-blokada-${testInfo.project.name}-${Math.random().toString(36).slice(2, 8)}`;
+
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    await loginPage.submit(login, `zle-haslo-${attempt}`);
+    await expect(loginPage.error).toHaveText('Nieprawidłowy login lub hasło');
+  }
+
+  await loginPage.submit(login, 'zle-haslo-6');
+  await expect(loginPage.error).toHaveText(/^Za dużo prób\. Spróbuj ponownie za 1[45] min\.$/);
+});

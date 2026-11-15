@@ -89,7 +89,9 @@ async function main() {
     setup,
     calendars,
     push,
+    testClock: config.TEST_CLOCK,
   });
+  if (config.TEST_CLOCK) console.warn('[start] TEST_CLOCK: zegar serwera sterowany nagłówkiem X-Test-Now (tylko testy)');
 
   const stopScheduler = startScheduler({
     db,

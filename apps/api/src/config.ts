@@ -39,6 +39,8 @@ const envSchema = z.object({
   VAPID_SUBJECT: z.string().regex(/^(mailto:.+@.+|https:\/\/.+)$/, 'VAPID_SUBJECT: mailto:adres albo https://domena').optional(),
   /** Tylko do testów e2e: http i adresy lokalne. Na produkcji start jest odrzucany. */
   CALENDAR_ALLOW_HTTP: booleanFlag.default(false),
+  /** Tylko do testów e2e: nagłówek `X-Test-Now` przesuwa zegar serwera dla jednego żądania. Na produkcji start jest odrzucany. */
+  TEST_CLOCK: booleanFlag.default(false),
 });
 
 export type Config = ReturnType<typeof loadConfig>;
@@ -50,6 +52,9 @@ export function loadConfig() {
   const env = envSchema.parse(process.env);
   if (env.CALENDAR_ALLOW_HTTP && env.NODE_ENV === 'production') {
     throw new Error('CALENDAR_ALLOW_HTTP jest tylko do testów i nie może być włączone na produkcji');
+  }
+  if (env.TEST_CLOCK && env.NODE_ENV === 'production') {
+    throw new Error('TEST_CLOCK jest tylko do testów i nie może być włączone na produkcji');
   }
   return {
     ...env,

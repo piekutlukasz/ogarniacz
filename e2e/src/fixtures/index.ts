@@ -1,6 +1,6 @@
 import { type Browser, type BrowserContextOptions, type TestInfo, test as base } from '@playwright/test';
 import { ApiClient } from '../api/ApiClient';
-import { CHILD, COLOR_CHILDREN, PARENT, type TestUser, storageStatePath } from '../data/users';
+import { CHILD, PROJECT_CHILDREN, PARENT, type TestUser, storageStatePath } from '../data/users';
 import { App } from '../pages/App';
 import { LoginPage } from '../pages/LoginPage';
 import { Actor } from './Actor';
@@ -12,7 +12,7 @@ type Fixtures = {
   parent: Actor;
   child: Actor;
   /** Dziecko tylko tego projektu, do testów zmieniających ustawienia konta. */
-  colorChild: Actor;
+  projectChild: Actor;
   /** Drugi telefon: niezalogowana karta w osobnym kontekście przeglądarki, z ekranem logowania. */
   otherDevice: LoginPage;
 };
@@ -30,8 +30,8 @@ export const test = base.extend<Fixtures>({
   child: async ({ browser }, use, testInfo) => {
     await useActor(browser, testInfo, CHILD, use);
   },
-  colorChild: async ({ browser }, use, testInfo) => {
-    await useActor(browser, testInfo, COLOR_CHILDREN[testInfo.project.name]!, use);
+  projectChild: async ({ browser }, use, testInfo) => {
+    await useActor(browser, testInfo, PROJECT_CHILDREN[testInfo.project.name]!, use);
   },
   otherDevice: async ({ browser }, use, testInfo) => {
     const context = await browser.newContext(projectContextOptions(testInfo));

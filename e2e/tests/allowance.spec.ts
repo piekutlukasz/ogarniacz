@@ -1,6 +1,8 @@
+import { addDays, warsawDate, weekStart } from '@ogarniacz/shared';
 import { expect, test } from '../src/fixtures';
+import { shiftDays, weekLabel } from '../src/data/dates';
 import { uniqueTitle } from '../src/data/titles';
-import { CHILD } from '../src/data/users';
+import { CHILD, PROJECT_CHILDREN } from '../src/data/users';
 
 // Konta e2e są wspólne dla wszystkich testów i projektów, więc sprawdzamy pozycje z własną nazwą, a nie sumy.
 
@@ -77,4 +79,48 @@ test('rodzic otwiera stawki kieszonkowego, a dziecko nie ma do nich wejścia', a
   await child.open();
   await child.allowance.open();
   await expect(child.allowance.changeRatesButton).toHaveCount(0);
+});
+
+test('rodzic oznacza wypłatę za zamknięty tydzień, a dziecko widzi ją jako ostatnią', async ({ parent, projectChild }, testInfo) => {
+  const kid = PROJECT_CHILDREN[testInfo.project.name]!;
+  const kidId = await parent.api.userId(kid);
+
+  // Zamknięty tydzień jest dopiero po poniedziałku, więc serwer dostaje zegar przesunięty o tydzień w przód.
+  // Baza e2e nie jest czyszczona: gdy ten tydzień jest już wypłacony (ponowne uruchomienie), bierzemy kolejny.
+  let later = new Date();
+  let closedWeek = '';
+  for (let weeks = 1; !closedWeek; weeks += 1) {
+    if (weeks > 30) throw new Error('Brak niewypłaconego tygodnia w zasięgu testu');
+    later = shiftDays(new Date(), 7 * weeks);
+    await parent.setServerTime(later);
+    const week = addDays(weekStart(warsawDate(later)), -7);
+    const mine = (await parent.api.allowance()).children.find((child) => child.childId === kidId);
+    if (mine?.closed.find((closed) => closed.weekStart === week)?.paidAt === null) closedWeek = week;
+  }
+
+  // Nagroda za zadanie skończone w tym tygodniu, tydzień przed „teraz” serwera.
+  const title = uniqueTitle('Wynieść śmieci');
+  const during = shiftDays(later, -7);
+  await parent.setServerTime(during);
+  await projectChild.setServerTime(during);
+  const task = await parent.api.createTask({ title, assignee: kid, reward: 7 });
+  await projectChild.api.updateTask(task.id, { status: 'done' });
+
+  await parent.setServerTime(later);
+  const due = (await parent.api.allowance()).children.find((child) => child.childId === kidId)?.closed.find((closed) => closed.weekStart === closedWeek);
+  expect(due?.rewards.map((reward) => reward.title)).toContain(title);
+  const total = `${due?.total} zł`;
+
+  await parent.open();
+  await parent.allowance.open();
+  const week = weekLabel(closedWeek);
+  await expect(parent.allowance.payoutRow(week, kid.name)).toContainText(total);
+  await parent.allowance.markPaid(week, kid.name);
+  await expect(parent.allowance.payoutRow(week, kid.name)).toHaveCount(0);
+  await expect(parent.allowance.paidHistory.getByRole('listitem').filter({ hasText: `${kid.name} · za ${week}` })).toContainText(total);
+
+  await projectChild.setServerTime(later);
+  await projectChild.open();
+  await projectChild.allowance.open();
+  await expect(projectChild.allowance.lastPayout).toHaveText(`Ostatnia wypłata: ${total} za ${week}`);
 });

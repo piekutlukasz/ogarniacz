@@ -181,7 +181,7 @@ Ustalone przy kroku 2b (13 listopada 2026):
 ## Testy
 
 - **Testy API każdej trasy:** odmowa dla dziecka, brak hasła potwierdzającego, token zły, użyty, wygasły i unieważniony (ten sam komunikat), zajęty login, limity zaproszeń i kont, kreator na bazie z kontem (`404`), zły kod, dwa równoczesne żądania do kreatora, blokada w trybie demo.
-- **Scenariusze e2e zaproszeń** na osobnych kontach projektu, wzorem `colorChild`: rodzic zaprasza, nowa osoba w świeżym kontekście przeglądarki ustawia hasło i widzi „Dziś”. Zmiana hasła wylogowuje, więc nie wolno jej robić na wspólnych aktorach `parent` i `child`.
+- **Scenariusze e2e zaproszeń** na osobnych kontach projektu, wzorem `projectChild`: rodzic zaprasza, nowa osoba w świeżym kontekście przeglądarki ustawia hasło i widzi „Dziś”. Zmiana hasła wylogowuje, więc nie wolno jej robić na wspólnych aktorach `parent` i `child`.
 - **Scenariusz e2e kreatora** (`e2e/smoke/setup.spec.ts`). Baza e2e ma konta od początku, więc test dymny startuje dwa dodatkowe serwery z pustą bazą (porty 3092 i 3093), po jednym na iPhone i Androida, bo kod działa raz na start. Zmienna z kodem tylko do testów odpadła, bo serwer testu dymnego działa z `NODE_ENV=production`, a zmienne testowe są wtedy odrzucane; `smokeServer.mjs` czyta kod z wyjścia serwera, więc test sprawdza prawdziwą drogę administratora. Testy API kreatora są w `setup.test.ts`.
 
 ## Co zostaje w CLI

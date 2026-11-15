@@ -13,10 +13,11 @@ export type TestUser = {
 export const PARENT: TestUser = { login: 'e2e-rodzic', name: 'Rodzic E2E', role: 'parent', password: 'testowe-haslo-01' };
 export const CHILD: TestUser = { login: 'e2e-dziecko', name: 'Dziecko E2E', role: 'child', password: 'testowe-haslo-02' };
 /**
- * Dzieci na test koloru, po jednym na projekt. Kolor należy do konta, a projekty biegną naraz na jednej bazie,
- * więc wspólne `CHILD` miałoby kolor nadpisywany przez drugi telefon w trakcie testu.
+ * Dzieci projektu, po jednym na projekt, do testów zmieniających stan konta: kolor, ustawienia powiadomień, wypłaty
+ * kieszonkowego. Projekty biegną naraz na jednej bazie, więc na wspólnym `CHILD` drugi telefon zmieniałby ten stan
+ * w trakcie testu.
  */
-export const COLOR_CHILDREN: Readonly<Record<string, TestUser>> = {
+export const PROJECT_CHILDREN: Readonly<Record<string, TestUser>> = {
   iphone: { login: 'e2e-dziecko-iphone', name: 'Dziecko iPhone E2E', role: 'child', password: 'testowe-haslo-03' },
   android: { login: 'e2e-dziecko-android', name: 'Dziecko Android E2E', role: 'child', password: 'testowe-haslo-04' },
 };
@@ -48,7 +49,7 @@ export const DEMO_CHILD: TestUser = { login: 'kasia', name: 'Kasia', role: 'chil
 export const TEST_USERS: readonly TestUser[] = [
   PARENT,
   CHILD,
-  ...Object.values(COLOR_CHILDREN),
+  ...Object.values(PROJECT_CHILDREN),
   ...Object.values(ACCOUNT_USERS).flatMap(({ password, devices }) => [password, devices]),
 ];
 

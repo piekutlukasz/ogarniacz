@@ -1,6 +1,6 @@
 import { expect, test } from '../src/fixtures';
 import { uniqueTitle } from '../src/data/titles';
-import { COLOR_CHILDREN } from '../src/data/users';
+import { PROJECT_CHILDREN } from '../src/data/users';
 
 test('motyw wybrany w ustawieniach zostaje po odświeżeniu, a „Jak w telefonie” go zdejmuje', async ({ parent }) => {
   await parent.open();
@@ -86,9 +86,9 @@ test('otwarte ustawienia blokują przewijanie ekranu pod spodem, a zamknięte je
   await expect(html).toHaveCSS('overflow', 'visible');
 });
 
-test('dziecko wybiera swój kolor, a rodzic widzi go na tablicy', async ({ parent, colorChild: child }, testInfo) => {
+test('dziecko wybiera swój kolor, a rodzic widzi go na tablicy', async ({ parent, projectChild: child }, testInfo) => {
   // Każdy projekt ma własne dziecko, bo kolor należy do konta i dwa telefony naraz nadpisywałyby go sobie.
-  const task = await parent.api.createTask({ title: uniqueTitle('Nakarmić rybki'), assignee: COLOR_CHILDREN[testInfo.project.name] });
+  const task = await parent.api.createTask({ title: uniqueTitle('Nakarmić rybki'), assignee: PROJECT_CHILDREN[testInfo.project.name] });
 
   await child.open();
   const settings = await child.shell.openSettings();
