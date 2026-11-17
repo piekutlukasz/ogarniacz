@@ -31,7 +31,7 @@ Pełne listy kontrolne zamkniętych etapów i podjęte decyzje: [archiwum/ETAPY.
 |---|---|---|
 | ✅ | Instalacja na wszystkich telefonach (11 listopada 2026) | — |
 | ⬜ | Dwa tygodnie codziennego używania i zebranie uwag | Liczone od wdrożenia kont w aplikacji |
-| ⬜ | Naprawa problemów z codziennego używania | Zrobione: ikona powiadomienia na Androidzie, przebudowa panelu ustawień na menu z podstronami i blokada przewijania tła pod arkuszem (13 listopada 2026, [plany/ROZWOJ.md](plany/ROZWOJ.md)); do potwierdzenia w Safari na iPhonie |
+| ⬜ | Naprawa problemów z codziennego używania | Zrobione: ikona powiadomienia na Androidzie, przebudowa panelu ustawień na menu z podstronami i blokada przewijania tła pod arkuszem (13 listopada 2026, [plany/ROZWOJ.md](plany/ROZWOJ.md)), potwierdzone w Safari na iPhonie 17 listopada 2026 |
 | ✅ | Kopia poza serwer: rclone i zaszyfrowany katalog na Google Drive, próba odtworzenia z Dysku (14 listopada 2026), pierwsza nocna wysyłka (15 listopada 2026) | [instrukcje/BACKUP.md](instrukcje/BACKUP.md) |
 | ✅ | Utwardzenie: sprawdzenia na produkcji, poprawki B1–B6, B8, B9, test tras bez sesji, skan ZAP bez podatności (13 listopada 2026); B7 to konta w aplikacji | [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md) |
 | ✅ | Powtórzenie skanu ZAP z trasami kont w aplikacji, na instancji bez `DEMO_MODE`: bez podatności, poprawione atrybuty usuwanego cookie sesji (14 listopada 2026) | [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md) |
