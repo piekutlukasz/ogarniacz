@@ -27,7 +27,19 @@ export class AllowancePage extends Screen {
     return this.main.getByRole('region', { name: `Do wypłaty za ${week}` }).getByRole('listitem').filter({ hasText: name });
   }
 
-  /** Rodzic: oznacza wypłatę; przycisk prosi o drugie stuknięcie („Potwierdź”), bo wypłaty nie da się cofnąć. */
+  /** Rodzic: wiersz „Ostatnich wypłat”, z przyciskiem „Cofnij”. */
+  paidRow(week: string, name: string): Locator {
+    return this.paidHistory.getByRole('listitem').filter({ hasText: `${name} · za ${week}` });
+  }
+
+  /** Rodzic: cofa pomyłkowo oznaczoną wypłatę; przycisk też prosi o drugie stuknięcie. */
+  async cancelPayout(week: string, name: string): Promise<void> {
+    const row = this.paidRow(week, name);
+    await row.getByRole('button', { name: `Cofnij wypłatę: ${name} za ${week}` }).click();
+    await row.getByRole('button', { name: `Potwierdź cofnięcie wypłaty: ${name} za ${week}` }).click();
+  }
+
+  /** Rodzic: oznacza wypłatę; przycisk prosi o drugie stuknięcie („Potwierdź”), żeby nie oznaczyć jej przypadkiem. */
   async markPaid(week: string, name: string): Promise<void> {
     const row = this.payoutRow(week, name);
     await row.getByRole('button', { name: 'Wypłacone' }).click();

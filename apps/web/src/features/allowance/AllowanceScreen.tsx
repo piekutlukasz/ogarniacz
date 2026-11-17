@@ -5,7 +5,7 @@ import { ErrorNote } from '../../lib/ErrorNote';
 import { useFamily } from '../tasks/api';
 import { formatDue } from '../tasks/format';
 import { RewardBadge, zl } from '../tasks/Reward';
-import { useAllowance, useMarkPayout } from './api';
+import { useAllowance, useCancelPayout, useMarkPayout } from './api';
 import { formatDay, formatWeek, formatWeekday, taskCount } from './format';
 import { RatesSheet } from './RatesSheet';
 
@@ -110,9 +110,10 @@ function ChildAllowance({ allowance }: { allowance: Allowance }) {
 
 function ParentAllowance({ allowance, family }: { allowance: Allowance; family: FamilyMember[] }) {
   const [ratesOpen, setRatesOpen] = useState(false);
-  // Wypłaty nie da się cofnąć, więc przycisk prosi o drugie stuknięcie.
+  // Oznaczenie i cofnięcie wypłaty proszą o drugie stuknięcie, żeby nie zmienić kwot przypadkiem.
   const [confirming, setConfirming] = useState<string>();
   const markPayout = useMarkPayout();
+  const cancelPayout = useCancelPayout();
 
   const nameOf = (id: string) => family.find((member) => member.id === id)?.name ?? 'Dziecko';
   const { children } = allowance;
@@ -236,15 +237,37 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
             Ostatnie wypłaty
           </h3>
           <ul className="flex flex-col text-sm text-ink-muted">
-            {paid.map(({ childId, week }) => (
-              <li key={`${childId}:${week.weekStart}`} className="flex justify-between gap-3 py-0.5">
-                <span>
-                  {nameOf(childId)} · za {formatWeek(week.weekStart)}
-                </span>
-                <span className="font-bold">{zl(week.total)}</span>
-              </li>
-            ))}
+            {paid.map(({ childId, week }) => {
+              const key = `cancel:${childId}:${week.weekStart}`;
+              const isConfirming = confirming === key;
+              return (
+                <li key={key} className="flex items-center justify-between gap-3">
+                  <span className="min-w-0 flex-1">
+                    {nameOf(childId)} · za {formatWeek(week.weekStart)}
+                  </span>
+                  <span className="font-bold">{zl(week.total)}</span>
+                  {/* Pomyłkowo oznaczona wypłata wraca do „Czeka na wypłatę”. */}
+                  <button
+                    type="button"
+                    aria-label={`${isConfirming ? 'Potwierdź cofnięcie wypłaty' : 'Cofnij wypłatę'}: ${nameOf(childId)} za ${formatWeek(week.weekStart)}`}
+                    disabled={cancelPayout.isPending}
+                    onBlur={() => setConfirming(undefined)}
+                    onClick={() => {
+                      if (!isConfirming) return setConfirming(key);
+                      setConfirming(undefined);
+                      cancelPayout.mutate({ childId, weekStart: week.weekStart });
+                    }}
+                    className={`shrink-0 rounded-full px-2.5 py-1.5 text-[0.8125rem] font-semibold transition-transform active:scale-95 disabled:opacity-60 ${
+                      isConfirming ? 'bg-brand font-bold text-on-brand' : 'text-ink-muted active:bg-paper-deep'
+                    }`}
+                  >
+                    {isConfirming ? 'Potwierdź cofnięcie' : 'Cofnij'}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
+          {cancelPayout.isError && <ErrorNote error={cancelPayout.error} />}
         </section>
       )}
 

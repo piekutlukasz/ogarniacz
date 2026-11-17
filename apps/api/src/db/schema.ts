@@ -1,4 +1,5 @@
 import type { AuthEventType, CalendarErrorCode, CalendarScope, InviteKind, NotificationLogKind, PersonColor, RecurrencePattern, TaskColor, TaskStatus, UserRole } from '@ogarniacz/shared';
+import { sql } from 'drizzle-orm';
 import { index, integer, primaryKey, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 export const tasks = sqliteTable(
@@ -207,6 +208,7 @@ export const allowanceRates = sqliteTable(
 );
 
 // Wypłata oznaczona przez rodzica. Kwoty są zapisane na stałe: późniejsze zmiany zadań ich nie ruszają.
+// Cofnięta wypłata zostaje w bazie z `cancelled_at`, a jej zadania wracają do niewypłaconych.
 export const payouts = sqliteTable(
   'payouts',
   {
@@ -222,8 +224,11 @@ export const payouts = sqliteTable(
       .notNull()
       .references(() => users.id),
     paidAt: integer('paid_at', { mode: 'timestamp_ms' }).notNull(),
+    cancelledById: text('cancelled_by').references(() => users.id),
+    cancelledAt: integer('cancelled_at', { mode: 'timestamp_ms' }),
   },
-  (table) => [uniqueIndex('payouts_child_week_idx').on(table.childId, table.weekStart)],
+  // Jedna ważna wypłata na dziecko i tydzień; cofnięte nie blokują ponownego oznaczenia.
+  (table) => [uniqueIndex('payouts_child_week_active_idx').on(table.childId, table.weekStart).where(sql`cancelled_at IS NULL`)],
 );
 
 // Kalendarz ICS z linku. Link jest poświadczeniem: trzymamy go tylko zaszyfrowanego i nigdy nie zwracamy w API.
