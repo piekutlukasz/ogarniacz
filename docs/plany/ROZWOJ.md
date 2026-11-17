@@ -1,20 +1,8 @@
 # Rozwój po 1.0
 
-Stan na 17 listopada 2026. Drobniejsze prace i pomysły z [PLAN.md](../PLAN.md), które nie mają osobnego planu. Większy wątek po 1.0 ma własny plik: [PUBLIKACJA.md](PUBLIKACJA.md) (instalacja dla innych i publikacja repozytorium). Testy po 1.0 są zrobione: [archiwum/UTWARDZENIE-TESTY.md](../archiwum/UTWARDZENIE-TESTY.md).
+Stan na 17 listopada 2026. Drobniejsze prace i pomysły z [PLAN.md](../PLAN.md), które nie mają osobnego planu. Większy wątek po 1.0 ma własny plik: [PUBLIKACJA.md](PUBLIKACJA.md) (instalacja dla innych i publikacja repozytorium). Testy po 1.0 są zrobione: [archiwum/UTWARDZENIE-TESTY.md](../archiwum/UTWARDZENIE-TESTY.md). Dokończenie kieszonkowego też: [archiwum/KIESZONKOWE-DOKONCZENIE.md](../archiwum/KIESZONKOWE-DOKONCZENIE.md).
 
 Kolejność wynika z tego, czego rodzina będzie faktycznie potrzebować.
-
-## Kieszonkowe: dokończenie
-
-Główna część zrobiona 9 listopada 2026, przed 1.0, na prośbę rodziny (zakres w [archiwum](../archiwum/ETAPY.md)). Opis działania: [PROJEKT.md](../PROJEKT.md), rozdział 2, „Kieszonkowe i nagrody”.
-
-- [x] Nagroda w regułach cyklicznych, np. śmieci +5 zł co tydzień (17 listopada 2026)
-- [x] Cofnięcie pomyłkowo oznaczonej wypłaty (17 listopada 2026)
-- [x] Ukrycie ekranu „Kieszonkowe” i wyboru nagrody, gdy w rodzinie nie ma aktywnego konta dziecka (17 listopada 2026; projekt niżej, „Kieszonkowe bez dzieci”)
-
-### Kieszonkowe bez dzieci
-
-**Projekt z 11 listopada 2026.** Gdy w rodzinie nie ma aktywnego konta dziecka, ekran „Kieszonkowe” znika z paska nawigacji, a formularz zadania nie pokazuje wyboru nagrody, bo nie miałby kto jej dostać. Link z powiadomienia (`?ekran=allowance`) prowadzi wtedy do „Dziś”, tak jak dziś przy ekranie niedostępnym dla roli. Front zna rodzinę z `GET /api/users` (`useFamily`), więc nie trzeba nowej trasy; API zostaje bez zmian, a dodanie albo włączenie konta dziecka przywraca ekran. Decyzja z 17 listopada 2026: nagrody już ustawione na otwartych zadaniach znikają z karteczek, ale zostają w bazie i wracają z kontem dziecka. Archiwum pokazuje je dalej, bo to historia. Opis działania: [PROJEKT.md](../PROJEKT.md), rozdział 2, „Rodzina bez dziecka”.
 
 ## Demo
 

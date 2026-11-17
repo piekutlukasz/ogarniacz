@@ -53,7 +53,7 @@ Ogarniacz to prywatna aplikacja dla jednej rodziny. Zbiera w jednym miejscu to, 
 - **Kto co widzi.** Dziecko widzi tylko swoją kwotę: ile dostanie w poniedziałek, z czego się składa i na czym może jeszcze zarobić. Rodzic widzi wszystkie dzieci, sumę do przygotowania i ostatnie wypłaty.
 - **Rodzina bez dziecka.** Gdy w rodzinie nie ma aktywnego konta dziecka, ekran „Kieszonkowe” znika z paska nawigacji, formularze zadań i reguł cyklicznych nie mają wyboru nagrody, a karteczki i reguły nie pokazują plakietek. Front liczy to z listy rodziny (`GET /api/users`, hook `useHasChildren`); API i zapisane nagrody się nie zmieniają, a dodanie albo włączenie konta dziecka przywraca wszystko. Link z powiadomienia do kieszonkowego prowadzi wtedy do „Dziś”, a archiwum dalej pokazuje dawne nagrody jako historię.
 
-Planowane dokończenie kieszonkowego i pomysły na rozwój, także te ze szkicem, są w [plany/ROZWOJ.md](plany/ROZWOJ.md).
+Projekt i decyzje dokończenia kieszonkowego są w [archiwum/KIESZONKOWE-DOKONCZENIE.md](archiwum/KIESZONKOWE-DOKONCZENIE.md), a pomysły na rozwój, także te ze szkicem, w [plany/ROZWOJ.md](plany/ROZWOJ.md).
 
 ## 3. Architektura
 
