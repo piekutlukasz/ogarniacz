@@ -107,7 +107,7 @@ Pełny opis: `docs/PROJEKT.md`, rozdział 8.
 
 - Mapa dokumentacji i zasady jej utrzymania: `docs/README.md`.
 - `docs/PROJEKT.md` opisuje tylko to, co **jest** w kodzie. Plik jest duży, więc czytaj potrzebny rozdział: 2 funkcje i wygląd, 3 architektura, 4 model danych, 5 tabela tras API, 6 role i uprawnienia, 7 push i kalendarze, 8 offline, 9 bezpieczeństwo, 10 hosting, 11 testy, 12 ryzyka.
-- Wszystko, co planowane (projekt, kryteria „Gotowe, gdy”, decyzje, odrzucone warianty), mieszka w jednym miejscu: w pliku z `docs/plany/` (np. `KONTA.md`, `UTWARDZENIE.md`). `PROJEKT.md` daje do niego najwyżej jedno zdanie z odnośnikiem, bez kopii szczegółów. `docs/PLAN.md` to tylko przegląd etapów: hasło, stan i odnośnik.
+- Wszystko, co planowane (projekt, kryteria „Gotowe, gdy”, decyzje, odrzucone warianty), mieszka w jednym miejscu: w pliku z `docs/plany/` (np. `KONTA.md`, `PUBLIKACJA.md`). `PROJEKT.md` daje do niego najwyżej jedno zdanie z odnośnikiem, bez kopii szczegółów. `docs/PLAN.md` to tylko przegląd etapów: hasło, stan i odnośnik.
 - Zrobione części planu (analizy, notatki z wykonania) przechodzą do `docs/archiwum/`, a to, co opisuje działający kod, do `PROJEKT.md`. Zamknięty etap przenosi listę do `docs/archiwum/ETAPY.md`.
 - Zmiana funkcji aktualizuje w tym samym PR `PROJEKT.md` (tabele, opis modelu), plik planu (odhaczone punkty), w razie potrzeby wiersz w `PLAN.md` i datę „Stan na”, zmiana konwencji z tego pliku także `CLAUDE.md`, a zmiana page objectów `e2e/README.md`.
 - Przed większą funkcją przeczytaj jej plik w `docs/plany/` (kryteria „Gotowe, gdy”, decyzje już podjęte, odrzucone warianty) i odpowiedni rozdział `PROJEKT.md` (jak działa to, co już jest).

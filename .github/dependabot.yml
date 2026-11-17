@@ -1,5 +1,5 @@
 # Cotygodniowe propozycje aktualizacji: zależności npm, akcje GitHub w workflowach i obraz bazowy w Dockerfile.
-# Opis: docs/plany/UTWARDZENIE.md, B9.
+# Opis: docs/archiwum/UTWARDZENIE-PRZEGLAD.md, B9.
 version: 2
 updates:
   - package-ecosystem: "npm"
