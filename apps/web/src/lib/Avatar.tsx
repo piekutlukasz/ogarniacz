@@ -54,7 +54,7 @@ export function Avatar({ name, color, done = false, size = 'md' }: AvatarProps) 
     return (
       <span
         aria-hidden="true"
-        className={`${sizeClass} flex shrink-0 items-center justify-center rounded-full border-2 border-dashed border-ink/25 font-bold text-ink/40`}
+        className={`${sizeClass} flex shrink-0 items-center justify-center rounded-full border-2 border-dashed border-ink/25 font-bold text-ink-muted`}
       >
         ?
       </span>

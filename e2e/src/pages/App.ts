@@ -7,6 +7,11 @@ import { RecurrencesPage } from './RecurrencesPage';
 import { ShoppingPage } from './ShoppingPage';
 import { TodayPage } from './TodayPage';
 
+/** Tryb wymuszony w ustawieniach. */
+export type Theme = 'light' | 'dark';
+/** Wygląd z ustawień: „Lodówka”, „Wieczorny las”, „Naklejki”. */
+export type Look = 'fridge' | 'forest' | 'stickers';
+
 /** Zalogowana aplikacja: wspólna rama i wszystkie ekrany na jednej karcie przeglądarki. */
 export class App {
   readonly shell: AppShell;
@@ -31,6 +36,24 @@ export class App {
   async openFromNotification(screen: string): Promise<void> {
     await this.page.goto(`/?ekran=${screen}`);
     await expect(this.shell.navigation).toBeVisible();
+  }
+
+  /**
+   * Ustawia tryb i wygląd tak, jak zapisują je ustawienia (`localStorage`, klucze z apps/web/src/lib/theme.ts),
+   * i otwiera aplikację od nowa. Dotyczy tylko tego kontekstu przeglądarki, więc nie przeszkadza innym testom.
+   */
+  async openWithAppearance(theme: Theme, look: Look): Promise<void> {
+    await this.page.goto('/');
+    await this.page.evaluate(
+      ([themeValue, lookValue]) => {
+        localStorage.setItem('ogarniacz.theme', themeValue);
+        if (lookValue === 'fridge') localStorage.removeItem('ogarniacz.look');
+        else localStorage.setItem('ogarniacz.look', lookValue);
+      },
+      [theme, look] as const,
+    );
+    await this.open();
+    await expect(this.page.locator('html')).toHaveAttribute('data-theme', theme);
   }
 
   /** Otwiera aplikację na ekranie startowym („Dziś”). */

@@ -120,7 +120,7 @@ export function App() {
         />
       )}
       <main className="flex-1">
-        {meQuery.isPending && <p className="text-ink/60">Wczytuję…</p>}
+        {meQuery.isPending && <p className="text-ink-muted">Wczytuję…</p>}
         {meQuery.isError && (
           <p role="alert" className="rounded-xl bg-red-100 px-3 py-2 text-sm text-red-900 dark:bg-red-950 dark:text-red-200">
             Nie udało się połączyć z serwerem. Sprawdź internet i odśwież aplikację.
@@ -140,7 +140,7 @@ export function App() {
           ) : user ? (
             <Home user={user} />
           ) : setupQuery.isPending ? (
-            <p className="text-ink/60">Wczytuję…</p>
+            <p className="text-ink-muted">Wczytuję…</p>
           ) : setupQuery.data ? (
             <SetupScreen
               onDone={(created) => {
@@ -167,12 +167,13 @@ function SettingsButton({ user, onOpen }: { user: User; onOpen: () => void }) {
       type="button"
       onClick={onOpen}
       aria-haspopup="dialog"
-      aria-label={`Ustawienia, ${user.name}`}
       className="flex items-center gap-2 rounded-full bg-card py-1 pr-3.5 pl-1 text-sm font-semibold shadow-card transition-transform active:scale-95"
     >
       <Avatar size="sm" name={user.name} color={personColor(family, user.id)} />
+      {/* Nazwa przycisku to „Ustawienia, imię”, a widać samo imię: czytnik ekranu czyta ten sam tekst, który widać. */}
+      <span className="sr-only">Ustawienia, </span>
       <span>{user.name}</span>
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="size-4 text-ink/50" fill="none" stroke="currentColor" strokeWidth={2.5}>
+      <svg aria-hidden="true" viewBox="0 0 24 24" className="size-4 text-ink-muted" fill="none" stroke="currentColor" strokeWidth={2.5}>
         <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </button>

@@ -17,7 +17,7 @@ export function TodayScreen({ user, onOpenShopping }: { user: User; onOpenShoppi
   const family = useFamily().data ?? [];
   const changeTask = useChangeTask();
 
-  if (todayQuery.isPending) return <p className="text-ink/60">Wczytuję…</p>;
+  if (todayQuery.isPending) return <p className="text-ink-muted">Wczytuję…</p>;
   if (todayQuery.isError) return <ErrorNote />;
 
   const { date, overdue, today } = todayQuery.data;
@@ -46,7 +46,7 @@ export function TodayScreen({ user, onOpenShopping }: { user: User; onOpenShoppi
       <div className="today-hero">
         <div className="flex items-center justify-between gap-3">
           <h2 className="flex flex-col">
-            <span className="text-sm font-semibold opacity-60">{weekday.format(day)}</span>
+            <span className="text-sm font-semibold opacity-70">{weekday.format(day)}</span>
             <span className="text-4xl leading-none font-extrabold tracking-tight">{dayAndMonth.format(day)}</span>
           </h2>
           {all.length > 0 && (
@@ -68,7 +68,7 @@ export function TodayScreen({ user, onOpenShopping }: { user: User; onOpenShoppi
       <TodayEvents />
 
       {isEmpty && (
-        <div className="flex flex-col items-center gap-3 py-10 text-center text-ink/60">
+        <div className="flex flex-col items-center gap-3 py-10 text-center text-ink-muted">
           <span aria-hidden="true" className="size-16 rounded-full bg-sun shadow-[0_0_0_10px_rgb(255_201_60/0.25)]" />
           <p>Na dziś nie masz żadnych zadań z terminem.</p>
         </div>

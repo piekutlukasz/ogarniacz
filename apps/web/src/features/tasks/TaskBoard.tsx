@@ -168,10 +168,10 @@ export function TaskBoard({ user, onOpenArchive }: { user: User; onOpenArchive: 
 
         {(tasksQuery.isError || changeTask.isError) && <ErrorNote error={changeTask.error} />}
 
-        {tasksQuery.isPending && <p className="text-ink/60">Wczytuję zadania…</p>}
+        {tasksQuery.isPending && <p className="text-ink-muted">Wczytuję zadania…</p>}
 
         {tasksQuery.isSuccess && visibleTasks.length === 0 && (
-          <p className="rounded-2xl border-2 border-dashed border-paper-deep py-10 text-center text-ink/50">Nic tu jeszcze nie ma.</p>
+          <p className="rounded-2xl border-2 border-dashed border-paper-deep py-10 text-center text-ink-muted">Nic tu jeszcze nie ma.</p>
         )}
 
         <ul className="flex flex-col gap-2.5">
@@ -215,18 +215,20 @@ function StatusTab({ status, count, isActive, isDropTarget, onSelect }: StatusTa
       type="button"
       role="tab"
       aria-selected={isActive}
-      aria-label={`${STATUS_LABELS[status]} (${count})`}
       onClick={onSelect}
       className={`flex items-center justify-center gap-1 rounded-xl px-1 py-2 text-[0.8125rem] font-bold whitespace-nowrap transition ${
-        isActive ? 'bg-card shadow-card' : 'text-ink/55'
+        isActive ? 'bg-card shadow-card' : 'text-ink-muted'
       } ${dropStyle}`}
     >
       {STATUS_LABELS[status]}
+      {/* Nazwa zakładki to „Status (liczba)” z widocznego tekstu; nawiasy słychać tylko w czytniku ekranu. */}
+      <span className="sr-only"> (</span>
       <span
-        className={`min-w-[1.125rem] rounded-full px-1 text-[0.6875rem] leading-[1.125rem] ${isActive ? 'bg-brand text-on-brand' : 'bg-ink/10 text-ink/60'}`}
+        className={`min-w-[1.125rem] rounded-full px-1 text-[0.6875rem] leading-[1.125rem] ${isActive ? 'bg-brand text-on-brand' : 'bg-ink/10 text-ink-muted'}`}
       >
         {count}
       </span>
+      <span className="sr-only">)</span>
     </button>
   );
 }

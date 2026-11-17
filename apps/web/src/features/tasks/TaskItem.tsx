@@ -69,19 +69,22 @@ export function TaskItem({ task, user, family, today, onChange, drag }: TaskItem
     >
       <div className="flex items-center gap-3">
         <Avatar name={member?.name} color={personColor(family, task.assigneeId)} done={done} />
-        {/* Gotowe przygasa tylko treść: przyciski obok zostają wyraźne, bo dalej działają. */}
-        <div className={`min-w-0 flex-1 ${done && !editing ? 'opacity-55' : ''}`}>
+        {/*
+          Gotowe przygasa tylko tytuł, przekreślony i w kolorze opisu: przyciski obok zostają wyraźne, bo dalej działają,
+          a przezroczystość całej treści odebrałaby kontrast opisowi pod tytułem.
+        */}
+        <div className="min-w-0 flex-1">
           {canChange ? (
             <button
               type="button"
               aria-expanded={editing}
               onClick={() => setEditing((value) => !value)}
-              className={`text-left leading-snug font-bold break-words ${done ? 'line-through decoration-2' : ''}`}
+              className={`text-left leading-snug font-bold break-words ${done ? 'text-ink-muted line-through decoration-2' : ''}`}
             >
               {task.title}
             </button>
           ) : (
-            <span className={`leading-snug font-bold break-words ${done ? 'line-through decoration-2' : ''}`}>{task.title}</span>
+            <span className={`leading-snug font-bold break-words ${done ? 'text-ink-muted line-through decoration-2' : ''}`}>{task.title}</span>
           )}
           <TaskMeta
             assignee={assignee}
@@ -98,7 +101,7 @@ export function TaskItem({ task, user, family, today, onChange, drag }: TaskItem
               <button
                 type="button"
                 onClick={() => onChange({ status: previous })}
-                className="rounded-full px-2.5 py-2 text-sm font-semibold text-ink/60 active:bg-paper-deep"
+                className="rounded-full px-2.5 py-2 text-sm font-semibold text-ink-muted active:bg-paper-deep"
               >
                 Cofnij
               </button>
@@ -107,7 +110,7 @@ export function TaskItem({ task, user, family, today, onChange, drag }: TaskItem
               <button
                 type="button"
                 onClick={() => onChange({ assigneeId: null })}
-                className="rounded-full px-2.5 py-2 text-sm font-semibold text-ink/60 active:bg-paper-deep"
+                className="rounded-full px-2.5 py-2 text-sm font-semibold text-ink-muted active:bg-paper-deep"
               >
                 Oddaj
               </button>
@@ -151,7 +154,7 @@ type TaskMetaProps = {
 
 function TaskMeta({ assignee, dueOn, today, overdue, recurring, reward }: TaskMetaProps) {
   return (
-    <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[0.8125rem] text-ink/55">
+    <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[0.8125rem] text-ink-muted">
       {reward !== null && <RewardBadge reward={reward} />}
       <span>{assignee}</span>
       {recurring && <span title="Zadanie cykliczne">↻ cykliczne</span>}
@@ -214,7 +217,7 @@ function TaskEditor({ task, user, family, onCancel, onSave }: TaskEditorProps) {
           className="rounded-xl border-2 border-ink/10 bg-paper px-3 py-2 text-base outline-brand aria-invalid:border-brand"
         />
       ) : (
-        <p className="text-sm text-ink/60">Nazwę zadania z nagrodą zmienia tylko rodzic.</p>
+        <p className="text-sm text-ink-muted">Nazwę zadania z nagrodą zmienia tylko rodzic.</p>
       )}
       {problem && <FieldProblem id={`${task.id}-problem`}>{problem}</FieldProblem>}
       <div className="flex gap-2">
@@ -224,7 +227,7 @@ function TaskEditor({ task, user, family, onCancel, onSave }: TaskEditorProps) {
       {user.role === 'parent' && <RewardPicker value={reward} onChange={setReward} />}
       <ColorPicker value={color} onChange={setColor} />
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onCancel} className="rounded-full px-3 py-2 text-sm font-semibold text-ink/60">
+        <button type="button" onClick={onCancel} className="rounded-full px-3 py-2 text-sm font-semibold text-ink-muted">
           Anuluj
         </button>
         <button type="submit" className="rounded-full bg-brand px-4 py-2 text-sm font-bold text-on-brand">
@@ -275,14 +278,14 @@ export function DueInput({ value, onChange }: { value: string | null; onChange: 
           aria-label="Usuń termin"
           title="Usuń termin"
           onClick={() => onChange(null)}
-          className="absolute inset-y-0 right-0 flex w-9 items-center justify-center rounded-r-xl text-lg text-ink/60"
+          className="absolute inset-y-0 right-0 flex w-9 items-center justify-center rounded-r-xl text-lg text-ink-muted"
         >
           ×
         </button>
       ) : (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-8 left-2.5 flex items-center truncate text-base whitespace-nowrap text-ink/45 peer-focus:hidden"
+          className="pointer-events-none absolute inset-y-0 right-8 left-2.5 flex items-center truncate text-base whitespace-nowrap text-ink-muted peer-focus:hidden"
         >
           Termin
         </span>

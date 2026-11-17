@@ -19,7 +19,7 @@ export function TodayEvents() {
         <h3 id="today-events" className="font-extrabold">
           Wydarzenia ({events.length})
         </h3>
-        {upToDate && !sync.stale && <span className="text-xs text-ink/50">{upToDate}</span>}
+        {upToDate && !sync.stale && <span className="text-xs text-ink-muted">{upToDate}</span>}
       </div>
 
       {sync.stale && (
@@ -29,18 +29,19 @@ export function TodayEvents() {
       )}
 
       {events.length === 0 ? (
-        <p className="rounded-2xl bg-card px-3 py-3 text-ink/60 shadow-card">Dziś nic nie ma w kalendarzu.</p>
+        <p className="rounded-2xl bg-card px-3 py-3 text-ink-muted shadow-card">Dziś nic nie ma w kalendarzu.</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {events.map((event) => {
             const ended = hasEnded(event, nowMs);
             return (
-              <li key={event.id} className={`flex items-start gap-3 rounded-2xl bg-card p-3 shadow-card ${ended ? 'opacity-55' : ''}`}>
+              // Zakończone przygasa tytułem, nie przezroczystością całej karty: przygaszony opis straciłby kontrast.
+              <li key={event.id} className="flex items-start gap-3 rounded-2xl bg-card p-3 shadow-card">
                 <span aria-hidden="true" className="mt-1.5 size-2.5 shrink-0 rounded-full bg-brand" />
                 <div className="min-w-0 flex-1">
-                  <p className="leading-snug font-bold break-words">{event.title}</p>
-                  <p className="mt-0.5 flex flex-wrap gap-x-2 text-[0.8125rem] text-ink/60">
-                    <span className="font-semibold text-ink/75">{describeEventTime(event, date)}</span>
+                  <p className={`leading-snug font-bold break-words ${ended ? 'text-ink-muted' : ''}`}>{event.title}</p>
+                  <p className="mt-0.5 flex flex-wrap gap-x-2 text-[0.8125rem] text-ink-muted">
+                    <span className={`font-semibold ${ended ? '' : 'text-ink/75'}`}>{describeEventTime(event, date)}</span>
                     {event.location && <span className="break-words">{event.location}</span>}
                     <span>{event.calendarName}</span>
                   </p>

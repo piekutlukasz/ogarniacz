@@ -161,7 +161,7 @@ export function SettingsSheet({ user, open, onClose, onLogOut, loggingOut, start
               <Avatar name={user.name} color={personColor(family, user.id)} />
               <div className="min-w-0 flex-1">
                 <h2 className="text-xl leading-tight font-extrabold">Ustawienia</h2>
-                <p className="text-sm text-ink/55">{user.name}</p>
+                <p className="text-sm text-ink-muted">{user.name}</p>
               </div>
               <CloseButton onClose={onClose} />
             </div>
@@ -214,7 +214,7 @@ function Menu({ label, items, onOpen }: { label?: string; items: MenuItem[]; onO
   return (
     <div role="group" aria-labelledby={label ? labelId : undefined} className="flex flex-col gap-1.5">
       {label && (
-        <p id={labelId} className="px-1 text-[0.8125rem] font-bold text-ink/55">
+        <p id={labelId} className="px-1 text-[0.8125rem] font-bold text-ink-muted">
           {label}
         </p>
       )}
@@ -227,12 +227,12 @@ function Menu({ label, items, onOpen }: { label?: string; items: MenuItem[]; onO
               onClick={() => onOpen(item.page)}
               className="flex w-full items-center gap-3 px-4 py-3.5 text-left active:bg-paper-deep"
             >
-              <span className="text-ink/60">{item.icon}</span>
+              <span className="text-ink-muted">{item.icon}</span>
               <span className="min-w-0 flex-1 font-bold">{item.label}</span>
               {item.value && (
-                <span className={`truncate text-sm ${item.warning ? 'font-bold text-brand' : 'font-semibold text-ink/55'}`}>{item.value}</span>
+                <span className={`truncate text-sm ${item.warning ? 'font-bold text-brand' : 'font-semibold text-ink-muted'}`}>{item.value}</span>
               )}
-              <span className="text-ink/35">
+              <span className="text-ink-muted">
                 <ChevronRightIcon />
               </span>
             </button>
@@ -265,7 +265,7 @@ function SubPageFrame({
           type="button"
           onClick={onBack}
           aria-label={`Wróć: ${backLabel}`}
-          className="-ml-2 flex min-w-0 flex-1 items-center gap-0.5 self-stretch rounded-xl py-1 pr-2 text-left text-sm font-bold text-ink/60"
+          className="-ml-2 flex min-w-0 flex-1 items-center gap-0.5 self-stretch rounded-xl py-1 pr-2 text-left text-sm font-bold text-ink-muted"
         >
           <ChevronLeftIcon />
           <span className="truncate">{backLabel}</span>
@@ -326,7 +326,7 @@ function LookPage({ user }: { user: User }) {
           <button
             type="button"
             onClick={() => updateMe.mutate({ color: null })}
-            className="self-start text-sm font-semibold text-ink/55 underline underline-offset-2"
+            className="self-start text-sm font-semibold text-ink-muted underline underline-offset-2"
           >
             Przywróć kolor domyślny
           </button>
@@ -342,7 +342,7 @@ function Group({ title, hint, children }: { title: string; hint?: string; childr
     <div className="flex flex-col gap-2">
       <div>
         <h3 className="font-extrabold">{title}</h3>
-        {hint && <p className="text-sm text-ink/55">{hint}</p>}
+        {hint && <p className="text-sm text-ink-muted">{hint}</p>}
       </div>
       {children}
     </div>
@@ -362,7 +362,7 @@ function Segmented<T extends string>({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <span aria-hidden="true" className="text-[0.8125rem] font-semibold text-ink/55">
+      <span aria-hidden="true" className="text-[0.8125rem] font-semibold text-ink-muted">
         {label}
       </span>
       <div role="radiogroup" aria-label={label} className="grid grid-cols-3 gap-1 rounded-2xl bg-paper-deep p-1">
@@ -373,7 +373,7 @@ function Segmented<T extends string>({
             role="radio"
             aria-checked={value === option.value}
             onClick={() => onChange(option.value)}
-            className={`rounded-xl px-1 py-2 text-[0.8125rem] font-bold transition ${value === option.value ? 'bg-card shadow-card' : 'text-ink/55'}`}
+            className={`rounded-xl px-1 py-2 text-[0.8125rem] font-bold transition ${value === option.value ? 'bg-card shadow-card' : 'text-ink-muted'}`}
           >
             {option.label}
           </button>

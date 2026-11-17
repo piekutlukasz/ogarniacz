@@ -76,7 +76,7 @@ export function RatesSheet({ kids, effectiveOn, onClose }: RatesSheetProps) {
             <h2 id="rates-title" className="text-xl leading-tight font-extrabold">
               Kieszonkowe
             </h2>
-            <p className="text-sm text-ink/55">Stała kwota na tydzień, bez nagród za zadania.</p>
+            <p className="text-sm text-ink-muted">Stała kwota na tydzień, bez nagród za zadania.</p>
           </div>
           <button
             type="button"
@@ -94,7 +94,7 @@ export function RatesSheet({ kids, effectiveOn, onClose }: RatesSheetProps) {
               <Avatar name={child.name} color={child.color} />
               <div className="min-w-0 flex-1">
                 <span className="font-bold break-words">{child.name}</span>
-                <p className="text-[0.8125rem] text-ink/55">{amounts[child.id] === '0' ? 'bez kieszonkowego' : 'co tydzień'}</p>
+                <p className="text-[0.8125rem] text-ink-muted">{amounts[child.id] === '0' ? 'bez kieszonkowego' : 'co tydzień'}</p>
               </div>
               <div className="flex shrink-0 items-center gap-1 rounded-full bg-paper-deep p-1">
                 <StepButton label={`Zmniejsz kieszonkowe: ${child.name}`} onClick={() => step(child.id, -STEP)}>
@@ -124,7 +124,7 @@ export function RatesSheet({ kids, effectiveOn, onClose }: RatesSheetProps) {
         </ul>
 
         <p className="flex items-center justify-between px-1">
-          <span className="text-sm text-ink/60">Razem co tydzień</span>
+          <span className="text-sm text-ink-muted">Razem co tydzień</span>
           <span className="font-extrabold">{zl(total)}</span>
         </p>
 

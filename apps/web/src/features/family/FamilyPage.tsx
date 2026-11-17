@@ -90,7 +90,7 @@ export function FamilyPage({ user, onOpenLog }: { user: User; onOpenLog: () => v
       )}
 
       <Part title="Konta">
-        {accounts.isPending && <p className="text-sm text-ink/55">Wczytuję…</p>}
+        {accounts.isPending && <p className="text-sm text-ink-muted">Wczytuję…</p>}
         {accounts.isError && <ErrorNote error={accounts.error} />}
         <ul className="flex flex-col gap-2">
           {accounts.data?.map((account) => (
@@ -136,9 +136,9 @@ export function FamilyPage({ user, onOpenLog }: { user: User; onOpenLog: () => v
       >
         <span className="min-w-0 flex-1">
           <span className="block font-bold">Dziennik logowań</span>
-          <span className="block text-[0.8125rem] text-ink/55">Logowania, blokady, zaproszenia i zmiany kont</span>
+          <span className="block text-[0.8125rem] text-ink-muted">Logowania, blokady, zaproszenia i zmiany kont</span>
         </span>
-        <span className="text-ink/40">
+        <span className="text-ink-muted">
           <ChevronRightIcon />
         </span>
       </button>
@@ -205,7 +205,7 @@ function InviteForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
           maxLength={32}
           className={inputClass}
         />
-        <span className="font-normal text-ink/55">Małe litery bez polskich znaków, cyfry, kropka, myślnik.</span>
+        <span className="font-normal text-ink-muted">Małe litery bez polskich znaków, cyfry, kropka, myślnik.</span>
       </label>
       <div role="radiogroup" aria-label="Rola" className="grid grid-cols-2 gap-1 rounded-2xl bg-paper p-1">
         {(['child', 'parent'] as const).map((value) => (
@@ -215,7 +215,7 @@ function InviteForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: 
             role="radio"
             aria-checked={role === value}
             onClick={() => setRole(value)}
-            className={`rounded-xl px-1 py-2 text-[0.8125rem] font-bold transition ${role === value ? 'bg-card shadow-card' : 'text-ink/55'}`}
+            className={`rounded-xl px-1 py-2 text-[0.8125rem] font-bold transition ${role === value ? 'bg-card shadow-card' : 'text-ink-muted'}`}
           >
             {ROLE_LABELS[value]}
           </button>
@@ -246,7 +246,7 @@ function CreatedLink({ created, onDone }: { created: CreatedInvite; onDone: () =
   return (
     <section aria-label="Link zaproszenia" className="flex flex-col items-center gap-3 rounded-2xl bg-card p-4 shadow-card">
       <p className="self-stretch font-extrabold">{forWhom}</p>
-      <p className="self-stretch text-sm text-ink/60">
+      <p className="self-stretch text-sm text-ink-muted">
         Zeskanuj kod telefonem tej osoby albo wyślij jej link. Działa 24 godziny i tylko raz. Po zamknięciu tego okna link nie będzie już widoczny.
       </p>
       <QrCode value={link} label={`Kod QR: ${forWhom}`} />
@@ -348,12 +348,12 @@ function AccountRow({
     <div className="min-w-0 flex-1">
       <p className="font-bold">
         {account.name}
-        {isMe && <span className="font-semibold text-ink/55"> (ty)</span>}
+        {isMe && <span className="font-semibold text-ink-muted"> (ty)</span>}
       </p>
-      <p className="text-sm text-ink/55">
+      <p className="text-sm text-ink-muted">
         {ROLE_LABELS[account.role]} · {account.login}
       </p>
-      <p className={`text-sm ${account.disabled ? 'font-semibold text-brand' : 'text-ink/55'}`}>{lastSeen(account)}</p>
+      <p className={`text-sm ${account.disabled ? 'font-semibold text-brand' : 'text-ink-muted'}`}>{lastSeen(account)}</p>
     </div>
   );
 
@@ -362,7 +362,7 @@ function AccountRow({
       {hasActions ? (
         <button type="button" aria-expanded={expanded} onClick={onToggle} className="flex items-center gap-3 p-3 text-left">
           {details}
-          <span className={`text-ink/40 transition-transform ${expanded ? 'rotate-90' : ''}`}>
+          <span className={`text-ink-muted transition-transform ${expanded ? 'rotate-90' : ''}`}>
             <ChevronRightIcon />
           </span>
         </button>
@@ -411,10 +411,10 @@ function InviteRow({ invite, onRevoked }: { invite: Invite; onRevoked: (name: st
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="font-bold">{invite.name}</p>
-          <p className="text-sm text-ink/55">
+          <p className="text-sm text-ink-muted">
             {what} · {invite.login}
           </p>
-          <p className="text-sm text-ink/55">
+          <p className="text-sm text-ink-muted">
             Od: {invite.createdBy} · ważne do {dateTime.format(new Date(invite.expiresAt))}
           </p>
         </div>
@@ -445,14 +445,14 @@ export function AuthLogPage() {
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-sm text-ink/55">Ostatnie 100 wpisów z 90 dni: logowania, blokady, zaproszenia i zmiany kont.</p>
-      {events.isPending && <p className="text-sm text-ink/55">Wczytuję…</p>}
+      <p className="text-sm text-ink-muted">Ostatnie 100 wpisów z 90 dni: logowania, blokady, zaproszenia i zmiany kont.</p>
+      {events.isPending && <p className="text-sm text-ink-muted">Wczytuję…</p>}
       {events.isError && <ErrorNote error={events.error} />}
       <ul aria-label="Wpisy dziennika" className="flex flex-col gap-1.5">
         {events.data?.map((event, index) => (
           <li key={`${event.createdAt}-${index}`} className="rounded-xl bg-card px-3 py-2 text-sm">
             <p className="font-semibold">{describeEvent(event)}</p>
-            <p className="text-ink/55">
+            <p className="text-ink-muted">
               {dateTime.format(new Date(event.createdAt))}
               {event.ip ? ` · ${event.ip}` : ''}
             </p>

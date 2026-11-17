@@ -26,7 +26,7 @@ export function CalendarsPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-ink/60">
+      <p className="text-sm text-ink-muted">
         Wydarzenia z Google Kalendarza i iCloud pojawiają się w „Dziś”. Aplikacja tylko je czyta, a zmiany z kalendarza docierają
         z opóźnieniem do kilkunastu minut.
       </p>
@@ -59,11 +59,11 @@ export function CalendarsPage() {
         </button>
       )}
 
-      {calendars.isPending && <p className="text-ink/60">Wczytuję…</p>}
+      {calendars.isPending && <p className="text-ink-muted">Wczytuję…</p>}
       {calendars.isError && <ErrorNote error={calendars.error} />}
       {(sync.isError || change.isError) && <ErrorNote error={sync.error ?? change.error} />}
       {calendars.isSuccess && calendars.data.length === 0 && !adding && (
-        <p className="rounded-2xl border-2 border-dashed border-paper-deep py-8 text-center text-ink/50">Nie ma jeszcze kalendarzy.</p>
+        <p className="rounded-2xl border-2 border-dashed border-paper-deep py-8 text-center text-ink-muted">Nie ma jeszcze kalendarzy.</p>
       )}
 
       <ul className="flex flex-col gap-2.5">
@@ -91,7 +91,7 @@ function ScopePicker({ value, onChange, label }: { value: CalendarScope; onChang
           role="radio"
           aria-checked={value === scope.value}
           onClick={() => onChange(scope.value)}
-          className={`rounded-xl px-1 py-2 text-[0.8125rem] font-bold transition ${value === scope.value ? 'bg-card shadow-card' : 'text-ink/55'}`}
+          className={`rounded-xl px-1 py-2 text-[0.8125rem] font-bold transition ${value === scope.value ? 'bg-card shadow-card' : 'text-ink-muted'}`}
         >
           {scope.label}
         </button>
@@ -134,7 +134,7 @@ function AddForm({ onCancel, onAdded }: { onCancel: () => void; onAdded: (calend
         <span className="text-sm font-bold">Kto widzi wydarzenia</span>
         <ScopePicker value={scope} onChange={setScope} label="Kto widzi wydarzenia" />
       </div>
-      <p className="text-[0.8125rem] text-ink/55">Link działa jak hasło. Po zapisaniu nie będzie nigdzie wyświetlany, a w bazie jest zaszyfrowany.</p>
+      <p className="text-[0.8125rem] text-ink-muted">Link działa jak hasło. Po zapisaniu nie będzie nigdzie wyświetlany, a w bazie jest zaszyfrowany.</p>
       {add.isError && <ErrorNote error={add.error} />}
       <div className="flex gap-2">
         <button type="submit" disabled={add.isPending} className={primaryButton}>
@@ -172,7 +172,7 @@ function CalendarItem({ calendar, busy, onSync, onChange }: CalendarItemProps) {
     <li className="rounded-2xl bg-card p-3 shadow-card">
       <div className="min-w-0">
         <p className="leading-snug font-bold break-words">{calendar.name}</p>
-        <p className="mt-0.5 flex flex-wrap gap-x-2 text-[0.8125rem] text-ink/55">
+        <p className="mt-0.5 flex flex-wrap gap-x-2 text-[0.8125rem] text-ink-muted">
           <span>{calendar.host}</span>
           <span>{scopeLabel}</span>
           <span>{pluralEvents(calendar.eventCount)}</span>

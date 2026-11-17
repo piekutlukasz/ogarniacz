@@ -21,20 +21,21 @@ export function ArchiveView({ user, onBack }: { user: User; onBack: () => void }
         <button
           type="button"
           onClick={onBack}
-          // W nawigacji jest już przycisk „Tablica”, więc ten nazywa się inaczej dla czytnika ekranu.
+          // W nawigacji jest już przycisk „Tablica”, więc ten nazywa się inaczej. Nazwa zaczyna się od widocznego
+          // „Wróć”, żeby osoba sterująca głosem mogła powiedzieć to, co widzi.
           aria-label="Wróć na tablicę"
           className="flex shrink-0 items-center gap-1 rounded-full bg-card py-1.5 pr-3.5 pl-2.5 text-sm font-semibold shadow-card transition-transform active:scale-95"
         >
           <span aria-hidden="true">←</span>
-          Tablica
+          Wróć
         </button>
         <h2 className="text-xl font-extrabold">Archiwum</h2>
       </div>
-      <p className="text-sm text-ink/60">Ostatnie zarchiwizowane zadania, od najnowszego.</p>
+      <p className="text-sm text-ink-muted">Ostatnie zarchiwizowane zadania, od najnowszego.</p>
       {(archiveQuery.isError || restore.isError) && <ErrorNote error={restore.error} />}
-      {archiveQuery.isPending && <p className="text-ink/60">Wczytuję archiwum…</p>}
+      {archiveQuery.isPending && <p className="text-ink-muted">Wczytuję archiwum…</p>}
       {archiveQuery.isSuccess && archiveQuery.data.length === 0 && (
-        <p className="rounded-2xl border-2 border-dashed border-paper-deep py-10 text-center text-ink/50">Archiwum jest puste.</p>
+        <p className="rounded-2xl border-2 border-dashed border-paper-deep py-10 text-center text-ink-muted">Archiwum jest puste.</p>
       )}
       <ul className="flex flex-col gap-2">
         {archiveQuery.data?.map((task) => (
@@ -42,7 +43,7 @@ export function ArchiveView({ user, onBack }: { user: User; onBack: () => void }
             <Avatar size="sm" name={nameOf(task.assigneeId)} color={personColor(family, task.assigneeId)} />
             <div className="min-w-0 flex-1">
               <span className="font-bold break-words text-ink/80">{task.title}</span>
-              <p className="mt-0.5 text-[0.8125rem] text-ink/55">
+              <p className="mt-0.5 text-[0.8125rem] text-ink-muted">
                 {[task.reward !== null && `+${zl(task.reward)}`, nameOf(task.assigneeId), task.archivedAt && `zarchiwizowane ${archivedAt.format(new Date(task.archivedAt))}`]
                   .filter(Boolean)
                   .join(' · ')}

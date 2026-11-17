@@ -1,6 +1,6 @@
 # Ogarniacz: dokumentacja projektu
 
-Stan na 14 listopada 2026. Kolejność prac opisuje [PLAN.md](PLAN.md).
+Stan na 17 listopada 2026. Kolejność prac opisuje [PLAN.md](PLAN.md).
 
 Plik opisuje tylko to, co **jest** w kodzie. Planowane prace, ich projekt i decyzje są w [plany/](plany/), a tutaj najwyżej jednym zdaniem z odnośnikiem.
 
@@ -330,7 +330,7 @@ Serwer testów e2e startuje z `TEST_CLOCK=true`: nagłówek `X-Test-Now` ustawia
 
 Playwright nie zastąpi testu push na iPhonie, bo profil telefonu to tylko emulacja.
 
-Stan na 15 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 323 testy API i 19 testów frontu. Planowany test dostępności (T8): [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md).
+Stan na 17 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 323 testy API i 19 testów frontu. Sprawdzenie dostępności (`accessibility.spec.ts`, axe, WCAG 2.2 A i AA) przechodzi każdy ekran rodzica i podstrony ustawień we wszystkich wyglądach i obu trybach oraz ekran logowania; wynik i poprawki: [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md), T8.
 
 ## 12. Główne ryzyka
 

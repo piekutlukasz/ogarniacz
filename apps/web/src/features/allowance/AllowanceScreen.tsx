@@ -14,7 +14,7 @@ export function AllowanceScreen({ user }: { user: User }) {
   const allowanceQuery = useAllowance();
   const family = useFamily().data ?? [];
 
-  if (allowanceQuery.isPending) return <p className="text-ink/60">Wczytuję kieszonkowe…</p>;
+  if (allowanceQuery.isPending) return <p className="text-ink-muted">Wczytuję kieszonkowe…</p>;
   if (allowanceQuery.isError) return <ErrorNote />;
 
   return user.role === 'parent' ? (
@@ -47,7 +47,7 @@ function ChildAllowance({ allowance }: { allowance: Allowance }) {
   return (
     <div className="flex flex-col gap-5">
       <section aria-labelledby="allowance-next" className="-rotate-[0.4deg] rounded-2xl bg-card p-4 shadow-card">
-        <h2 id="allowance-next" className="text-sm font-semibold text-ink/55">
+        <h2 id="allowance-next" className="text-sm font-semibold text-ink-muted">
           W poniedziałek {formatDay(current.payoutOn)} dostaniesz
         </h2>
         <p className="mt-1 text-5xl leading-none font-extrabold tracking-tight">{zl(current.total)}</p>
@@ -68,7 +68,7 @@ function ChildAllowance({ allowance }: { allowance: Allowance }) {
           Zarobione w tym tygodniu
         </h3>
         {current.rewards.length === 0 ? (
-          <p className="rounded-2xl border-2 border-dashed border-paper-deep px-3 py-6 text-center text-ink/50">
+          <p className="rounded-2xl border-2 border-dashed border-paper-deep px-3 py-6 text-center text-ink-muted">
             Jeszcze nic. Nagrodę dostajesz, gdy zadanie z żółtą plakietką trafi do „Gotowe”.
           </p>
         ) : (
@@ -86,7 +86,7 @@ function ChildAllowance({ allowance }: { allowance: Allowance }) {
               <li key={task.taskId} className="flex items-center gap-3 rounded-2xl bg-card p-3 shadow-card">
                 <div className="min-w-0 flex-1">
                   <span className="font-bold break-words">{task.title}</span>
-                  <p className="text-[0.8125rem] text-ink/55">
+                  <p className="text-[0.8125rem] text-ink-muted">
                     {[task.forAnyone ? 'dla chętnych' : 'Twoje zadanie', task.dueOn && `termin: ${formatDue(task.dueOn, allowance.date)}`]
                       .filter(Boolean)
                       .join(' · ')}
@@ -100,7 +100,7 @@ function ChildAllowance({ allowance }: { allowance: Allowance }) {
       )}
 
       {lastPaid && (
-        <p className="text-center text-sm text-ink/55">
+        <p className="text-center text-sm text-ink-muted">
           Ostatnia wypłata: {zl(lastPaid.total)} za {formatWeek(lastPaid.weekStart)}
         </p>
       )}
@@ -119,7 +119,7 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
   const current = children[0]?.current;
 
   if (!current) {
-    return <p className="rounded-2xl border-2 border-dashed border-paper-deep py-10 text-center text-ink/50">Nie ma jeszcze kont dzieci.</p>;
+    return <p className="rounded-2xl border-2 border-dashed border-paper-deep py-10 text-center text-ink-muted">Nie ma jeszcze kont dzieci.</p>;
   }
 
   const closed = children.flatMap((child) => child.closed.map((week) => ({ childId: child.childId, week })));
@@ -137,7 +137,7 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
           <section key={weekStart} aria-label={`Do wypłaty za ${formatWeek(weekStart)}`} className="flex flex-col gap-2">
             <h3 className="font-extrabold">
               {isToday ? 'Do wypłaty dziś' : 'Czeka na wypłatę'}
-              <span className="font-normal text-ink/55"> · za {formatWeek(weekStart)}</span>
+              <span className="font-normal text-ink-muted"> · za {formatWeek(weekStart)}</span>
             </h3>
             <ul className="flex flex-col gap-2">
               {rows.map(({ childId, week }) => {
@@ -150,7 +150,7 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
                       <span className="font-bold break-words">
                         {nameOf(childId)} · {zl(week.total)}
                       </span>
-                      <p className="text-[0.8125rem] text-ink/55">{breakdown(week)}</p>
+                      <p className="text-[0.8125rem] text-ink-muted">{breakdown(week)}</p>
                     </div>
                     <button
                       type="button"
@@ -176,7 +176,7 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
       })}
       {unpaid.length > 1 && (
         <p className="-mt-2 flex items-center justify-between px-1">
-          <span className="text-sm text-ink/60">Razem do przygotowania</span>
+          <span className="text-sm text-ink-muted">Razem do przygotowania</span>
           <span className="text-lg font-extrabold">{zl(unpaidTotal)}</span>
         </p>
       )}
@@ -185,7 +185,7 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
       <section aria-labelledby="allowance-week" className="flex flex-col gap-2">
         <h3 id="allowance-week" className="font-extrabold">
           Ten tydzień
-          <span className="font-normal text-ink/55"> · wypłata {formatDay(current.payoutOn)}</span>
+          <span className="font-normal text-ink-muted"> · wypłata {formatDay(current.payoutOn)}</span>
         </h3>
         <ul className="flex flex-col gap-2">
           {children.map(({ childId, current: week }) => (
@@ -194,7 +194,7 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
                 <Avatar name={nameOf(childId)} color={personColor(family, childId)} />
                 <div className="min-w-0 flex-1">
                   <span className="font-bold break-words">{nameOf(childId)}</span>
-                  <p className="text-[0.8125rem] text-ink/55">{breakdown(week)}</p>
+                  <p className="text-[0.8125rem] text-ink-muted">{breakdown(week)}</p>
                 </div>
                 <span className="shrink-0 text-lg font-extrabold">{zl(week.total)}</span>
               </div>
@@ -218,7 +218,7 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
           <h3 id="allowance-rates" className="text-sm font-extrabold">
             Kieszonkowe na tydzień
           </h3>
-          <p className="text-sm text-ink/65">{children.map((child) => `${nameOf(child.childId)} ${zl(child.current.base)}`).join(' · ')}</p>
+          <p className="text-sm text-ink-muted">{children.map((child) => `${nameOf(child.childId)} ${zl(child.current.base)}`).join(' · ')}</p>
         </div>
         <button
           type="button"
@@ -232,10 +232,10 @@ function ParentAllowance({ allowance, family }: { allowance: Allowance; family: 
 
       {paid.length > 0 && (
         <section aria-labelledby="allowance-paid" className="flex flex-col gap-1">
-          <h3 id="allowance-paid" className="text-sm font-extrabold text-ink/60">
+          <h3 id="allowance-paid" className="text-sm font-extrabold text-ink-muted">
             Ostatnie wypłaty
           </h3>
-          <ul className="flex flex-col text-sm text-ink/60">
+          <ul className="flex flex-col text-sm text-ink-muted">
             {paid.map(({ childId, week }) => (
               <li key={`${childId}:${week.weekStart}`} className="flex justify-between gap-3 py-0.5">
                 <span>
@@ -271,7 +271,7 @@ function RewardList({ rewards, today }: { rewards: AllowanceReward[]; today: str
         <li key={item.taskId} className="flex items-center gap-3 rounded-2xl bg-card p-3 shadow-card">
           <div className="min-w-0 flex-1">
             <span className="font-bold break-words">{item.title}</span>
-            <p className="text-[0.8125rem] text-ink/55">
+            <p className="text-[0.8125rem] text-ink-muted">
               gotowe {item.completedOn === today ? 'dziś' : formatWeekday(item.completedOn)}
             </p>
           </div>

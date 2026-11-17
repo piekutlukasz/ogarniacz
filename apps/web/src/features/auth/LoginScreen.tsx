@@ -41,7 +41,7 @@ export function LoginScreen({ onLoggedIn }: { onLoggedIn: (user: User) => void }
       </div>
       <div>
         <p className="text-2xl leading-tight font-extrabold">Cześć!</p>
-        <p className="text-ink/60">Zaloguj się, żeby zobaczyć domowe sprawy.</p>
+        <p className="text-ink-muted">Zaloguj się, żeby zobaczyć domowe sprawy.</p>
       </div>
 
       {demo.data && (
@@ -59,7 +59,7 @@ export function LoginScreen({ onLoggedIn }: { onLoggedIn: (user: User) => void }
               <span className="text-sm font-semibold opacity-70">{account.role === 'parent' ? 'rodzic' : 'dziecko'}</span>
             </button>
           ))}
-          <p className="text-sm text-ink/60">Albo zaloguj się loginem i hasłem:</p>
+          <p className="text-sm text-ink-muted">Albo zaloguj się loginem i hasłem:</p>
         </div>
       )}
 
