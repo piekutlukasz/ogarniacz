@@ -8,6 +8,7 @@ import {
   type ChildAllowance,
   DEFAULT_ALLOWANCE,
   addDays,
+  cancelPayoutSchema,
   markPayoutSchema,
   payoutDay,
   setAllowanceRatesSchema,
@@ -73,7 +74,12 @@ function buildAllowance(db: Db, children: UserRow[], today: string): ChildAllowa
     .where(inArray(allowanceRates.childId, childIds))
     .orderBy(desc(allowanceRates.effectiveFrom))
     .all();
-  const paid = db.select().from(payouts).where(inArray(payouts.childId, childIds)).all();
+  // Cofnięte wypłaty zostają w bazie, ale tydzień znów czeka na wypłatę.
+  const paid = db
+    .select()
+    .from(payouts)
+    .where(and(inArray(payouts.childId, childIds), isNull(payouts.cancelledAt)))
+    .all();
   const unpaidTasks = db
     .select()
     .from(tasks)
@@ -248,6 +254,34 @@ export function allowanceRoutes(db: Db, now: () => Date) {
           }
         });
       }
+
+      return c.json(respond(user));
+    })
+    .post('/payouts/cancel', requireRole('parent'), validate('json', cancelPayoutSchema), (c) => {
+      const { childId, weekStart: week } = c.req.valid('json');
+      const user = c.get('user');
+      const child = activeChildren(db).find((item) => item.id === childId);
+      if (!child) {
+        return c.json({ error: 'Nie ma takiego dziecka' }, 400);
+      }
+      // Cofnąć można tylko wypłatę widoczną na ekranie, czyli z ostatnich tygodni.
+      const at = now();
+      if (!closedWeeks(child, weekStart(warsawDate(at))).includes(week)) {
+        return c.json({ error: 'Można cofnąć tylko wypłatę z ostatnich tygodni' }, 400);
+      }
+
+      // Drugie stuknięcie albo drugi rodzic: wypłaty już nie ma, więc nic nie zmieniamy.
+      db.transaction((tx) => {
+        const payout = tx
+          .select()
+          .from(payouts)
+          .where(and(eq(payouts.childId, childId), eq(payouts.weekStart, week), isNull(payouts.cancelledAt)))
+          .get();
+        if (!payout) return;
+        tx.update(payouts).set({ cancelledAt: at, cancelledById: user.id }).where(eq(payouts.id, payout.id)).run();
+        // Zadania wracają do niewypłaconych: liczą się znów w tygodniu ukończenia.
+        tx.update(tasks).set({ payoutId: null }).where(eq(tasks.payoutId, payout.id)).run();
+      });
 
       return c.json(respond(user));
     });

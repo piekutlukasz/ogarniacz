@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from './app';
 import { createUser } from './auth/users';
 import { type Db, openDatabase } from './db/client';
+import { payouts, tasks } from './db/schema';
 
 let db: Db;
 let close: () => void;
@@ -372,5 +373,87 @@ describe('kieszonkowe: wypłata', () => {
     const child = await allowanceOf(zosiaId);
     expect(child.closed[0]?.total).toBe(50);
     expect(child.current.total).toBe(60);
+  });
+});
+
+describe('kieszonkowe: cofnięcie wypłaty', () => {
+  const lastWeek = { weekStart: '2026-11-02' };
+  const cancel = (body: Record<string, unknown>, session = parentCookie) => send('POST', '/api/allowance/payouts/cancel', body, session);
+
+  it('rodzic cofa wypłatę: tydzień znów czeka, a nagrody wracają do niego', async () => {
+    const task = await finish('Odkurz salon', 10, zosiaId, zosiaCookie);
+    setClock('2026-11-09T08:00:00Z');
+    await send('POST', '/api/allowance/payouts', { childId: zosiaId, ...lastWeek });
+
+    const response = await cancel({ childId: zosiaId, ...lastWeek });
+
+    expect(response.status).toBe(200);
+    const week = allowanceSchema.parse(await response.json()).children.find((item) => item.childId === zosiaId)?.closed[0];
+    expect(week).toMatchObject({ weekStart: '2026-11-02', total: 60, paidAt: null });
+    expect(week?.rewards.map((item) => item.taskId)).toEqual([task.id]);
+  });
+
+  it('po cofnięciu wypłatę można oznaczyć jeszcze raz, z aktualnymi kwotami', async () => {
+    const task = await finish('Odkurz salon', 10, zosiaId, zosiaCookie);
+    setClock('2026-11-09T08:00:00Z');
+    await send('POST', '/api/allowance/payouts', { childId: zosiaId, ...lastWeek });
+    await cancel({ childId: zosiaId, ...lastWeek });
+    await change(task.id, { reward: 15 });
+    setClock('2026-11-09T09:00:00Z');
+
+    expect((await send('POST', '/api/allowance/payouts', { childId: zosiaId, ...lastWeek })).status).toBe(200);
+
+    expect((await allowanceOf(zosiaId)).closed[0]).toMatchObject({ total: 65, paidAt: '2026-11-09T09:00:00.000Z' });
+  });
+
+  it('cofnięta wypłata zostaje w bazie z tym, kto i kiedy ją cofnął', async () => {
+    await finish('Odkurz salon', 10, zosiaId, zosiaCookie);
+    setClock('2026-11-09T08:00:00Z');
+    await send('POST', '/api/allowance/payouts', { childId: zosiaId, ...lastWeek });
+    setClock('2026-11-09T08:05:00Z');
+    await cancel({ childId: zosiaId, ...lastWeek });
+
+    const rows = db.select().from(payouts).all();
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ base: 50, rewards: 10, cancelledById: parentId, cancelledAt: new Date('2026-11-09T08:05:00Z') });
+    expect(db.select().from(tasks).all().every((task) => task.payoutId === null)).toBe(true);
+  });
+
+  it('ponowne cofnięcie i cofnięcie niewypłaconego tygodnia niczego nie zmienia', async () => {
+    await finish('Odkurz salon', 10, zosiaId, zosiaCookie);
+    setClock('2026-11-09T08:00:00Z');
+
+    expect((await cancel({ childId: zosiaId, ...lastWeek })).status).toBe(200);
+    await send('POST', '/api/allowance/payouts', { childId: zosiaId, ...lastWeek });
+    await cancel({ childId: zosiaId, ...lastWeek });
+    expect((await cancel({ childId: zosiaId, ...lastWeek })).status).toBe(200);
+
+    expect((await allowanceOf(zosiaId)).closed[0]).toMatchObject({ total: 60, paidAt: null });
+  });
+
+  it('cofnięcie dotyczy tylko jednego dziecka', async () => {
+    setClock('2026-11-09T08:00:00Z');
+    await send('POST', '/api/allowance/payouts', { childId: zosiaId, ...lastWeek });
+    await send('POST', '/api/allowance/payouts', { childId: kubaId, ...lastWeek });
+
+    await cancel({ childId: zosiaId, ...lastWeek });
+
+    expect((await allowanceOf(zosiaId)).closed[0]?.paidAt).toBeNull();
+    expect((await allowanceOf(kubaId)).closed[0]?.paidAt).not.toBeNull();
+  });
+
+  it('nie cofa trwającego tygodnia, zbyt starego ani wypłaty rodzica', async () => {
+    setClock('2026-11-09T08:00:00Z');
+    expect((await cancel({ childId: zosiaId, weekStart: '2026-11-09' })).status).toBe(400);
+    expect((await cancel({ childId: zosiaId, weekStart: '2026-10-05' })).status).toBe(400);
+    expect((await cancel({ childId: parentId, ...lastWeek })).status).toBe(400);
+  });
+
+  it('dziecko nie cofa wypłaty', async () => {
+    setClock('2026-11-09T08:00:00Z');
+    await send('POST', '/api/allowance/payouts', { childId: zosiaId, ...lastWeek });
+
+    expect((await cancel({ childId: zosiaId, ...lastWeek }, zosiaCookie)).status).toBe(403);
+    expect((await allowanceOf(zosiaId)).closed[0]?.paidAt).not.toBeNull();
   });
 });

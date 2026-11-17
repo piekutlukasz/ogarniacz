@@ -81,7 +81,7 @@ test('rodzic otwiera stawki kieszonkowego, a dziecko nie ma do nich wejścia', a
   await expect(child.allowance.changeRatesButton).toHaveCount(0);
 });
 
-test('rodzic oznacza wypłatę za zamknięty tydzień, a dziecko widzi ją jako ostatnią', async ({ parent, projectChild }, testInfo) => {
+test('rodzic oznacza wypłatę za zamknięty tydzień, cofa pomyłkę, a dziecko widzi ostatnią wypłatę', async ({ parent, projectChild }, testInfo) => {
   const kid = PROJECT_CHILDREN[testInfo.project.name]!;
   const kidId = await parent.api.userId(kid);
 
@@ -117,7 +117,14 @@ test('rodzic oznacza wypłatę za zamknięty tydzień, a dziecko widzi ją jako 
   await expect(parent.allowance.payoutRow(week, kid.name)).toContainText(total);
   await parent.allowance.markPaid(week, kid.name);
   await expect(parent.allowance.payoutRow(week, kid.name)).toHaveCount(0);
-  await expect(parent.allowance.paidHistory.getByRole('listitem').filter({ hasText: `${kid.name} · za ${week}` })).toContainText(total);
+  await expect(parent.allowance.paidRow(week, kid.name)).toContainText(total);
+
+  // Pomyłka: rodzic cofa wypłatę, tydzień wraca do „Czeka na wypłatę”, a potem oznacza go jeszcze raz.
+  await parent.allowance.cancelPayout(week, kid.name);
+  await expect(parent.allowance.paidRow(week, kid.name)).toHaveCount(0);
+  await expect(parent.allowance.payoutRow(week, kid.name)).toContainText(total);
+  await parent.allowance.markPaid(week, kid.name);
+  await expect(parent.allowance.paidRow(week, kid.name)).toContainText(total);
 
   await projectChild.setServerTime(later);
   await projectChild.open();

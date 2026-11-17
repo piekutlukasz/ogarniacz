@@ -92,6 +92,13 @@
       "when": 1794610976499,
       "tag": "0012_task_color",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1794945841774,
+      "tag": "0013_payout_cancel",
+      "breakpoints": true
     }
   ]
 }
