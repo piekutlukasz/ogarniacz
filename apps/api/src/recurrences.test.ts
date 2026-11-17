@@ -366,4 +366,53 @@ describe('reguły cykliczne', () => {
 
     expect((await ruleTasks(rule.id))[0]?.assigneeId).toBeNull();
   });
+
+  it('nagroda z reguły trafia do każdego tworzonego zadania', async () => {
+    const rule = await addRule({ title: 'Śmieci', assigneeId: childId, pattern: { kind: 'weekly', weekdays: [7, 1] }, reward: 5 });
+    expect(rule.reward).toBe(5);
+
+    const [first] = await ruleTasks(rule.id);
+    expect(first).toMatchObject({ dueOn: '2026-11-08', reward: 5 });
+    await finish(first?.id ?? '');
+    setClock('2026-11-09T11:00:00Z');
+    runJob();
+
+    expect((await ruleTasks(rule.id)).find((task) => task.dueOn === '2026-11-09')?.reward).toBe(5);
+  });
+
+  it('zmiana nagrody dotyczy następnych wystąpień, a utworzone zachowują swoją', async () => {
+    const rule = await addRule({ title: 'Śmieci', assigneeId: childId, pattern: { kind: 'weekly', weekdays: [7, 1, 2] }, reward: 5 });
+    const [first] = await ruleTasks(rule.id);
+    await finish(first?.id ?? '');
+
+    expect((await changeRule(rule.id, { reward: 10 })).status).toBe(200);
+    setClock('2026-11-09T11:00:00Z');
+    runJob();
+    const monday = (await ruleTasks(rule.id)).find((task) => task.dueOn === '2026-11-09');
+    expect(monday?.reward).toBe(10);
+    await finish(monday?.id ?? '');
+
+    await changeRule(rule.id, { reward: null });
+    setClock('2026-11-10T11:00:00Z');
+    runJob();
+
+    const rewards = Object.fromEntries((await ruleTasks(rule.id)).map((task) => [task.dueOn, task.reward]));
+    expect(rewards).toEqual({ '2026-11-08': 5, '2026-11-09': 10, '2026-11-10': null });
+    expect((await listRules())[0]?.reward).toBeNull();
+  });
+
+  it('reguła bez nagrody tworzy zadania bez nagrody', async () => {
+    const rule = await addRule({ title: 'Podlać kwiaty', pattern: DAILY });
+
+    expect(rule.reward).toBeNull();
+    expect((await ruleTasks(rule.id))[0]?.reward).toBeNull();
+  });
+
+  it('odrzuca nagrodę zerową, ułamkową i za dużą', async () => {
+    for (const reward of [0, 2.5, 501]) {
+      expect((await sendJson('POST', '/api/recurrences', { title: 'Śmieci', pattern: DAILY, reward })).status).toBe(400);
+    }
+    const rule = await addRule({ title: 'Śmieci', pattern: DAILY });
+    expect((await changeRule(rule.id, { reward: -5 })).status).toBe(400);
+  });
 });

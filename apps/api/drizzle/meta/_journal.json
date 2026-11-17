@@ -99,6 +99,13 @@
       "when": 1794945841774,
       "tag": "0013_payout_cancel",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1794946564639,
+      "tag": "0014_recurrence_reward",
+      "breakpoints": true
     }
   ]
 }
