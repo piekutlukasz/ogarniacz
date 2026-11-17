@@ -10,6 +10,9 @@ import './index.css';
 // Gdy sesja wygaśnie w trakcie używania, każde żądanie dostaje 401. Wtedy pokazujemy ekran logowania.
 function handleError(error: Error) {
   if (error instanceof UnauthorizedError) {
+    // Żądania, które były już w drodze, też dostają 401. Ekran logowania jest już wtedy pokazany, a ponowne
+    // czyszczenie usunęłoby trwające sprawdzenie kreatora i aplikacja zostałaby na „Wczytuję…”.
+    if (queryClient.getQueryData(ME_KEY) === null) return;
     queryClient.removeQueries({ predicate: (query) => query.queryKey[0] !== ME_KEY[0] });
     queryClient.setQueryData(ME_KEY, null);
     // Kolejka zakupów zostaje: po ponownym zalogowaniu tej samej osoby zmiany pójdą na serwer.

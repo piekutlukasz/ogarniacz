@@ -55,6 +55,9 @@ test('rodzic zaprasza dziecko, wystawia mu nowe hasło i wyłącza konto', async
     await expect(family.account(name)).toContainText('Konto wyłączone');
     await otherDevice.goto();
     await expect(otherDevice.submitButton).toBeVisible();
+    // Wyłączone konto nie zaloguje się poprawnym hasłem, a komunikat nie zdradza, że konto istnieje.
+    await otherDevice.submit(login, 'testowe-haslo-22');
+    await expect(otherDevice.error).toHaveText('Nieprawidłowy login lub hasło');
 
     await family.authLog.click();
     await expect(family.authLogEntries.filter({ hasText: `Nowe konto · ${name}` })).toHaveCount(1);

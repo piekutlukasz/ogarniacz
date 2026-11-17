@@ -23,6 +23,14 @@ export class ApiClient {
     await this.send(this.request.post('/api/auth/login', { data: { login: user.login, password: user.password } }));
   }
 
+  /**
+   * Kończy sesję tego kontekstu na serwerze, tak jakby wygasła. Tylko na świeżym logowaniu przez `LoginPage`,
+   * nigdy na aktorze: jego zapisaną sesję dzielą wszystkie testy.
+   */
+  async logOut(): Promise<void> {
+    await this.send(this.request.post('/api/auth/logout'));
+  }
+
   async family(): Promise<FamilyMember[]> {
     return this.json(this.request.get('/api/users'));
   }

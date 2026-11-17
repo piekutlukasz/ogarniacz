@@ -27,10 +27,15 @@ export class ShoppingPage extends Screen {
     return this.main.getByRole('button', { name: `Dodaj ${name}`, exact: true });
   }
 
-  async add(name: string, quantity?: string): Promise<ShoppingRow> {
+  /** Wpisuje i dodaje produkt, bez czekania na wiersz, np. gdy po dodaniu aplikacja pokaże logowanie. */
+  async submit(name: string, quantity?: string): Promise<void> {
     await this.nameInput.fill(name);
     if (quantity) await this.quantityInput.fill(quantity);
     await this.addButton.click();
+  }
+
+  async add(name: string, quantity?: string): Promise<ShoppingRow> {
+    await this.submit(name, quantity);
     const row = this.toBuy(name);
     await expect(row.root).toBeVisible();
     return row;

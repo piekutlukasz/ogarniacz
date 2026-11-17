@@ -1,6 +1,6 @@
 # Ogarniacz: dokumentacja projektu
 
-Stan na 14 listopada 2026. Kolejność prac opisuje [PLAN.md](PLAN.md).
+Stan na 17 listopada 2026. Kolejność prac opisuje [PLAN.md](PLAN.md).
 
 Plik opisuje tylko to, co **jest** w kodzie. Planowane prace, ich projekt i decyzje są w [plany/](plany/), a tutaj najwyżej jednym zdaniem z odnośnikiem.
 
@@ -321,18 +321,18 @@ Aplikacja działa w Dockerze albo bezpośrednio na Node.js 24, za proxy z HTTPS.
 | Wdrożenie | `backup verify` w CLI, krok aktualizacji z [instrukcje/WDROZENIE.md](instrukcje/WDROZENIE.md) | Migracje nowej wersji na kopii bazy przed restartem |
 | Ręczne | Prawdziwy iPhone i Android | Instalacja, push, offline |
 
-Test przekrojowy `routes.test.ts` zbiera wszystkie trasy z aplikacji i sprawdza, że każda poza jawnie publicznymi odpowiada bez sesji `401`. Po nieudanym przebiegu e2e CI zapisuje ślady Playwright i raport HTML jako artefakt.
+Test przekrojowy `routes.test.ts` zbiera wszystkie trasy z aplikacji i sprawdza, że każda poza jawnie publicznymi odpowiada bez sesji `401`. Scenariusze e2e logowania sprawdzają też wygaśnięcie sesji w trakcie pracy (logowanie zamiast aplikacji, a zakup dodany po wygaśnięciu trafia na serwer po ponownym zalogowaniu), komunikat o blokadzie i logowanie na wyłączone konto. Po nieudanym przebiegu e2e CI zapisuje ślady Playwright i raport HTML jako artefakt.
 
 Testy API obejmują też demo (`demo.test.ts`): logowanie na każde konto, zawartość tablicy, zakupów i kieszonkowego, odmowę wgrania do niepustej bazy oraz tryb demo (wejście bez hasła tylko na konta przykładowe, limit wierszy, nagłówki, reset, seed pustej bazy).
 
 Playwright nie zastąpi testu push na iPhonie, bo profil telefonu to tylko emulacja.
 
-**Znane luki (stan na 13 listopada 2026: 39 scenariuszy e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, oraz 312 testów API):**
+**Znane luki (stan na 17 listopada 2026: 43 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, oraz 320 testów API):**
 
 - Front nie ma testów jednostkowych; kolejkę zakupów offline (`ShoppingSync`) pokrywają tylko scenariusze e2e.
 - Serwer testowy używa prawdziwego zegara, więc przepływy zależne od czasu (np. „Wypłacone” za zamknięty tydzień) mają tylko testy API.
 
-Planowane testy (T2–T4, T8): [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md).
+Planowane testy (T2, T3, T8): [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md).
 
 ## 12. Główne ryzyka
 

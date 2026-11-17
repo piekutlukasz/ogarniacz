@@ -16,6 +16,12 @@ Ta sama konfiguracja startuje drugi serwer w trybie demo (`SMOKE_DEMO=true`, por
 
 Kreator pierwszego uruchomienia ma dwa kolejne serwery z pustą bazą (`SMOKE_EMPTY=true`, porty 3092 i 3093), po jednym na projekt `setup-iphone` i `setup-android`, bo kod działa raz na start serwera, a po założeniu konta kreator znika. `smokeServer.mjs` wyłuskuje kod z logu serwera i zapisuje go do pliku z `src/setup/setupCode.mjs` (`setupCodeFile(port)`), skąd czyta go scenariusz w `smoke/setup.spec.ts`. Scenariusz nie ma ponownej próby, bo druga trafiłaby na bazę z kontem. Page object kreatora to `SetupPage` (`heading`, `submit()`, `createParent()`, `codeInput`, `alert`), a zakładane konto to `SETUP_PARENT` z `src/data/users.ts`.
 
+## Logowanie
+
+`LoginPage.submit()` czeka na odpowiedź serwera, więc kolejne próby idą po kolei, tak jak u człowieka; na tym opiera się scenariusz blokady po pięciu złych hasłach. Blokada trwa kwadrans, dlatego scenariusz używa loginu spoza bazy. Serwer e2e nie dostaje adresu klienta, więc limit liczy się tylko na login i nie blokuje innych testów.
+
+Wygaśnięcie sesji w trakcie pracy: test loguje osobę przez `LoginPage`, a potem kończy tę jedną sesję przez `new ApiClient(page.context().request).logOut()`. Zapisana sesja aktora jest osobnym logowaniem i zostaje. `ApiClient.logOut()` nigdy na aktorze. `ShoppingPage.submit()` dodaje produkt bez czekania na wiersz, bo po wygaśnięciu sesji aplikacja od razu pokazuje logowanie.
+
 ## Struktura
 
 ```

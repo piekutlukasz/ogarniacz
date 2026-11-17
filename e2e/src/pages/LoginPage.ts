@@ -27,10 +27,16 @@ export class LoginPage {
     await this.page.goto('/');
   }
 
+  /**
+   * Wysyła formularz i czeka na odpowiedź serwera. Kolejna próba idzie dopiero po poprzedniej,
+   * tak jak u człowieka, więc licznik nieudanych prób liczy je po kolei.
+   */
   async submit(login: string, password: string): Promise<void> {
     await this.loginInput.fill(login);
     await this.passwordInput.fill(password);
+    const response = this.page.waitForResponse((candidate) => candidate.url().endsWith('/api/auth/login'));
     await this.submitButton.click();
+    await response;
   }
 
   /** Wchodzi na konto przykładowe jednym przyciskiem, bez hasła, i czeka na zalogowaną osobę. */
