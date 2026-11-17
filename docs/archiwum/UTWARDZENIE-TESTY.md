@@ -1,12 +1,12 @@
-# Utwardzenie i testy: co zostało
+# Utwardzenie po przeglądzie: testy i decyzje
 
-Stan na 17 listopada 2026. Część etapu 8 i wątek po 1.0 w [PLAN.md](../PLAN.md). Przegląd z 11 listopada 2026 (ustalenia B1–B9, luki T1–T8, sprawdzenia na produkcji, wyniki obu skanów ZAP) i notatki z wykonania poprawek są w archiwum: [archiwum/UTWARDZENIE-PRZEGLAD.md](../archiwum/UTWARDZENIE-PRZEGLAD.md). Zrobione są B1–B6, B8, B9, T1–T8, test tras bez sesji i powtórzenie skanu ZAP z trasami kont. Konta w aplikacji, które wyrosły z ustalenia B7, mają osobny plan: [KONTA.md](KONTA.md).
+Archiwum, zamknięte 17 listopada 2026: dawny `plany/UTWARDZENIE.md` z testami po 1.0 (T2–T4, T8), notatkami z ich wykonania i decyzjami. Przegląd z 11 listopada 2026 (ustalenia B1–B9, luki T1–T8, sprawdzenia na produkcji, wyniki obu skanów ZAP) i notatki z wykonania poprawek są w [UTWARDZENIE-PRZEGLAD.md](UTWARDZENIE-PRZEGLAD.md). Zrobione są B1–B6, B8, B9, T1–T8, test tras bez sesji i powtórzenie skanu ZAP z trasami kont. Konta w aplikacji, które wyrosły z ustalenia B7, mają osobny plan: [plany/KONTA.md](../plany/KONTA.md). Lista kontrolna przeglądu przed wydaniem obowiązuje dalej i jest w [PROJEKT.md](../PROJEKT.md), rozdział 9.
 
 ## Lista kontrolna
 
 **Przed 1.0:**
 
-Nic nie zostało. Skan ZAP z trasami kont, powtórzony 14 listopada 2026 na instancji bez `DEMO_MODE`, nie znalazł podatności; wynik jest w archiwum, rozdział 5.
+Nic nie zostało. Skan ZAP z trasami kont, powtórzony 14 listopada 2026 na instancji bez `DEMO_MODE`, nie znalazł podatności; wynik jest w [UTWARDZENIE-PRZEGLAD.md](UTWARDZENIE-PRZEGLAD.md), rozdział 5.
 
 **Po 1.0:**
 
@@ -40,11 +40,11 @@ Skan nie widzi zakończonych wydarzeń w sposób pewny (wydarzenia testowe są o
 
 **Zostaje ręczne:** instalacja na ekranie głównym i prawdziwy push na iPhonie i Androidzie. Emulacja telefonu w Playwright tego nie zastąpi.
 
-Scenariusz e2e kreatora pierwszego uruchomienia jest w teście dymnym (`e2e/smoke/setup.spec.ts`, opis w [KONTA.md](KONTA.md), rozdział „Testy”).
+Scenariusz e2e kreatora pierwszego uruchomienia jest w teście dymnym (`e2e/smoke/setup.spec.ts`, opis w [plany/KONTA.md](../plany/KONTA.md), rozdział „Testy”).
 
 ## Lista kontrolna przeglądu przed wydaniem
 
-Powtarzana przed większym wydaniem: trasy przed `requireSession` w `app.ts`, `requireRole` na nowych trasach, test uprawnień dziecka dla każdej nowej trasy, sekrety poza repozytorium, `npm audit`.
+Przeniesiona do [PROJEKT.md](../PROJEKT.md), rozdział 9, bo obowiązuje dalej.
 
 ## Decyzje
 
@@ -59,8 +59,6 @@ Powtarzana przed większym wydaniem: trasy przed `requireSession` w `app.ts`, `r
 
 - Czas w e2e (T3) steruje zmienna tylko do testów `TEST_CLOCK`, odrzucana na produkcji, ale przesunięcie dotyczy jednego żądania (nagłówek `X-Test-Now`), a nie całego serwera: przesunięty zegar całego serwera psułby testy biegnące równolegle. Odrzucony wariant: dane wstecz przez skrypt seedujący, bo tydzień założenia konta zależy od chwili pierwszego uruchomienia testów.
 
-**Otwarte:**
+**Ustalone 17 listopada 2026:**
 
-| Pytanie | Propozycja |
-|---|---|
-| Analiza statyczna w CI (Semgrep; CodeQL na prywatnym repozytorium jest płatny, do potwierdzenia)? | Nie na start: `npm audit` i lista kontrolna przeglądu. Po publikacji repozytorium CodeQL jest darmowy i warto go włączyć |
+- Analiza statyczna to darmowy CodeQL w domyślnej konfiguracji GitHuba (włączony 14 listopada 2026, po upublicznieniu repozytorium; języki JavaScript i TypeScript oraz workflow Actions), razem z `npm audit` w CI i listą kontrolną przeglądu przed wydaniem. Zostajemy przy tym rozwiązaniu i nie zmieniamy go na inne. Odrzucone: Semgrep i inne narzędzia, darmowe albo płatne, bo dublowałyby CodeQL i dokładały utrzymania przy jednej rodzinie jako użytkownikach.

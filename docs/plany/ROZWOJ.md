@@ -1,6 +1,6 @@
 # Rozwój po 1.0
 
-Stan na 14 listopada 2026. Drobniejsze prace i pomysły z [PLAN.md](../PLAN.md), które nie mają osobnego planu. Większe wątki po 1.0 mają własne pliki: [PUBLIKACJA.md](PUBLIKACJA.md) (instalacja dla innych i publikacja repozytorium) oraz testy po 1.0 w [UTWARDZENIE.md](UTWARDZENIE.md).
+Stan na 17 listopada 2026. Drobniejsze prace i pomysły z [PLAN.md](../PLAN.md), które nie mają osobnego planu. Większy wątek po 1.0 ma własny plik: [PUBLIKACJA.md](PUBLIKACJA.md) (instalacja dla innych i publikacja repozytorium). Testy po 1.0 są zrobione: [archiwum/UTWARDZENIE-TESTY.md](../archiwum/UTWARDZENIE-TESTY.md).
 
 Kolejność wynika z tego, czego rodzina będzie faktycznie potrzebować.
 

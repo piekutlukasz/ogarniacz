@@ -289,7 +289,7 @@ Aplikacja przechowuje dane dzieci, harmonogram domu i prywatne linki do kalendar
 
 - Zaproszenie przenosi token w części adresu po `#` (`/#zaproszenie=…`), więc nie trafia on do logów nginx ani proxy; front od razu usuwa go z adresu, a kod QR rysuje w przeglądarce, bez zewnętrznej usługi.
 
-Planowane: lista kontrolna przeglądu przed wydaniem ([plany/UTWARDZENIE.md](plany/UTWARDZENIE.md)).
+**Przegląd przed większym wydaniem:** trasy przed `requireSession` w `app.ts`, `requireRole` na nowych trasach, test uprawnień dziecka dla każdej nowej trasy, sekrety poza repozytorium, `npm audit`. Analiza statyczna to darmowy CodeQL w domyślnej konfiguracji GitHuba i przy nim zostajemy ([archiwum/UTWARDZENIE-TESTY.md](archiwum/UTWARDZENIE-TESTY.md), „Decyzje”).
 
 ## 10. Hosting i utrzymanie
 
@@ -330,7 +330,7 @@ Serwer testów e2e startuje z `TEST_CLOCK=true`: nagłówek `X-Test-Now` ustawia
 
 Playwright nie zastąpi testu push na iPhonie, bo profil telefonu to tylko emulacja.
 
-Stan na 17 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 323 testy API i 19 testów frontu. Sprawdzenie dostępności (`accessibility.spec.ts`, axe, WCAG 2.2 A i AA) przechodzi każdy ekran rodzica i podstrony ustawień we wszystkich wyglądach i obu trybach oraz ekran logowania; wynik i poprawki: [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md), T8.
+Stan na 17 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 323 testy API i 19 testów frontu. Sprawdzenie dostępności (`accessibility.spec.ts`, axe, WCAG 2.2 A i AA) przechodzi każdy ekran rodzica i podstrony ustawień we wszystkich wyglądach i obu trybach oraz ekran logowania; wynik i poprawki: [archiwum/UTWARDZENIE-TESTY.md](archiwum/UTWARDZENIE-TESTY.md), T8.
 
 ## 12. Główne ryzyka
 

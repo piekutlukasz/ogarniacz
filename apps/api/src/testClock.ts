@@ -8,7 +8,7 @@ import type { MiddlewareHandler } from 'hono';
 export const TEST_NOW_HEADER = 'X-Test-Now';
 
 /**
- * Zegar sterowany z testów e2e (docs/plany/UTWARDZENIE.md, T3). Przesuwa czas tylko dla żądania z nagłówkiem
+ * Zegar sterowany z testów e2e (docs/archiwum/UTWARDZENIE-TESTY.md, T3). Przesuwa czas tylko dla żądania z nagłówkiem
  * `X-Test-Now`, więc testy biegnące równolegle na tym samym serwerze nie przeszkadzają sobie nawzajem.
  * Zadania w tle (`jobs/scheduler.ts`) mają własny zegar i nagłówka nie widzą.
  */

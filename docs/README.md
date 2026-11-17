@@ -25,7 +25,6 @@ Każdy plik ma na początku listę kontrolną do odhaczania, potem analizę i uz
 
 | Plik | Etap | Zawartość |
 |---|---|---|
-| [plany/UTWARDZENIE.md](plany/UTWARDZENIE.md) | Po 1.0 | Testy po 1.0 (T2–T4, T8), lista kontrolna przeglądu przed wydaniem |
 | [plany/KONTA.md](plany/KONTA.md) | 8 | Konta w aplikacji: zaproszenia, sekcja „Rodzina”, kreator pierwszego uruchomienia; wszystkie trzy kroki zrobione 13 listopada 2026 |
 | [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md) | 9 | Instalacja z Dockerem i bez, publikacja repozytorium |
 | [plany/ROZWOJ.md](plany/ROZWOJ.md) | 9 | Dokończenie kieszonkowego, pomysły |
@@ -48,6 +47,7 @@ Dokumenty, które się już nie zmieniają, ale wyjaśniają, dlaczego coś dzia
 |---|---|
 | [archiwum/ETAPY.md](archiwum/ETAPY.md) | Pełne listy kontrolne etapów 0–7 i podjęte decyzje |
 | [archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md) | Przegląd bezpieczeństwa i testów z etapu 8: ustalenia B1–B9, luki T1–T8, sprawdzenia na produkcji, wyniki obu skanów ZAP, notatki z wykonania |
+| [archiwum/UTWARDZENIE-TESTY.md](archiwum/UTWARDZENIE-TESTY.md) | Testy po 1.0 (T2–T4, T8) z notatkami z wykonania, decyzje o zegarze w e2e i analizie statycznej (darmowy CodeQL) |
 | [archiwum/KALENDARZE-PROJEKT.md](archiwum/KALENDARZE-PROJEKT.md) | Projekt etapu 6: analiza ICS, zagrożenia, różnice między projektem a wykonaniem |
 
 ## Zasady utrzymania

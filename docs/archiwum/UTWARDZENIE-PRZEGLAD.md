@@ -1,6 +1,6 @@
 # Utwardzenie przed 1.0: przegląd i wykonanie
 
-Archiwum. Przegląd bezpieczeństwa i testów z 11 listopada 2026 (ustalenia B1–B9, luki w testach T1–T8, sprawdzenia na produkcji) oraz notatki z wykonania poprawek, zakończonego 13 listopada 2026, i powtórzenia skanu ZAP z 14 listopada 2026. Numeracja rozdziałów i ustaleń jest ta sama co w dawnym `plany/UTWARDZENIE.md`, więc odwołania w kodzie i dokumentach („B1”, „rozdział 8”) nadal prowadzą tutaj. To, co zostało do zrobienia, i otwarte decyzje są w [plany/UTWARDZENIE.md](../plany/UTWARDZENIE.md).
+Archiwum. Przegląd bezpieczeństwa i testów z 11 listopada 2026 (ustalenia B1–B9, luki w testach T1–T8, sprawdzenia na produkcji) oraz notatki z wykonania poprawek, zakończonego 13 listopada 2026, i powtórzenia skanu ZAP z 14 listopada 2026. Numeracja rozdziałów i ustaleń jest ta sama co w dawnym `plany/UTWARDZENIE.md`, więc odwołania w kodzie i dokumentach („B1”, „rozdział 8”) nadal prowadzą tutaj. Testy po 1.0 i późniejsze decyzje są w [UTWARDZENIE-TESTY.md](UTWARDZENIE-TESTY.md).
 
 ## 0. Zrobione punkty listy kontrolnej
 

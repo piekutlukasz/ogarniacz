@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Test dymny (T1 w docs/plany/UTWARDZENIE.md): zbudowana aplikacja zamiast serwera Vite, więc sprawdza to,
+// Test dymny (T1 w docs/archiwum/UTWARDZENIE-PRZEGLAD.md): zbudowana aplikacja zamiast serwera Vite, więc sprawdza to,
 // czego zwykłe e2e nie widzą: service worker, start bez sieci, front serwowany przez API i nagłówki.
 // Drugi serwer to ta sama aplikacja w trybie demo (T7), z własnymi projektami i scenariuszami w smoke/demo.spec.ts.
 // Dwa kolejne serwery startują z pustą bazą (kreator pierwszego uruchomienia, docs/plany/KONTA.md): kod działa raz
