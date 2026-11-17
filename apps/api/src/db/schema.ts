@@ -44,6 +44,8 @@ export const recurrences = sqliteTable('recurrences', {
   title: text('title').notNull(),
   assigneeId: text('assignee_id').references(() => users.id),
   pattern: text('pattern', { mode: 'json' }).$type<RecurrencePattern>().notNull(),
+  // Nagroda w złotych przekazywana każdemu tworzonemu zadaniu. Pusta: zadania bez nagrody.
+  reward: integer('reward'),
   // Dzień RRRR-MM-DD, od którego reguła działa i od którego liczy się „co N dni”.
   startOn: text('start_on').notNull(),
   // Kursor harmonogramu: ostatni obsłużony dzień wystąpienia, z zadaniem albo pominięty. Wcześniejszych nie tworzymy.

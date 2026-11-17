@@ -10,9 +10,10 @@ import {
 import { type FormEvent, useState } from 'react';
 import { ErrorNote } from '../../lib/ErrorNote';
 import { Avatar, personColor } from '../../lib/Avatar';
-import { useFamily } from '../tasks/api';
+import { useFamily, useHasChildren } from '../tasks/api';
 import { formatDue } from '../tasks/format';
 import { localToday } from '../tasks/hooks';
+import { RewardBadge, RewardPicker } from '../tasks/Reward';
 import { AssigneeSelect } from '../tasks/TaskItem';
 import { useChangeRecurrence, useCreateRecurrence, useRecurrences } from './api';
 
@@ -88,6 +89,7 @@ function RuleItem({ rule, family, today, busy, onChange }: RuleItemProps) {
   const [pauseUntil, setPauseUntil] = useState<string>('');
   const member = family.find((item) => item.id === rule.assigneeId);
   const person = rule.assigneeId ? (member?.name ?? 'Konto wyłączone') : 'Dla chętnych';
+  const hasChildren = useHasChildren();
   const state = rule.paused
     ? rule.pausedUntil
       ? `Pauza do ${formatDue(rule.pausedUntil, today)}`
@@ -119,7 +121,8 @@ function RuleItem({ rule, family, today, busy, onChange }: RuleItemProps) {
           >
             {rule.title}
           </button>
-          <p className="mt-0.5 flex flex-wrap gap-x-2 text-[0.8125rem] text-ink-muted">
+          <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[0.8125rem] text-ink-muted">
+            {hasChildren && rule.reward !== null && <RewardBadge reward={rule.reward} />}
             <span>{describePattern(rule.pattern)}</span>
             <span>{person}</span>
             {state && (
@@ -213,6 +216,8 @@ function RuleForm({ family, submitLabel, onDone, rule, onSave }: RuleFormProps) 
   const initial = rule?.pattern;
   const [title, setTitle] = useState(rule?.title ?? '');
   const [assigneeId, setAssigneeId] = useState(rule?.assigneeId ?? null);
+  const [reward, setReward] = useState(rule?.reward ?? null);
+  const hasChildren = useHasChildren();
   const [kind, setKind] = useState<RecurrencePattern['kind']>(initial?.kind ?? 'weekly');
   const [weekdays, setWeekdays] = useState<number[]>(initial?.kind === 'weekly' ? initial.weekdays : []);
   const [days, setDays] = useState(String(initial?.kind === 'interval' ? initial.days : 2));
@@ -242,13 +247,14 @@ function RuleForm({ family, submitLabel, onDone, rule, onSave }: RuleFormProps) 
     setProblem(undefined);
 
     if (!rule) {
-      create.mutate({ title, assigneeId, pattern, ...(kind === 'interval' ? { startOn } : {}) });
+      create.mutate({ title, assigneeId, pattern, reward, ...(kind === 'interval' ? { startOn } : {}) });
       return;
     }
     // Jak przy zadaniach: wysyłamy tylko zmienione pola.
     const change: UpdateRecurrence = {};
     if (title.trim() !== rule.title) change.title = title;
     if (assigneeId !== rule.assigneeId) change.assigneeId = assigneeId;
+    if (reward !== rule.reward) change.reward = reward;
     if (JSON.stringify(pattern) !== JSON.stringify(rule.pattern)) change.pattern = pattern;
     if (kind === 'interval' && startOn !== rule.startOn) change.startOn = startOn;
     onSave?.(change);
@@ -347,6 +353,9 @@ function RuleForm({ family, submitLabel, onDone, rule, onSave }: RuleFormProps) 
           {Number(monthDay) > 28 && <span className="text-ink-muted">w krótszym miesiącu ostatniego</span>}
         </label>
       )}
+
+      {/* Nagroda trafia do każdego tworzonego zadania; już utworzone zachowują swoją. */}
+      {hasChildren && <RewardPicker value={reward} onChange={setReward} />}
 
       {problem && (
         <p role="alert" className="rounded-xl bg-red-100 px-3 py-2 text-sm font-semibold text-red-900 dark:bg-red-950 dark:text-red-200">

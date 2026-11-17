@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { dueOnSchema, titleInputSchema } from './tasks';
+import { dueOnSchema, rewardSchema, titleInputSchema } from './tasks';
 import { addDays } from './time';
 
 /** Dni tygodnia jak w ISO 8601: 1 to poniedziałek, 7 to niedziela. */
@@ -29,6 +29,8 @@ export const recurrenceSchema = z.object({
   title: z.string().min(1),
   assigneeId: z.uuid().nullable(),
   pattern: recurrencePatternSchema,
+  /** Nagroda dla każdego tworzonego zadania; `null` bez nagrody. */
+  reward: rewardSchema.nullable(),
   /** Od tego dnia reguła działa. Wzorzec „co N dni” liczy się od niego. */
   startOn: dueOnSchema,
   paused: z.boolean(),
@@ -47,6 +49,7 @@ export const createRecurrenceSchema = z.object({
   title: titleInputSchema,
   assigneeId: z.uuid().nullable().optional(),
   pattern: recurrencePatternSchema,
+  reward: rewardSchema.nullable().optional(),
   /** Pominięty: od dziś. */
   startOn: dueOnSchema.optional(),
 });
@@ -57,6 +60,8 @@ export const updateRecurrenceSchema = z
     title: titleInputSchema,
     assigneeId: z.uuid().nullable(),
     pattern: recurrencePatternSchema,
+    /** Dotyczy zadań tworzonych od teraz; już utworzone zachowują swoją nagrodę. */
+    reward: rewardSchema.nullable(),
     startOn: dueOnSchema,
     /** Pauza: `{ until: null }` bez końca, `{ until: data }` do tego dnia włącznie, `null` wznawia. */
     pause: z.object({ until: dueOnSchema.nullable() }).nullable(),

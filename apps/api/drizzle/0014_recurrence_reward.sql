@@ -1,0 +1,1 @@
+ALTER TABLE `recurrences` ADD `reward` integer;

@@ -222,8 +222,8 @@ function fillDatabase(db: Tx, now: Date, passwordHash: string) {
   }
 
   // Zadania cykliczne: pierwsze wystąpienia generuje ten sam kod co harmonogram.
-  const rules: { title: string; pattern: RecurrencePattern; assigneeId: string }[] = [
-    { title: 'Wynieść segregację', pattern: { kind: 'weekly', weekdays: [1, 4] }, assigneeId: kasia },
+  const rules: { title: string; pattern: RecurrencePattern; assigneeId: string; reward?: number }[] = [
+    { title: 'Wynieść segregację', pattern: { kind: 'weekly', weekdays: [1, 4] }, assigneeId: kasia, reward: 5 },
     { title: 'Podlać kwiaty', pattern: { kind: 'interval', days: 3 }, assigneeId: mama },
     { title: 'Opłacić czynsz', pattern: { kind: 'monthly', day: 10 }, assigneeId: tata },
   ];
@@ -234,6 +234,7 @@ function fillDatabase(db: Tx, now: Date, passwordHash: string) {
         title: rule.title,
         assigneeId: rule.assigneeId,
         pattern: rule.pattern,
+        reward: rule.reward ?? null,
         startOn: addDays(today, -14),
         // Kursor sprzed startu: harmonogram tworzy od razu najświeższe wystąpienie, więc demo ma zaległe i bieżące zadania.
         lastDueOn: addDays(today, -15),

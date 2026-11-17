@@ -8,7 +8,7 @@ Kolejność wynika z tego, czego rodzina będzie faktycznie potrzebować.
 
 Główna część zrobiona 9 listopada 2026, przed 1.0, na prośbę rodziny (zakres w [archiwum](../archiwum/ETAPY.md)). Opis działania: [PROJEKT.md](../PROJEKT.md), rozdział 2, „Kieszonkowe i nagrody”.
 
-- [ ] Nagroda w regułach cyklicznych, np. śmieci +5 zł co tydzień
+- [x] Nagroda w regułach cyklicznych, np. śmieci +5 zł co tydzień (17 listopada 2026)
 - [x] Cofnięcie pomyłkowo oznaczonej wypłaty (17 listopada 2026)
 - [x] Ukrycie ekranu „Kieszonkowe” i wyboru nagrody, gdy w rodzinie nie ma aktywnego konta dziecka (17 listopada 2026; projekt niżej, „Kieszonkowe bez dzieci”)
 
