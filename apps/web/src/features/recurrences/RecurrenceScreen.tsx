@@ -37,7 +37,7 @@ export function RecurrenceScreen() {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm text-ink/60">
+      <p className="text-sm text-ink-muted">
         Zadanie pojawia się samo w dniu wystąpienia. Dopóki poprzednie nie jest gotowe, następne nie powstaje.
       </p>
       {adding ? (
@@ -54,9 +54,9 @@ export function RecurrenceScreen() {
       )}
 
       {(rulesQuery.isError || change.isError) && <ErrorNote error={change.error} />}
-      {rulesQuery.isPending && <p className="text-ink/60">Wczytuję…</p>}
+      {rulesQuery.isPending && <p className="text-ink-muted">Wczytuję…</p>}
       {rulesQuery.isSuccess && rulesQuery.data.length === 0 && !adding && (
-        <p className="rounded-2xl border-2 border-dashed border-paper-deep py-10 text-center text-ink/50">Nie ma jeszcze zadań cyklicznych.</p>
+        <p className="rounded-2xl border-2 border-dashed border-paper-deep py-10 text-center text-ink-muted">Nie ma jeszcze zadań cyklicznych.</p>
       )}
 
       <ul className="flex flex-col gap-2.5">
@@ -119,7 +119,7 @@ function RuleItem({ rule, family, today, busy, onChange }: RuleItemProps) {
           >
             {rule.title}
           </button>
-          <p className="mt-0.5 flex flex-wrap gap-x-2 text-[0.8125rem] text-ink/55">
+          <p className="mt-0.5 flex flex-wrap gap-x-2 text-[0.8125rem] text-ink-muted">
             <span>{describePattern(rule.pattern)}</span>
             <span>{person}</span>
             {state && (
@@ -144,7 +144,7 @@ function RuleItem({ rule, family, today, busy, onChange }: RuleItemProps) {
               <button
                 type="button"
                 onClick={() => setMode('pause')}
-                className="rounded-full px-2.5 py-2 text-sm font-semibold text-ink/60 active:bg-paper-deep"
+                className="rounded-full px-2.5 py-2 text-sm font-semibold text-ink-muted active:bg-paper-deep"
               >
                 Pauza
               </button>
@@ -166,9 +166,9 @@ function RuleItem({ rule, family, today, busy, onChange }: RuleItemProps) {
               className={`flex-1 ${inputClass}`}
             />
           </label>
-          <p className="text-sm text-ink/60">Bez daty pauza trwa do wznowienia.</p>
+          <p className="text-sm text-ink-muted">Bez daty pauza trwa do wznowienia.</p>
           <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => setMode('view')} className="rounded-full px-3 py-2 text-sm font-semibold text-ink/60">
+            <button type="button" onClick={() => setMode('view')} className="rounded-full px-3 py-2 text-sm font-semibold text-ink-muted">
               Anuluj
             </button>
             <button type="submit" className="rounded-full bg-brand px-4 py-2 text-sm font-bold text-on-brand">
@@ -296,7 +296,7 @@ function RuleForm({ family, submitLabel, onDone, rule, onSave }: RuleFormProps) 
                 aria-pressed={selected}
                 aria-label={WEEKDAY_NAMES[index]}
                 onClick={() => toggleDay(day)}
-                className={`rounded-full py-2 text-sm font-bold transition-colors ${selected ? 'bg-brand text-on-brand' : 'bg-paper-deep text-ink/60'}`}
+                className={`rounded-full py-2 text-sm font-bold transition-colors ${selected ? 'bg-brand text-on-brand' : 'bg-paper-deep text-ink-muted'}`}
               >
                 {label}
               </button>
@@ -344,7 +344,7 @@ function RuleForm({ family, submitLabel, onDone, rule, onSave }: RuleFormProps) 
             onChange={(event) => setMonthDay(event.target.value)}
             className={`w-24 ${inputClass}`}
           />
-          {Number(monthDay) > 28 && <span className="text-ink/60">w krótszym miesiącu ostatniego</span>}
+          {Number(monthDay) > 28 && <span className="text-ink-muted">w krótszym miesiącu ostatniego</span>}
         </label>
       )}
 
@@ -356,7 +356,7 @@ function RuleForm({ family, submitLabel, onDone, rule, onSave }: RuleFormProps) 
       {create.isError && <ErrorNote error={create.error} />}
 
       <div className="flex justify-end gap-2">
-        <button type="button" onClick={onDone} className="rounded-full px-3 py-2 text-sm font-semibold text-ink/60">
+        <button type="button" onClick={onDone} className="rounded-full px-3 py-2 text-sm font-semibold text-ink-muted">
           Anuluj
         </button>
         <button

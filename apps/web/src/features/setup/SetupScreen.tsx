@@ -45,7 +45,7 @@ export function SetupScreen({ onDone }: { onDone: (user: User) => void }) {
     <form onSubmit={submit} className="mx-auto mt-6 flex w-full max-w-sm flex-col gap-4 rounded-3xl bg-card p-6 shadow-lift">
       <div>
         <h2 className="text-2xl leading-tight font-extrabold">Pierwsze uruchomienie</h2>
-        <p className="text-ink/60">Załóż konto rodzica. Pozostałe osoby zaprosisz zaraz potem, w ustawieniach, w „Rodzinie”.</p>
+        <p className="text-ink-muted">Załóż konto rodzica. Pozostałe osoby zaprosisz zaraz potem, w ustawieniach, w „Rodzinie”.</p>
       </div>
       <label className="flex flex-col gap-1 text-sm font-medium">
         Imię
@@ -73,7 +73,7 @@ export function SetupScreen({ onDone }: { onDone: (user: User) => void }) {
         Powtórz hasło
         <input type="password" autoComplete="new-password" value={repeat} onChange={(event) => setRepeat(event.target.value)} required className={fieldClass} />
       </label>
-      <p className="text-sm text-ink/55">Login: małe litery bez polskich znaków. Hasło: co najmniej 8 znaków, bez loginu i imienia.</p>
+      <p className="text-sm text-ink-muted">Login: małe litery bez polskich znaków. Hasło: co najmniej 8 znaków, bez loginu i imienia.</p>
       <label className="flex flex-col gap-1 text-sm font-medium">
         Kod pierwszego uruchomienia
         <input
@@ -88,7 +88,7 @@ export function SetupScreen({ onDone }: { onDone: (user: User) => void }) {
           className={`${fieldClass} font-mono tracking-wider`}
         />
       </label>
-      <p className="text-sm text-ink/55">Kod jest w logu serwera, w linii „kod pierwszego uruchomienia”. Zmienia się przy każdym starcie.</p>
+      <p className="text-sm text-ink-muted">Kod jest w logu serwera, w linii „kod pierwszego uruchomienia”. Zmienia się przy każdym starcie.</p>
       {problem && <Alert>{problem}</Alert>}
       {failure && <Alert>{failure}</Alert>}
       <button

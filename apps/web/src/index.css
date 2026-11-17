@@ -25,6 +25,12 @@
   --color-paper: #fbf6ec;
   --color-paper-deep: #f1e7d5;
   --color-ink: #2b2420;
+  /*
+   * Przygaszony tekst (opisy, liczniki, nieaktywne opcje): tusz na 70%. Słabszy nie daje kontrastu 4,5:1
+   * na wszystkich tłach (kremowe, białe, żółte „Naklejki”, zielone „Wieczornego lasu”) w obu trybach;
+   * pilnuje tego e2e/tests/accessibility.spec.ts. Wyliczany z --color-ink, więc nadąża za każdym wyglądem.
+   */
+  --color-ink-muted: color-mix(in oklab, var(--color-ink) 70%, transparent);
   /* Ciemny koral: biały tekst na nim ma kontrast powyżej 4,5:1. */
   --color-brand: #c2452a;
   --color-brand-soft: #ffe3d6;

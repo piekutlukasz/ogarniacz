@@ -39,7 +39,7 @@ export function PasswordSection({ user, open }: { user: User; open: boolean }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm text-ink/55">To urządzenie zostaje zalogowane, pozostałe trzeba będzie zalogować od nowa.</p>
+      <p className="text-sm text-ink-muted">To urządzenie zostaje zalogowane, pozostałe trzeba będzie zalogować od nowa.</p>
 
       {message && (
         <p role="status" className={statusClass}>
@@ -143,7 +143,7 @@ function ChangePasswordForm({ user, onCancel, onChanged }: { user: User; onCance
           className={inputClass}
         />
       </label>
-      <p className="text-sm text-ink/55">Co najmniej 8 znaków, bez loginu i imienia.</p>
+      <p className="text-sm text-ink-muted">Co najmniej 8 znaków, bez loginu i imienia.</p>
       {problem && (
         <p role="alert" className="rounded-xl bg-red-100 px-3 py-2 text-sm font-semibold text-red-900 dark:bg-red-950 dark:text-red-200">
           {problem}

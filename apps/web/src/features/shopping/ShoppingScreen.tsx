@@ -41,7 +41,7 @@ export function ShoppingScreen({ user }: { user: User }) {
 
       <SyncNote pending={status.pending} offline={status.offline} />
       {listQuery.isError && <ErrorNote error={listQuery.error} />}
-      {listQuery.isPending && <p className="text-ink/60">Wczytuję listę…</p>}
+      {listQuery.isPending && <p className="text-ink-muted">Wczytuję listę…</p>}
 
       {listQuery.isSuccess && (
         <section aria-labelledby="shopping-to-buy" className="flex flex-col gap-2">
@@ -49,7 +49,7 @@ export function ShoppingScreen({ user }: { user: User }) {
             Do kupienia ({toBuy.length})
           </h2>
           {toBuy.length === 0 ? (
-            <p className="rounded-2xl border-2 border-dashed border-paper-deep py-8 text-center text-ink/50">
+            <p className="rounded-2xl border-2 border-dashed border-paper-deep py-8 text-center text-ink-muted">
               {inCart.length > 0 ? 'Wszystko w koszyku!' : 'Lista jest pusta.'}
             </p>
           ) : (
@@ -167,7 +167,7 @@ function AddForm({ suggestions, onList, onAdd }: AddFormProps) {
 
       {matches.length > 0 && (
         <div className="flex flex-col gap-1.5">
-          <p id="shopping-suggestions" className="text-xs font-semibold text-ink/50">
+          <p id="shopping-suggestions" className="text-xs font-semibold text-ink-muted">
             {name.trim() ? 'Podpowiedzi' : 'Często kupowane'}
           </p>
           <ul aria-labelledby="shopping-suggestions" className="flex flex-wrap gap-1.5">
@@ -183,7 +183,7 @@ function AddForm({ suggestions, onList, onAdd }: AddFormProps) {
                     +
                   </span>
                   {suggestion.name}
-                  {suggestion.quantity && <span className="ml-1 text-ink/50">{suggestion.quantity}</span>}
+                  {suggestion.quantity && <span className="ml-1 text-ink-muted">{suggestion.quantity}</span>}
                 </button>
               </li>
             ))}
@@ -242,10 +242,10 @@ function ShoppingRow({ item, family, onChange }: ShoppingRowProps) {
         </span>
         {/* Ilość płynie za nazwą jak tekst, więc długa nazwa i długa ilość zawijają się razem, bez ściskania słów. */}
         <span className="min-w-0 flex-1 break-words">
-          <span className={`font-bold ${checked ? 'text-ink/45 line-through' : ''}`}>{item.name}</span>
+          <span className={`font-bold ${checked ? 'text-ink-muted line-through' : ''}`}>{item.name}</span>
           {item.quantity && (
             <span
-              className={`ml-1.5 inline-block rounded-full bg-paper-deep px-2 py-0.5 text-sm font-semibold ${checked ? 'text-ink/40' : 'text-ink/70'}`}
+              className={`ml-1.5 inline-block rounded-full bg-paper-deep px-2 py-0.5 text-sm font-semibold ${checked ? 'text-ink-muted' : 'text-ink/70'}`}
             >
               {item.quantity}
             </span>
@@ -261,7 +261,7 @@ function ShoppingRow({ item, family, onChange }: ShoppingRowProps) {
         type="button"
         onClick={() => setEditing(true)}
         aria-label={`Zmień ${item.name}`}
-        className="flex size-9 shrink-0 items-center justify-center rounded-full text-ink/50 active:bg-paper-deep"
+        className="flex size-9 shrink-0 items-center justify-center rounded-full text-ink-muted active:bg-paper-deep"
       >
         <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3zM13.5 7.5l3 3" />
@@ -313,7 +313,7 @@ function EditForm({ item, onSave, onRemove, onCancel }: EditFormProps) {
           Usuń z listy
         </button>
         <div className="flex gap-2">
-          <button type="button" onClick={onCancel} className="rounded-full px-3 py-2 text-sm font-semibold text-ink/60">
+          <button type="button" onClick={onCancel} className="rounded-full px-3 py-2 text-sm font-semibold text-ink-muted">
             Anuluj
           </button>
           <button type="submit" className="rounded-full bg-brand px-4 py-2 text-sm font-bold text-on-brand">

@@ -76,7 +76,7 @@ function SetPassword({ token, onAccepted, onCancel }: { token: string; onAccepte
   if (preview.isPending) {
     return (
       <Card>
-        <p className="text-ink/60">Sprawdzam zaproszenie…</p>
+        <p className="text-ink-muted">Sprawdzam zaproszenie…</p>
       </Card>
     );
   }
@@ -107,7 +107,7 @@ function SetPassword({ token, onAccepted, onCancel }: { token: string; onAccepte
     <form onSubmit={submit} className="mx-auto mt-6 flex w-full max-w-sm flex-col gap-4 rounded-3xl bg-card p-6 shadow-lift">
       <div>
         <p className="text-2xl leading-tight font-extrabold">Cześć, {invite.name}!</p>
-        <p className="text-ink/60">
+        <p className="text-ink-muted">
           {isNew ? 'Ustaw hasło do swojego konta w Ogarniaczu.' : 'Ustaw nowe hasło. Na innych urządzeniach trzeba będzie zalogować się od nowa.'}
         </p>
       </div>
@@ -124,7 +124,7 @@ function SetPassword({ token, onAccepted, onCancel }: { token: string; onAccepte
         Powtórz hasło
         <input type="password" autoComplete="new-password" value={repeat} onChange={(event) => setRepeat(event.target.value)} required className={fieldClass} />
       </label>
-      <p className="text-sm text-ink/55">Co najmniej 8 znaków, bez loginu i imienia.</p>
+      <p className="text-sm text-ink-muted">Co najmniej 8 znaków, bez loginu i imienia.</p>
       {problem && <Alert>{problem}</Alert>}
       {accept.isError && <Alert>{message(accept.error)}</Alert>}
       <button type="submit" disabled={accept.isPending} className={mainButton}>
@@ -154,7 +154,7 @@ function Welcome({ user, onDone }: { user: User; onDone: () => void }) {
           ) : (
             <p>W menu przeglądarki wybierz „Dodaj do ekranu głównego” albo „Zainstaluj aplikację”.</p>
           )}
-          <p className="text-ink/60">Dopiero wtedy działają powiadomienia.</p>
+          <p className="text-ink-muted">Dopiero wtedy działają powiadomienia.</p>
         </div>
       )}
       <button type="button" onClick={onDone} className={mainButton}>

@@ -18,7 +18,7 @@ export function RewardBadge({ reward }: { reward: number }) {
 type RewardPickerProps = { value: number | null; onChange: (value: number | null) => void };
 
 const optionClass = (selected: boolean) =>
-  `rounded-xl px-1 py-2 text-[0.8125rem] font-bold whitespace-nowrap transition ${selected ? 'bg-card shadow-card' : 'text-ink/55'}`;
+  `rounded-xl px-1 py-2 text-[0.8125rem] font-bold whitespace-nowrap transition ${selected ? 'bg-card shadow-card' : 'text-ink-muted'}`;
 
 /**
  * Wybór nagrody: brak, gotowe kwoty albo własna. Widzi go tylko rodzic.
@@ -37,7 +37,7 @@ export function RewardPicker({ value, onChange }: RewardPickerProps) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <span id={labelId} className="shrink-0 text-sm font-semibold text-ink/60">
+        <span id={labelId} className="shrink-0 text-sm font-semibold text-ink-muted">
           Nagroda
         </span>
         <div role="radiogroup" aria-labelledby={labelId} className="grid flex-1 grid-cols-5 gap-1 rounded-2xl bg-paper-deep p-1">
@@ -62,7 +62,7 @@ export function RewardPicker({ value, onChange }: RewardPickerProps) {
         </div>
       </div>
       {custom && (
-        <label className="flex items-center justify-end gap-2 text-sm font-semibold text-ink/60">
+        <label className="flex items-center justify-end gap-2 text-sm font-semibold text-ink-muted">
           Własna kwota
           <input
             type="number"

@@ -60,7 +60,7 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <span id={labelId} className="shrink-0 text-sm font-semibold text-ink/60">
+      <span id={labelId} className="shrink-0 text-sm font-semibold text-ink-muted">
         Kolor
       </span>
       <div role="radiogroup" aria-labelledby={labelId} className="flex flex-1 items-center justify-between gap-1 px-1 py-1">

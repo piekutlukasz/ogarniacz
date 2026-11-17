@@ -78,6 +78,10 @@ Hierarchia page objectów:
   czyszczona. Test zaproszeń zakłada konta z loginem `e2e-nowy-<projekt>-…` i wyłącza je przez `api.disableAccounts(prefiks, hasło rodzica)`
   na początku (pozostałości po przerwanych przebiegach) i w `finally`. Nowe stałe konto testowe zmniejsza ten zapas.
 
+## Dostępność
+
+`tests/accessibility.spec.ts` sprawdza ekrany narzędziem axe (`accessibilityProblems(page, gdzie)` z `src/a11y/axe.ts`, reguły WCAG 2.2 A i AA) i porównuje listę problemów z pustą: komunikat błędu pokazuje regułę, element i wyliczony kontrast. Tryb i wygląd ustawia `App.openWithAppearance(tryb, wygląd)` przez `localStorage` tego kontekstu, więc nie przeszkadza innym testom. Nowy ekran albo podstronę ustawień dopisz do scenariusza.
+
 ## Kalendarze
 
 Playwright startuje drugi serwer, `src/setup/icsServer.mjs` na porcie 5199, który podaje pliki ICS z wydarzeniami na dziś. Tytuł wydarzenia jest w ścieżce, więc `feedUrl(uniqueTitle('Basen'))` (z `src/data/calendars.ts`) daje kalendarz z własnymi danymi testu: wydarzenie 18:00–19:00 o tym tytule i całodniowe „… (cały dzień)”. Serwer testowy API dostaje `CALENDAR_ENCRYPTION_KEY`, `CALENDAR_ALLOWED_HOSTS` z tym adresem i `CALENDAR_ALLOW_HTTP=true`, który na produkcji jest zabroniony.

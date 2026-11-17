@@ -115,7 +115,7 @@ export function NotificationsSection({ push }: { push: PushDevice }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm text-ink/55">Przypomnienia i poranne podsumowanie na ten telefon.</p>
+      <p className="text-sm text-ink-muted">Przypomnienia i poranne podsumowanie na ten telefon.</p>
 
       {device === 'unsupported' && (
         <p className="rounded-2xl bg-paper-deep px-4 py-3 text-sm text-ink/80">
@@ -153,7 +153,7 @@ export function NotificationsSection({ push }: { push: PushDevice }) {
                       />
                       <span className="min-w-0 flex-1">
                         <span className="block font-bold">{NOTIFICATION_KIND_LABELS[kind].title}</span>
-                        <span className="block text-[0.8125rem] text-ink/55">{NOTIFICATION_KIND_LABELS[kind].hint}</span>
+                        <span className="block text-[0.8125rem] text-ink-muted">{NOTIFICATION_KIND_LABELS[kind].hint}</span>
                       </span>
                     </label>
                   </li>
@@ -166,7 +166,7 @@ export function NotificationsSection({ push }: { push: PushDevice }) {
                 <HourSelect label="Cisza nocna od" hours={HOURS} value={value.quietFrom} onChange={(quietFrom) => updatePrefs.mutate({ quietFrom })} />
                 <HourSelect label="Cisza nocna do" hours={HOURS} value={value.quietTo} onChange={(quietTo) => updatePrefs.mutate({ quietTo })} />
               </div>
-              <p className="text-[0.8125rem] text-ink/55">W ciszy nocnej nie dostajesz przypomnień o nowych zadaniach. Poranne podsumowanie wychodzi o wybranej godzinie.</p>
+              <p className="text-[0.8125rem] text-ink-muted">W ciszy nocnej nie dostajesz przypomnień o nowych zadaniach. Poranne podsumowanie wychodzi o wybranej godzinie.</p>
             </>
           )}
 
@@ -174,7 +174,7 @@ export function NotificationsSection({ push }: { push: PushDevice }) {
             <button type="button" onClick={test} disabled={busy} className="rounded-xl bg-paper-deep px-4 py-2 text-sm font-bold disabled:opacity-60">
               Wyślij testowe powiadomienie
             </button>
-            <button type="button" onClick={turnOff} disabled={busy} className="rounded-xl px-4 py-2 text-sm font-semibold text-ink/55 underline underline-offset-2 disabled:opacity-60">
+            <button type="button" onClick={turnOff} disabled={busy} className="rounded-xl px-4 py-2 text-sm font-semibold text-ink-muted underline underline-offset-2 disabled:opacity-60">
               Wyłącz na tym telefonie
             </button>
           </div>
@@ -189,7 +189,7 @@ export function NotificationsSection({ push }: { push: PushDevice }) {
 
 function HourSelect({ label, hours, value, onChange }: { label: string; hours: number[]; value: number; onChange: (hour: number) => void }) {
   return (
-    <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold text-ink/55">
+    <label className="flex flex-col gap-1 text-[0.8125rem] font-semibold text-ink-muted">
       {label}
       <select
         value={value}

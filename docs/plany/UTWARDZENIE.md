@@ -1,6 +1,6 @@
 # Utwardzenie i testy: co zostało
 
-Stan na 15 listopada 2026. Część etapu 8 i wątek po 1.0 w [PLAN.md](../PLAN.md). Przegląd z 11 listopada 2026 (ustalenia B1–B9, luki T1–T8, sprawdzenia na produkcji, wyniki obu skanów ZAP) i notatki z wykonania poprawek są w archiwum: [archiwum/UTWARDZENIE-PRZEGLAD.md](../archiwum/UTWARDZENIE-PRZEGLAD.md). Zrobione są B1–B6, B8, B9, T1–T7, test tras bez sesji i powtórzenie skanu ZAP z trasami kont. Konta w aplikacji, które wyrosły z ustalenia B7, mają osobny plan: [KONTA.md](KONTA.md).
+Stan na 17 listopada 2026. Część etapu 8 i wątek po 1.0 w [PLAN.md](../PLAN.md). Przegląd z 11 listopada 2026 (ustalenia B1–B9, luki T1–T8, sprawdzenia na produkcji, wyniki obu skanów ZAP) i notatki z wykonania poprawek są w archiwum: [archiwum/UTWARDZENIE-PRZEGLAD.md](../archiwum/UTWARDZENIE-PRZEGLAD.md). Zrobione są B1–B6, B8, B9, T1–T8, test tras bez sesji i powtórzenie skanu ZAP z trasami kont. Konta w aplikacji, które wyrosły z ustalenia B7, mają osobny plan: [KONTA.md](KONTA.md).
 
 ## Lista kontrolna
 
@@ -13,7 +13,7 @@ Nic nie zostało. Skan ZAP z trasami kont, powtórzony 14 listopada 2026 na inst
 - [x] T2: testy jednostkowe frontu, najpierw `ShoppingSync` (kolejka, ponawianie, zmiana konta), 15 listopada 2026
 - [x] T3: sterowanie czasem serwera w e2e i scenariusz „Wypłacone” za zamknięty tydzień, 15 listopada 2026
 - [x] T4: e2e logowania: wygaśnięcie sesji w trakcie pracy, komunikat o blokadzie, wyłączone konto, 15 listopada 2026
-- [ ] T8: automatyczne sprawdzenie dostępności (`@axe-core/playwright`) na każdym ekranie
+- [x] T8: automatyczne sprawdzenie dostępności (`@axe-core/playwright`) na każdym ekranie, 17 listopada 2026
 
 ## Testy po 1.0
 
@@ -29,6 +29,14 @@ Nic nie zostało. Skan ZAP z trasami kont, powtórzony 14 listopada 2026 na inst
 - T2: `apps/web/src/features/shopping/sync.test.ts`, Vitest z `fake-indexeddb` i atrapą `fetch`; `npm test` uruchamia teraz testy API i frontu.
 - T3: zegar sterowany nagłówkiem `X-Test-Now` dla jednego żądania (`apps/api/src/testClock.ts`, `TEST_CLOCK=true` tylko na serwerze e2e). Scenariusz w `allowance.spec.ts` przesuwa zegar rodzica i dziecka projektu o tydzień i szuka niewypłaconego tygodnia, bo baza e2e nie jest czyszczona.
 - T4: blokada logowania w `auth.spec.ts` (na nieistniejącym loginie), wygaśnięcie sesji w trakcie pracy z kolejką zakupów bez sieci w teście „Wyloguj inne urządzenia” (`account.spec.ts`), wyłączone konto w teście zaproszeń (`family.spec.ts`). Bez nowych kont, bo limit 10 aktywnych kont ma w bazie e2e mały zapas. Scenariusz wyłączonego konta znalazł błąd: drugie `401` z żądania wysłanego przed wylogowaniem czyściło dane jeszcze raz, usuwało trwające pytanie o kreator i aplikacja zostawała na „Wczytuję…” zamiast logowania. Poprawka w `apps/web/src/main.tsx`.
+
+**Wykonanie T8 (17 listopada 2026):** `e2e/tests/accessibility.spec.ts`, reguły WCAG 2.2 A i AA. Jeden scenariusz rodzica przechodzi „Dziś”, trzy zakładki tablicy, archiwum, „Cykliczne”, „Zakupy”, „Kieszonkowe” oraz menu i pięć podstron ustawień w każdym wyglądzie („Lodówka”, „Wieczorny las”, „Naklejki”) i obu trybach; drugi sprawdza ekran logowania. Scenariusz zakłada własne zadania zaległe, z kolorem, w trakcie i gotowe. Pierwszy skan znalazł ponad 600 miejsc z za słabym kontrastem i 2 przyciski z nazwą niezgodną z widocznym tekstem. Poprawki:
+
+- Przygaszony tekst (`text-ink/35`–`/65`, 111 miejsc) dawał na białej karteczce 3,5–4,1:1 zamiast 4,5:1. Zastąpił go nazwany kolor `ink-muted`: tusz na 70%, najsłabszy, który przechodzi na każdym tle we wszystkich wyglądach i trybach (najgorzej 4,97:1 w „Wieczornym lesie”). Zostało tylko przygaszenie podpowiedzi w polach (`placeholder`).
+- Gotowe zadanie i zakończone wydarzenie z kalendarza przygasały całą kartę przezroczystością 55%, więc opis pod tytułem spadał do 3:1. Teraz przygasa tylko tytuł (gotowe zadanie zostaje też przekreślone). Dzień tygodnia na „Dziś”: przezroczystość 70% zamiast 60%.
+- Imię w nagłówku i zakładki statusów miały `aria-label` inny niż widoczny tekst, co przeszkadza w sterowaniu głosem. Nazwa jest teraz z widocznego tekstu, uzupełnionego tekstem tylko dla czytnika (`sr-only`), więc się nie zmieniła. Przycisk powrotu z archiwum pokazuje „Wróć” zamiast „Tablica”, bo nazywa się „Wróć na tablicę”.
+
+Skan nie widzi zakończonych wydarzeń w sposób pewny (wydarzenia testowe są o 18:00), dialogów otwieranych z kart ani widoku dziecka; poprawki obejmują je tym samym kolorem.
 
 **Zostaje ręczne:** instalacja na ekranie głównym i prawdziwy push na iPhonie i Androidzie. Emulacja telefonu w Playwright tego nie zastąpi.
 
