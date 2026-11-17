@@ -30,7 +30,7 @@ import { useQuery } from '@tanstack/react-query';
 import { type FormEvent, useState } from 'react';
 import { ErrorNote } from '../../lib/ErrorNote';
 import { ArchiveIcon } from '../../lib/icons';
-import { ACTIVE_TASKS_KEY, fetchTasks, useFamily } from './api';
+import { ACTIVE_TASKS_KEY, fetchTasks, useFamily, useHasChildren } from './api';
 import { localToday, useChangeTask, useCreateTask } from './hooks';
 import { RewardPicker } from './Reward';
 import { ColorPicker } from './TaskColor';
@@ -261,6 +261,7 @@ function NewTaskForm({ user, onCreated }: { user: User; onCreated: () => void })
   const [round, setRound] = useState(0);
   const [problem, setProblem] = useState<string>();
   const family = useFamily().data ?? [];
+  const hasChildren = useHasChildren();
 
   const addTask = useCreateTask(() => {
     setTitle('');
@@ -309,7 +310,7 @@ function NewTaskForm({ user, onCreated }: { user: User; onCreated: () => void })
         {user.role === 'parent' && <AssigneeSelect family={family} value={assigneeId} onChange={setAssigneeId} />}
         <DueInput value={dueOn} onChange={setDueOn} />
       </div>
-      {user.role === 'parent' && <RewardPicker key={round} value={reward} onChange={setReward} />}
+      {user.role === 'parent' && hasChildren && <RewardPicker key={round} value={reward} onChange={setReward} />}
       <ColorPicker value={color} onChange={setColor} />
       {addTask.isError && <ErrorNote error={addTask.error} />}
     </form>

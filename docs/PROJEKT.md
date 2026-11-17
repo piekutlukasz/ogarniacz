@@ -51,8 +51,9 @@ Ogarniacz to prywatna aplikacja dla jednej rodziny. Zbiera w jednym miejscu to, 
 - **Naliczanie.** Nagrodę dostaje dziecko przypisane do zadania, gdy trafia ono do „Gotowe”, także po terminie. Zadanie dla chętnych nagradza dziecko, które je wzięło. Cofnięcie z „Gotowe” zdejmuje nagrodę, archiwizacja ukończonego zadania jej nie zabiera. Nie ma osobnego zatwierdzania: rodzic przegląda listę przy wypłacie.
 - **Tydzień i wypłata.** Tydzień trwa od poniedziałku do niedzieli według dnia ukończenia zadania w czasie polskim, a wypłata jest w następny poniedziałek. Rodzic oznacza ją przyciskiem „Wypłacone” z potwierdzeniem; kwota zapisuje się wtedy na stałe. Niewypłacony tydzień czeka na ekranie przez cztery tygodnie.
 - **Kto co widzi.** Dziecko widzi tylko swoją kwotę: ile dostanie w poniedziałek, z czego się składa i na czym może jeszcze zarobić. Rodzic widzi wszystkie dzieci, sumę do przygotowania i ostatnie wypłaty.
+- **Rodzina bez dziecka.** Gdy w rodzinie nie ma aktywnego konta dziecka, ekran „Kieszonkowe” znika z paska nawigacji, formularze zadań nie mają wyboru nagrody, a karteczki nie pokazują plakietek. Front liczy to z listy rodziny (`GET /api/users`, hook `useHasChildren`); API i zapisane nagrody się nie zmieniają, a dodanie albo włączenie konta dziecka przywraca wszystko. Link z powiadomienia do kieszonkowego prowadzi wtedy do „Dziś”, a archiwum dalej pokazuje dawne nagrody jako historię.
 
-Planowane dokończenie kieszonkowego (m.in. ukrycie ekranu, gdy w rodzinie nie ma dziecka) i pomysły na rozwój, także te ze szkicem, są w [plany/ROZWOJ.md](plany/ROZWOJ.md).
+Planowane dokończenie kieszonkowego i pomysły na rozwój, także te ze szkicem, są w [plany/ROZWOJ.md](plany/ROZWOJ.md).
 
 ## 3. Architektura
 

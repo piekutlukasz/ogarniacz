@@ -10,11 +10,11 @@ Główna część zrobiona 9 listopada 2026, przed 1.0, na prośbę rodziny (zak
 
 - [ ] Nagroda w regułach cyklicznych, np. śmieci +5 zł co tydzień
 - [ ] Cofnięcie pomyłkowo oznaczonej wypłaty
-- [ ] Ukrycie ekranu „Kieszonkowe” i wyboru nagrody, gdy w rodzinie nie ma aktywnego konta dziecka (projekt niżej, „Kieszonkowe bez dzieci”)
+- [x] Ukrycie ekranu „Kieszonkowe” i wyboru nagrody, gdy w rodzinie nie ma aktywnego konta dziecka (17 listopada 2026; projekt niżej, „Kieszonkowe bez dzieci”)
 
 ### Kieszonkowe bez dzieci
 
-**Projekt z 11 listopada 2026.** Gdy w rodzinie nie ma aktywnego konta dziecka, ekran „Kieszonkowe” znika z paska nawigacji, a formularz zadania nie pokazuje wyboru nagrody, bo nie miałby kto jej dostać. Link z powiadomienia (`?ekran=allowance`) prowadzi wtedy do „Dziś”, tak jak dziś przy ekranie niedostępnym dla roli. Front zna rodzinę z `GET /api/users` (`useFamily`), więc nie trzeba nowej trasy; API zostaje bez zmian, a dodanie albo włączenie konta dziecka przywraca ekran. Do ustalenia: czy nagrody już ustawione na otwartych zadaniach pokazujemy dalej na karteczkach.
+**Projekt z 11 listopada 2026.** Gdy w rodzinie nie ma aktywnego konta dziecka, ekran „Kieszonkowe” znika z paska nawigacji, a formularz zadania nie pokazuje wyboru nagrody, bo nie miałby kto jej dostać. Link z powiadomienia (`?ekran=allowance`) prowadzi wtedy do „Dziś”, tak jak dziś przy ekranie niedostępnym dla roli. Front zna rodzinę z `GET /api/users` (`useFamily`), więc nie trzeba nowej trasy; API zostaje bez zmian, a dodanie albo włączenie konta dziecka przywraca ekran. Decyzja z 17 listopada 2026: nagrody już ustawione na otwartych zadaniach znikają z karteczek, ale zostają w bazie i wracają z kontem dziecka. Archiwum pokazuje je dalej, bo to historia. Opis działania: [PROJEKT.md](../PROJEKT.md), rozdział 2, „Rodzina bez dziecka”.
 
 ## Demo
 
