@@ -185,10 +185,11 @@ Ustawienia API są opcjonalne. Opisuje je `apps/api/.env.example`, a lokalne war
 Aplikację da się uruchomić w Dockerze albo bezpośrednio na Node.js 24, na dowolnym serwerze z HTTPS i własną domeną albo subdomeną:
 
 ```bash
-docker compose up -d --build
+docker compose pull
+docker compose up -d
 ```
 
-Obraz jest budowany i uruchamiany w CI przy każdej zmianie. Baza leży na wolumenie `ogarniacz-data`, a port 3000 jest dostępny tylko lokalnie, dla proxy z HTTPS. Gałąź `prod` wskazuje ostatni commit z `main`, który przeszedł całe CI:
+Gotowy obraz (`ghcr.io/piekutlukasz/ogarniacz`, `amd64` i `arm64`) powstaje przy każdym wydaniu; `docker compose up -d --build` buduje go z repozytorium. Obraz jest też budowany i uruchamiany w CI przy każdej zmianie. Baza leży na wolumenie `ogarniacz-data`, a port 3000 jest dostępny tylko lokalnie, dla proxy z HTTPS. Gałąź `prod` wskazuje ostatni commit z `main`, który przeszedł całe CI:
 
 ```text
 push na main ──► CI (audyt, typecheck, testy, build, e2e, test dymny, obraz Docker) ──► gałąź prod

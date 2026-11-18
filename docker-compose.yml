@@ -1,5 +1,8 @@
 services:
   ogarniacz:
+    # Gotowy obraz z GHCR: tag 1 to ostatnie wydanie 1.x (`docker compose pull && docker compose up -d`).
+    # `docker compose up -d --build` buduje obraz z tego repozytorium pod tą samą nazwą.
+    image: ghcr.io/piekutlukasz/ogarniacz:1
     build: .
     restart: unless-stopped
     # Port tylko lokalnie: ruch z internetu przechodzi przez nginx.

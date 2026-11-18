@@ -30,11 +30,16 @@ Klucz kalendarzy i klucze VAPID zapisz w menedżerze haseł: nie ma ich w kopii 
 
 ## Droga 1: Docker
 
-Obraz z `Dockerfile` działa jako użytkownik `node`, trzyma bazę i kopie na wolumenie `/data`, a migracje wykonuje sam przy starcie. `docker-compose.yml` wystawia port 3000 tylko lokalnie, dla proxy na tym samym serwerze.
+Obraz działa jako użytkownik `node`, trzyma bazę i kopie na wolumenie `/data`, a migracje wykonuje sam przy starcie. `docker-compose.yml` wystawia port 3000 tylko lokalnie, dla proxy na tym samym serwerze.
+
+Gotowy obraz dla `linux/amd64` i `linux/arm64` jest w GHCR (`ghcr.io/piekutlukasz/ogarniacz`), publikowany przy każdym wydaniu. `docker-compose.yml` wskazuje tag `1`, czyli ostatnie wydanie 1.x; konkretną wersję daje tag pełny, np. `1.0.0`.
 
 ```bash
-docker compose up -d --build
+docker compose pull
+docker compose up -d
 ```
+
+Obraz z własnego klonu repozytorium, np. z gałęzi `prod`, buduje `docker compose up -d --build`.
 
 Zmienne z tabeli wyżej dopisz w `docker-compose.yml` (sekcja `environment` albo `env_file`). Konta i kopie obsługuje CLI w kontenerze:
 
@@ -131,7 +136,7 @@ Ustaw dowolną usługę, która co kilka minut sprawdza `https://DOMENA/api/heal
 
 ## Aktualizacja
 
-Gałąź `prod` wskazuje ostatni commit z `main`, który przeszedł całe CI (zadanie `promote` w `.github/workflows/ci.yml`). Instalacja, która śledzi `prod`, dostaje tylko sprawdzone wersje.
+Są dwa kanały aktualizacji. Oznaczone wydania (tagi `vX.Y.Z`, [lista wydań](https://github.com/piekutlukasz/ogarniacz/releases)) zmieniają się rzadziej i mają opis zmian; w Dockerze to gotowy obraz z GHCR. Gałąź `prod` wskazuje ostatni commit z `main`, który przeszedł całe CI (zadanie `promote` w `.github/workflows/ci.yml`), więc daje każdą sprawdzoną zmianę od razu. Bez Dockera w kroku 2 niżej zamiast `prod` można wskazać tag: `git fetch --tags origin && git checkout v1.0.0`.
 
 Bezpieczna aktualizacja bez Dockera, w tej kolejności:
 
@@ -143,7 +148,7 @@ Bezpieczna aktualizacja bez Dockera, w tej kolejności:
 
 Migracje wykonują się same przy starcie. Tylko dodają kolumny i tabele, więc starsza wersja działa na nowszej bazie, a powrót do poprzedniej wersji to te same kroki z wybranym commitem.
 
-W Dockerze: kopia przez CLI w kontenerze, potem `git pull` i `docker compose up -d --build`.
+W Dockerze: kopia przez CLI w kontenerze, potem `docker compose pull && docker compose up -d` (gotowy obraz) albo `git pull && docker compose up -d --build` (obraz z klonu).
 
 Jeśli nowa wersja psuje dane, zatrzymaj aplikację i odtwórz kopię zrobioną przed aktualizacją:
 
