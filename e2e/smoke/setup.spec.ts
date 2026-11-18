@@ -28,7 +28,7 @@ async function setupCode(baseURL: string | undefined): Promise<string> {
   return code;
 }
 
-test('pierwszy rodzic zakłada konto kreatorem, a potem kreator znika', async ({ page, request, baseURL }) => {
+test('pierwszy rodzic zakłada konto kreatorem, potem kreator znika, a bez dziecka nie ma kieszonkowego', async ({ page, request, baseURL }) => {
   const code = await setupCode(baseURL);
   const setup = new SetupPage(page);
   await setup.goto();
@@ -58,4 +58,14 @@ test('pierwszy rodzic zakłada konto kreatorem, a potem kreator znika', async ({
   await expect(login.submitButton).toBeVisible();
   await expect(setup.heading).toHaveCount(0);
   await login.logInAs(SETUP_PARENT);
+
+  // Rodzina bez dziecka (docs/plany/ROZWOJ.md, „Kieszonkowe bez dzieci”): nie ma kieszonkowego ani wyboru nagrody,
+  // a link z powiadomienia do kieszonkowego prowadzi na „Dziś”.
+  await expect(app.today.navButton).toHaveAttribute('aria-current', 'page');
+  await expect(app.allowance.navButton).toHaveCount(0);
+  await app.board.open();
+  await expect(app.board.titleInput).toBeVisible();
+  await expect(app.board.rewardOptions).toHaveCount(0);
+  await app.openFromNotification('allowance');
+  await expect(app.today.navButton).toHaveAttribute('aria-current', 'page');
 });

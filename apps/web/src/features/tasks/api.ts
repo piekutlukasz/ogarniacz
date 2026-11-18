@@ -43,7 +43,17 @@ export function updateTask(id: string, input: UpdateTask): Promise<Task> {
   return request(taskSchema, `/api/tasks/${id}`, jsonBody('PATCH', input));
 }
 
-/** Rodzina zmienia się rzadko, bo konta zakłada skrypt, więc nie odświeżamy jej w tle. */
+/** Rodzina zmienia się rzadko, więc nie odświeżamy jej w tle; zmiany kont w ustawieniach odświeżają ją same. */
 export function useFamily() {
   return useQuery({ queryKey: FAMILY_KEY, queryFn: fetchFamily, staleTime: 60 * 60 * 1000 });
+}
+
+/**
+ * Czy w rodzinie jest aktywne konto dziecka. Bez niego kieszonkowe i nagrody nie mają sensu: ekran „Kieszonkowe”,
+ * wybór nagrody i plakietki znikają, a nagrody zostają w bazie i wracają z kontem dziecka.
+ * Dopóki rodzina się wczytuje, zakładamy, że dziecko jest, żeby ekran nie mrugał w typowej rodzinie.
+ */
+export function useHasChildren(): boolean {
+  const family = useFamily().data;
+  return family === undefined || family.some((member) => member.role === 'child');
 }

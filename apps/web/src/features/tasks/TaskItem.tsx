@@ -15,6 +15,7 @@ import {
 } from '@ogarniacz/shared';
 import { type FormEvent, type HTMLAttributes, type Ref, useState } from 'react';
 import { Avatar, personColor } from '../../lib/Avatar';
+import { useHasChildren } from './api';
 import { formatDue } from './format';
 import { RewardBadge, RewardPicker } from './Reward';
 import { ColorPicker, cardBackground } from './TaskColor';
@@ -55,6 +56,7 @@ export function TaskItem({ task, user, family, today, onChange, drag }: TaskItem
   const member = family.find((item) => item.id === task.assigneeId);
   const assignee = task.assigneeId ? (member?.name ?? 'Konto wyłączone') : 'Dla chętnych';
   const done = task.status === 'done';
+  const hasChildren = useHasChildren();
 
   return (
     <li
@@ -92,7 +94,7 @@ export function TaskItem({ task, user, family, today, onChange, drag }: TaskItem
             today={today}
             overdue={overdue}
             recurring={task.recurrenceId !== null}
-            reward={task.reward}
+            reward={hasChildren ? task.reward : null}
           />
         </div>
         {!editing && (
@@ -184,6 +186,7 @@ function TaskEditor({ task, user, family, onCancel, onSave }: TaskEditorProps) {
   const [color, setColor] = useState(task.color);
   const [problem, setProblem] = useState<string>();
   const canRename = canRenameTask(user, task);
+  const hasChildren = useHasChildren();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -224,7 +227,7 @@ function TaskEditor({ task, user, family, onCancel, onSave }: TaskEditorProps) {
         {user.role === 'parent' && <AssigneeSelect family={family} value={assigneeId} onChange={setAssigneeId} />}
         <DueInput value={dueOn} onChange={setDueOn} />
       </div>
-      {user.role === 'parent' && <RewardPicker value={reward} onChange={setReward} />}
+      {user.role === 'parent' && hasChildren && <RewardPicker value={reward} onChange={setReward} />}
       <ColorPicker value={color} onChange={setColor} />
       <div className="flex justify-end gap-2">
         <button type="button" onClick={onCancel} className="rounded-full px-3 py-2 text-sm font-semibold text-ink-muted">

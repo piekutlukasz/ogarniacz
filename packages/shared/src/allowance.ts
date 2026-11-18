@@ -81,6 +81,10 @@ export const markPayoutSchema = z.object({
 });
 export type MarkPayout = z.infer<typeof markPayoutSchema>;
 
+/** Cofnięcie pomyłkowo oznaczonej wypłaty: to samo dziecko i tydzień co przy oznaczeniu. */
+export const cancelPayoutSchema = markPayoutSchema;
+export type CancelPayout = MarkPayout;
+
 /** Dzień wypłaty za tydzień zaczynający się w `start`: następny poniedziałek. */
 export function payoutDay(start: string): string {
   return addDays(start, 7);

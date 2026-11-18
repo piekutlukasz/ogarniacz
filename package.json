@@ -18,7 +18,8 @@
     "start": "npm run start -w @ogarniacz/api",
     "demo": "node scripts/demo.mjs",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "npm run test -w @ogarniacz/api -w @ogarniacz/web",
+    "test": "npm run test -w @ogarniacz/shared -w @ogarniacz/api -w @ogarniacz/web",
+    "test:coverage": "npm run test -w @ogarniacz/shared -w @ogarniacz/api -w @ogarniacz/web -- --coverage",
     "test:e2e": "npm run test -w @ogarniacz/e2e",
     "test:smoke": "npm run test:smoke -w @ogarniacz/e2e",
     "db:generate": "npm run db:generate -w @ogarniacz/api"

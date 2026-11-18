@@ -88,7 +88,7 @@ export const familySchema = z.array(familyMemberSchema);
 /** Hasło: najmniej 8 znaków (ochronę przed zgadywaniem daje limit prób), najwyżej tyle, ile przyjmuje logowanie. */
 export const MIN_PASSWORD_LENGTH = 8;
 export const MAX_PASSWORD_LENGTH = 200;
-/** Krótsze fragmenty loginu i imienia (np. „Ola”) nie blokują hasła, bo trafiałyby w zwykłe słowa. */
+/** Krótsze fragmenty loginu i imienia (np. „Jo”) nie blokują hasła, bo trafiałyby w zwykłe słowa. „Ola” już blokuje. */
 const MIN_FORBIDDEN_PART = 3;
 
 /**

@@ -17,7 +17,7 @@ import { forgetShopping } from './features/shopping/sync';
 import { ArchiveView } from './features/tasks/ArchiveView';
 import { TaskBoard } from './features/tasks/TaskBoard';
 import { SettingsSheet } from './features/settings/SettingsSheet';
-import { useFamily } from './features/tasks/api';
+import { useFamily, useHasChildren } from './features/tasks/api';
 import { TodayScreen } from './features/today/TodayScreen';
 import { Avatar, personColor } from './lib/Avatar';
 import { BoardIcon, CartIcon, PiggyIcon, RepeatIcon, TodayIcon } from './lib/icons';
@@ -189,6 +189,10 @@ function Home({ user }: { user: User }) {
     return linked ?? 'today';
   });
   useShoppingAutoSync(user.id);
+  // Bez dziecka w rodzinie nie ma kieszonkowego; link z powiadomienia prowadzi wtedy do „Dziś”.
+  const hasChildren = useHasChildren();
+  const hidden = (id: Tab) => (id === 'recurring' && user.role !== 'parent') || (id === 'allowance' && !hasChildren);
+  const current: Screen = screen !== 'archive' && hidden(screen) ? 'today' : screen;
 
   // Kliknięcie powiadomienia przy otwartej aplikacji: service worker podaje ekran wiadomością.
   useEffect(() => {
@@ -204,12 +208,12 @@ function Home({ user }: { user: User }) {
   return (
     // Dolny margines robi miejsce na pasek nawigacji przypięty do dołu ekranu.
     <div className="flex flex-col gap-4 pb-24">
-      {screen === 'today' && <TodayScreen user={user} onOpenShopping={() => setScreen('shopping')} />}
-      {screen === 'board' && <TaskBoard user={user} onOpenArchive={() => setScreen('archive')} />}
-      {screen === 'shopping' && <ShoppingScreen user={user} />}
-      {screen === 'recurring' && user.role === 'parent' && <RecurrenceScreen />}
-      {screen === 'archive' && <ArchiveView user={user} onBack={() => setScreen('board')} />}
-      {screen === 'allowance' && <AllowanceScreen user={user} />}
+      {current === 'today' && <TodayScreen user={user} onOpenShopping={() => setScreen('shopping')} />}
+      {current === 'board' && <TaskBoard user={user} onOpenArchive={() => setScreen('archive')} />}
+      {current === 'shopping' && <ShoppingScreen user={user} />}
+      {current === 'recurring' && <RecurrenceScreen />}
+      {current === 'archive' && <ArchiveView user={user} onBack={() => setScreen('board')} />}
+      {current === 'allowance' && <AllowanceScreen user={user} />}
 
       {/* Pasek przy kciuku, jak w aplikacjach na telefon. Nad nim zostaje odstęp na pasek systemowy iPhone'a. */}
       <nav
@@ -217,8 +221,8 @@ function Home({ user }: { user: User }) {
         className="fixed inset-x-0 bottom-0 z-20 mx-auto max-w-xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       >
         <div className="flex gap-1 rounded-3xl border border-card-edge bg-chrome p-1.5 shadow-lift">
-          {SCREENS.filter((item) => !('parentOnly' in item) || user.role === 'parent').map(({ id, label }) => {
-            const isCurrent = screen === id || (id === 'board' && screen === 'archive');
+          {SCREENS.filter((item) => !hidden(item.id)).map(({ id, label }) => {
+            const isCurrent = current === id || (id === 'board' && current === 'archive');
             return (
               <button
                 key={id}

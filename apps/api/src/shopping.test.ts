@@ -124,6 +124,20 @@ describe('lista zakupów', () => {
     expect(unchecked).toMatchObject({ checkedById: null, checkedAt: null });
   });
 
+  it('starsze odznaczenie, które dotrze po nowszym ponownym odhaczeniu, go nie cofa', async () => {
+    const milk = await add('Mleko');
+    const at = (minutes: number) => new Date(Date.parse('2026-11-09T11:00:00Z') + minutes * 60_000).toISOString();
+    clock += 60 * 60_000;
+    // Mama odhacza o 11:01. Ola bez sieci odhacza o 11:10, gdy produkt jest już w koszyku.
+    // Na końcu dociera odznaczenie taty z 11:05, zrobione bez sieci: jest starsze niż odhaczenie Oli.
+    await change(milk.id, { checked: true, changedAt: at(1) });
+    await change(milk.id, { checked: true, changedAt: at(10) }, childCookie);
+    await change(milk.id, { checked: false, changedAt: at(5) });
+
+    const [seen] = await list();
+    expect(seen).toMatchObject({ checkedAt: at(1), checkedById: parentId });
+  });
+
   it('czyści tylko wskazane kupione, nieodhaczone zostają', async () => {
     const bought = await add('Ser');
     const alsoBought = await add('Szynka');

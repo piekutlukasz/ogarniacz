@@ -1,6 +1,6 @@
 # Ogarniacz: dokumentacja projektu
 
-Stan na 17 listopada 2026. Kolejność prac opisuje [PLAN.md](PLAN.md).
+Stan na 18 listopada 2026. Kolejność prac opisuje [PLAN.md](PLAN.md).
 
 Plik opisuje tylko to, co **jest** w kodzie. Planowane prace, ich projekt i decyzje są w [plany/](plany/), a tutaj najwyżej jednym zdaniem z odnośnikiem.
 
@@ -24,7 +24,7 @@ Ogarniacz to prywatna aplikacja dla jednej rodziny. Zbiera w jednym miejscu to, 
 | Kanban | Statusy „Do zrobienia”, „W trakcie”, „Gotowe”, archiwum zamiast kasowania, historia zmian | Jest, z filtrem „moje”, kolorem karteczki i widokiem archiwum otwieranym z tablicy |
 | Konta i role | Rodzic i dziecko, konta zakłada rodzic zaproszeniem | Jest: logowanie, sesje, uprawnienia z rozdziału 6, zmiana własnego hasła i „Wyloguj inne urządzenia” w ustawieniach, a dla rodzica podstrona „Rodzina”: zaproszenie z linkiem i kodem QR, link do nowego hasła, lista kont, wyłączanie kont dzieci, oczekujące zaproszenia i dziennik logowań; ekran przyjęcia zaproszenia pod adresem `/#zaproszenie=…`; kreator pierwszego uruchomienia zakłada pierwszego rodzica na pustej bazie, z kodem z logu serwera ([plany/KONTA.md](plany/KONTA.md)). CLI zostaje drogą zapasową |
 | Przypisanie i termin | Osoba odpowiedzialna i data wykonania | Jest; termin to dzień, bez godziny |
-| Zadania cykliczne | Np. śmieci, podlewanie kwiatów | Jest: co tydzień w wybrane dni, co N dni, co miesiąc, pauza |
+| Zadania cykliczne | Np. śmieci, podlewanie kwiatów | Jest: co tydzień w wybrane dni, co N dni, co miesiąc, pauza, nagroda dla tworzonych zadań |
 | Lista zakupów | Podpowiedzi z historii, działanie offline | Jest: wspólna lista, ilość, koszyk, podpowiedzi, praca bez sieci z kolejką zmian |
 | Kalendarze | Odczyt linków ICS z Google i iCloud, tylko do odczytu; projekt w [archiwum/KALENDARZE-PROJEKT.md](archiwum/KALENDARZE-PROJEKT.md), instrukcja w [instrukcje/KALENDARZE.md](instrukcje/KALENDARZE.md) | Jest, działa na produkcji (etap 6): link ICS szyfrowany, synchronizacja co 15 minut, sekcja w „Dziś”, zarządzanie w ustawieniach |
 | Ekran „Dziś” | Wydarzenia, moje zadania, zakupy | Jest: wydarzenia z kalendarzy rodziny (ze stanem synchronizacji), moje zadania na dziś i zaległe, pasek postępu dnia, skrót listy zakupów |
@@ -47,12 +47,13 @@ Ogarniacz to prywatna aplikacja dla jednej rodziny. Zbiera w jednym miejscu to, 
 **Kieszonkowe i nagrody:**
 
 - **Stała kwota.** Każde dziecko ma kieszonkowe na tydzień, domyślnie 50 zł. Rodzic zmienia je na ekranie „Kieszonkowe”, osobno dla każdego dziecka; zero oznacza same nagrody. Nowa kwota obowiązuje od trwającego tygodnia i nie działa wstecz.
-- **Nagroda na zadaniu.** Rodzic może dodać do zadania nagrodę: 5, 10, 15 zł albo własną kwotę w pełnych złotych. Na karteczce widać ją jako żółtą plakietkę. Dziecko nie ustawia nagrody i nie zmienia nazwy zadania, które ją ma.
+- **Nagroda na zadaniu.** Rodzic może dodać do zadania nagrodę: 5, 10, 15 zł albo własną kwotę w pełnych złotych. Reguła cykliczna może mieć nagrodę, którą dostaje każde tworzone z niej zadanie. Na karteczce widać ją jako żółtą plakietkę. Dziecko nie ustawia nagrody i nie zmienia nazwy zadania, które ją ma.
 - **Naliczanie.** Nagrodę dostaje dziecko przypisane do zadania, gdy trafia ono do „Gotowe”, także po terminie. Zadanie dla chętnych nagradza dziecko, które je wzięło. Cofnięcie z „Gotowe” zdejmuje nagrodę, archiwizacja ukończonego zadania jej nie zabiera. Nie ma osobnego zatwierdzania: rodzic przegląda listę przy wypłacie.
-- **Tydzień i wypłata.** Tydzień trwa od poniedziałku do niedzieli według dnia ukończenia zadania w czasie polskim, a wypłata jest w następny poniedziałek. Rodzic oznacza ją przyciskiem „Wypłacone” z potwierdzeniem; kwota zapisuje się wtedy na stałe. Niewypłacony tydzień czeka na ekranie przez cztery tygodnie.
+- **Tydzień i wypłata.** Tydzień trwa od poniedziałku do niedzieli według dnia ukończenia zadania w czasie polskim, a wypłata jest w następny poniedziałek. Rodzic oznacza ją przyciskiem „Wypłacone” z potwierdzeniem; kwota zapisuje się wtedy na stałe. Pomyłkowo oznaczoną wypłatę rodzic cofa przyciskiem „Cofnij” przy „Ostatnich wypłatach”, też z potwierdzeniem: tydzień wraca do „Czeka na wypłatę”, a jego nagrody liczą się od nowa. Niewypłacony tydzień czeka na ekranie przez cztery tygodnie.
 - **Kto co widzi.** Dziecko widzi tylko swoją kwotę: ile dostanie w poniedziałek, z czego się składa i na czym może jeszcze zarobić. Rodzic widzi wszystkie dzieci, sumę do przygotowania i ostatnie wypłaty.
+- **Rodzina bez dziecka.** Gdy w rodzinie nie ma aktywnego konta dziecka, ekran „Kieszonkowe” znika z paska nawigacji, formularze zadań i reguł cyklicznych nie mają wyboru nagrody, a karteczki i reguły nie pokazują plakietek. Front liczy to z listy rodziny (`GET /api/users`, hook `useHasChildren`); API i zapisane nagrody się nie zmieniają, a dodanie albo włączenie konta dziecka przywraca wszystko. Link z powiadomienia do kieszonkowego prowadzi wtedy do „Dziś”, a archiwum dalej pokazuje dawne nagrody jako historię.
 
-Planowane dokończenie kieszonkowego (m.in. ukrycie ekranu, gdy w rodzinie nie ma dziecka) i pomysły na rozwój, także te ze szkicem, są w [plany/ROZWOJ.md](plany/ROZWOJ.md).
+Projekt i decyzje dokończenia kieszonkowego są w [archiwum/KIESZONKOWE-DOKONCZENIE.md](archiwum/KIESZONKOWE-DOKONCZENIE.md), a pomysły na rozwój, także te ze szkicem, w [plany/ROZWOJ.md](plany/ROZWOJ.md).
 
 ## 3. Architektura
 
@@ -114,11 +115,11 @@ docs              # dokumentacja
 
 **Zaproszenia (migracja `0011`):** `invites` to jednorazowe zaproszenie na nowe konto (`kind` `new_account`, z `login`, `name` i `role`) albo link do nowego hasła (`password_reset`, z `user_id` konta i kopią loginu oraz imienia). Rodzic, który je wystawił, to `created_by`. Token ma 256 bitów, a w bazie jest tylko jego skrót SHA-256 (`token_hash`, unikalny). Zaproszenie jest ważne 24 godziny (`expires_at`); użyte dostaje `used_at` (przy nowym koncie `user_id` wskazuje wtedy założone konto), unieważnione `revoked_at`. Wierszy nie kasujemy.
 
-Kieszonkowe opiera się na trzech kolumnach zadania i dwóch tabelach. `reward` to nagroda w pełnych złotych. `completed_at` to chwila wejścia w „Gotowe”, czyszczona przy cofnięciu; od niej zależy tydzień nagrody. `payout_id` wskazuje wypłatę, w której nagroda została już policzona, więc cofnięte i ponownie ukończone zadanie nie liczy się drugi raz. `allowance_rates` trzyma stawkę dziecka z poniedziałkiem, od którego obowiązuje (`effective_from`); stawka tygodnia to ostatni wiersz nie późniejszy niż ten tydzień, a dziecko bez wiersza ma 50 zł. `payouts` to wypłata oznaczona przez rodzica: dziecko, tydzień, zapisane kwoty `base` i `rewards`, kto i kiedy; jedna na dziecko i tydzień. Sumy niewypłaconych tygodni liczymy na żywo z zadań. Niewypłacona nagroda należy do tygodnia ukończenia zadania, a gdy ten jest już wypłacony albo starszy niż cztery tygodnie, przechodzi na trwający tydzień.
+Kieszonkowe opiera się na trzech kolumnach zadania i dwóch tabelach. `reward` to nagroda w pełnych złotych. `completed_at` to chwila wejścia w „Gotowe”, czyszczona przy cofnięciu; od niej zależy tydzień nagrody. `payout_id` wskazuje wypłatę, w której nagroda została już policzona, więc cofnięte i ponownie ukończone zadanie nie liczy się drugi raz. `allowance_rates` trzyma stawkę dziecka z poniedziałkiem, od którego obowiązuje (`effective_from`); stawka tygodnia to ostatni wiersz nie późniejszy niż ten tydzień, a dziecko bez wiersza ma 50 zł. `payouts` to wypłata oznaczona przez rodzica: dziecko, tydzień, zapisane kwoty `base` i `rewards`, kto i kiedy; jedna ważna na dziecko i tydzień. Cofnięcie nie kasuje wiersza: ustawia `cancelled_at` i `cancelled_by`, a zadaniom tej wypłaty czyści `payout_id`, więc znów są niewypłacone. Cofnięta wypłata nie blokuje ponownego oznaczenia, bo unikalny indeks obejmuje tylko wiersze bez `cancelled_at`. Sumy niewypłaconych tygodni liczymy na żywo z zadań. Niewypłacona nagroda należy do tygodnia ukończenia zadania, a gdy ten jest już wypłacony albo starszy niż cztery tygodnie, przechodzi na trwający tydzień.
 
 `shopping_items` trzyma produkt z listy zakupów: `name`, `name_key` (nazwa małymi literami, bez zbędnych spacji), `quantity` jako wolny tekst, `checked_at` i `checked_by` dla koszyka, `added_by`, daty i `archived_at`. Kolumny `checked_changed_at` i `edited_at` to czasy ostatniej zmiany odhaczenia i nazwy z ilością według telefonu, potrzebne do rozstrzygania konfliktów (rozdział 8). Identyfikator nadaje telefon, a ponowione dodanie z tym samym identyfikatorem zwraca istniejący produkt. Wyczyszczone z koszyka i usunięte produkty dostają `archived_at` i zostają w bazie. Podpowiedzi liczymy z tej samej tabeli: to produkty odhaczone kiedykolwiek, zgrupowane po `name_key`, z pisownią i ilością z ostatniego zakupu. Usunięta bez kupienia pomyłka do nich nie trafia. Osobna tabela podpowiedzi okazała się niepotrzebna.
 
-`recurrences` trzyma regułę cykliczną: tytuł, osobę, wzorzec w JSON (`weekly` z dniami tygodnia, `interval` co N dni od `start_on`, `monthly` z dniem miesiąca przycinanym do ostatniego dnia), pauzę (`paused_at`, `paused_until`) i kursor `last_due_on`. Harmonogram co godzinę i przy starcie tworzy zadanie z terminem na dzień wystąpienia. Kursor i zadanie zapisują się w jednej transakcji, a indeks unikalny `(recurrence_id, due_on)` blokuje duplikaty. Gdy poprzednie zadanie z reguły jest otwarte, nowe nie powstaje, a dzień przepada. Po przestoju serwera powstaje tylko ostatnie zaległe wystąpienie. Zadania z harmonogramu mają w historii pusty `actor_id`.
+`recurrences` trzyma regułę cykliczną: tytuł, osobę, nagrodę `reward` (pustą bez nagrody), wzorzec w JSON (`weekly` z dniami tygodnia, `interval` co N dni od `start_on`, `monthly` z dniem miesiąca przycinanym do ostatniego dnia), pauzę (`paused_at`, `paused_until`) i kursor `last_due_on`. Harmonogram co godzinę i przy starcie tworzy zadanie z terminem na dzień wystąpienia. Kursor i zadanie zapisują się w jednej transakcji, a indeks unikalny `(recurrence_id, due_on)` blokuje duplikaty. Gdy poprzednie zadanie z reguły jest otwarte, nowe nie powstaje, a dzień przepada. Po przestoju serwera powstaje tylko ostatnie zaległe wystąpienie. Zadania z harmonogramu mają w historii pusty `actor_id`. Każde dostaje nagrodę z reguły z chwili utworzenia, więc zmiana nagrody w regule działa tylko na następne wystąpienia.
 
 `calendars` trzyma kalendarz z linku ICS: nazwę, link zaszyfrowany AES-256-GCM (`url_enc`, format `v1:<iv>:<tag>:<szyfrogram>`, z identyfikatorem kalendarza jako danymi uwierzytelnianymi), sam host do pokazania (`url_host`), widoczność `scope` (`family` albo `private`), właściciela, stan synchronizacji (`last_attempt_at`, `last_success_at`, `last_error` jako kod, `failures`, `next_sync_at`, `etag`, `last_modified`, `content_hash`, `synced_day`) i `archived_at`. Przy odpięciu kalendarza link jest zerowany: to poświadczenie, a nie dana historyczna. `calendar_events` trzyma rozwinięte wystąpienia z okna od wczoraj do 45 dni: tytuł (do 200 znaków), miejsce (do 120), `all_day`, chwile UTC `starts_at` i `ends_at` oraz dni `start_on` i `end_on` w czasie polskim, obie granice włącznie. Każda synchronizacja podmienia wystąpienia kalendarza w jednej transakcji, a opisów, uczestników i linków do spotkań nie zapisujemy. Szczegóły i uzasadnienia: [archiwum/KALENDARZE-PROJEKT.md](archiwum/KALENDARZE-PROJEKT.md).
 
@@ -139,6 +140,7 @@ Termin `due_on` to dzień kalendarzowy `RRRR-MM-DD` w strefie `Europe/Warsaw`, a
 | GET | `/api/allowance` | Kieszonkowe: trwający tydzień i zamknięte tygodnie; rodzic dostaje wszystkie dzieci, dziecko siebie i otwarte zadania z nagrodą |
 | PUT | `/api/allowance/rates` | Stawki dzieci (`{ rates: [{ childId, amount }] }`), od trwającego tygodnia; tylko rodzic |
 | POST | `/api/allowance/payouts` | Oznacza wypłatę za zamknięty tydzień (`{ childId, weekStart }`); powtórzone nic nie zmienia; tylko rodzic |
+| POST | `/api/allowance/payouts/cancel` | Cofa wypłatę za tydzień z ostatnich czterech (`{ childId, weekStart }`); bez ważnej wypłaty nic nie zmienia; tylko rodzic |
 | GET | `/api/users` | Aktywni członkowie rodziny do wyboru osoby, z kolorem każdej osoby |
 | PATCH | `/api/users/me` | Zmiana własnego koloru (`{ color }`, nazwa z palety albo `null`); każdy, także dziecko |
 | GET | `/api/shopping` | Lista zakupów: do kupienia i w koszyku; każdy, także dziecko |
@@ -148,7 +150,7 @@ Termin `due_on` to dzień kalendarzowy `RRRR-MM-DD` w strefie `Europe/Warsaw`, a
 | POST | `/api/shopping/clear` | Czyści z koszyka wskazane produkty (`{ ids }`); nieodhaczone zostają |
 | GET | `/api/recurrences` | Reguły cykliczne z najbliższym dniem wystąpienia, tylko rodzic |
 | POST | `/api/recurrences` | Nowa reguła; jeśli wypada dziś, od razu tworzy zadanie |
-| PATCH | `/api/recurrences/:id` | Zmiana tytułu, osoby, wzorca, pauza (`{ until }`), wznowienie (`null`) i usunięcie |
+| PATCH | `/api/recurrences/:id` | Zmiana tytułu, osoby, nagrody, wzorca, pauza (`{ until }`), wznowienie (`null`) i usunięcie |
 | POST | `/api/auth/login` | Logowanie, ustawia cookie sesji |
 | POST | `/api/auth/logout` | Wylogowanie |
 | GET | `/api/auth/me` | Zalogowany użytkownik |
@@ -257,7 +259,7 @@ Offline dotyczy tylko listy zakupów, bo w sklepie bywa słaby zasięg.
 - Kolejkę wysyłamy po kolei: po starcie aplikacji, powrocie na pierwszy plan, odzyskaniu sieci i zaraz po każdej zmianie. Nie zakładamy Background Sync, bo nie jest dostępny w Safari. Brak sieci i błąd 5xx zostawiają zmianę w kolejce, a ostateczną odmowę serwera, np. odhaczenie wyczyszczonego już produktu, pomijamy.
 - Licznik „Niewysłane zmiany” rośnie dopiero po zapisie kolejki na telefonie, więc pokazane zmiany przetrwają zamknięcie aplikacji.
 - Każdą zmianę można bezpiecznie powtórzyć: dodanie ma identyfikator z telefonu, a czyszczenie listę produktów.
-- Konflikty: przy tym samym produkcie wygrywa późniejsza zmiana według czasu z telefonu (`changedAt`), osobno dla odhaczenia i dla nazwy z ilością, więc odhaczenie w sklepie nie kasuje zmiany ilości z domu. Czas z przyszłości serwer przycina do bieżącego. Usunięcie wygrywa zawsze.
+- Konflikty: przy tym samym produkcie wygrywa późniejsza zmiana według czasu z telefonu (`changedAt`), osobno dla odhaczenia i dla nazwy z ilością, więc odhaczenie w sklepie nie kasuje zmiany ilości z domu. Wynik nie zależy od kolejności, w jakiej zmiany docierają: ponowne odhaczenie produktu, który już jest w koszyku, zostawia pierwszy czas i osobę, ale przesuwa czas ostatniej zmiany odhaczenia, więc starsze odznaczenie z innego telefonu go nie cofnie. Czas z przyszłości serwer przycina do bieżącego. Usunięcie wygrywa zawsze. Pilnują tego testy właściwości w `apps/api/src/shoppingSync.test.ts`: losowe ciągi zmian dają tę samą listę na telefonie (`applyShoppingChange`) i na serwerze, także po ponownej wysyłce i w dowolnej kolejności dotarcia.
 - Aplikacja otwiera się bez sieci: service worker podaje zbudowany front, a zalogowaną osobę pamiętamy w `localStorage`. Sesję sprawdza serwer przy pierwszym żądaniu po powrocie sieci. Bez sieci działa tylko lista zakupów; inne ekrany pokazują błąd połączenia.
 - Wylogowanie usuwa z telefonu kopię listy i niewysłane zmiany. Po wygaśnięciu sesji kolejka czeka i wysyła się po ponownym zalogowaniu tej samej osoby; zalogowanie innej osoby ją porzuca.
 
@@ -316,11 +318,14 @@ Aplikacja działa w Dockerze albo bezpośrednio na Node.js 24, za proxy z HTTPS.
 | Poziom | Narzędzie | Zakres |
 |---|---|---|
 | API | Vitest, SQLite w pamięci | Logika, uprawnienia, parser ICS, reguły cykliczne |
-| Front | Vitest, `fake-indexeddb` w miejscu IndexedDB | Kolejka zakupów offline (`ShoppingSync`): kolejność wysyłki, ponawianie, ostateczna odmowa, wygaśnięcie sesji, zmiana konta |
+| Reguły wspólne | Vitest i `fast-check` w `packages/shared` | Czas w strefie `Europe/Warsaw` (zmiany czasu, przełom roku), reguły cykliczne, `applyShoppingChange`, uprawnienia, hasło, cisza nocna; testy właściwości sprawdzają je na losowych danych |
+| Front | Vitest, `fake-indexeddb` w miejscu IndexedDB | Kolejka zakupów offline (`ShoppingSync`): kolejność wysyłki, ponawianie, ostateczna odmowa, wygaśnięcie sesji, zmiana konta; formatowanie dat i liczebników (`format.ts`) |
 | Przepływy | Playwright, profile iPhone i Android | Główne ścieżki w przeglądarce, na serwerze deweloperskim |
 | Test dymny | Playwright na zbudowanej aplikacji (`npm run test:smoke`) | Service worker, start bez sieci, CSP, nagłówki pamięci podręcznej; tryb demo: wejście jednym przyciskiem, baner, blokada indeksowania; kreator pierwszego uruchomienia na dwóch serwerach z pustą bazą |
 | Wdrożenie | `backup verify` w CLI, krok aktualizacji z [instrukcje/WDROZENIE.md](instrukcje/WDROZENIE.md) | Migracje nowej wersji na kopii bazy przed restartem |
 | Ręczne | Prawdziwy iPhone i Android | Instalacja, push, offline |
+
+**Pokrycie.** `npm run test:coverage` mierzy pokrycie testów `packages/shared`, API (razem z `shared`) i frontu przez `@vitest/coverage-v8`; progi są w `vitest.config.ts` każdej paczki, a CI pokazuje tabelę w podsumowaniu przebiegu i zapisuje raport HTML jako artefakt. Zasady progów i dalsze testy: [plany/TESTY.md](plany/TESTY.md).
 
 Test przekrojowy `routes.test.ts` zbiera wszystkie trasy z aplikacji i sprawdza, że każda poza jawnie publicznymi odpowiada bez sesji `401`. Po nieudanym przebiegu e2e CI zapisuje ślady Playwright i raport HTML jako artefakt.
 
@@ -330,7 +335,7 @@ Serwer testów e2e startuje z `TEST_CLOCK=true`: nagłówek `X-Test-Now` ustawia
 
 Playwright nie zastąpi testu push na iPhonie, bo profil telefonu to tylko emulacja.
 
-Stan na 17 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 323 testy API i 19 testów frontu. Sprawdzenie dostępności (`accessibility.spec.ts`, axe, WCAG 2.2 A i AA) przechodzi każdy ekran rodzica i podstrony ustawień we wszystkich wyglądach i obu trybach oraz ekran logowania; wynik i poprawki: [archiwum/UTWARDZENIE-TESTY.md](archiwum/UTWARDZENIE-TESTY.md), T8.
+Stan na 18 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 337 testów API, 75 testów `shared` i 50 testów frontu. Sprawdzenie dostępności (`accessibility.spec.ts`, axe, WCAG 2.2 A i AA) przechodzi każdy ekran rodzica i podstrony ustawień we wszystkich wyglądach i obu trybach oraz ekran logowania; wynik i poprawki: [archiwum/UTWARDZENIE-TESTY.md](archiwum/UTWARDZENIE-TESTY.md), T8.
 
 ## 12. Główne ryzyka
 

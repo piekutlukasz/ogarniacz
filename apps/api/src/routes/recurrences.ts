@@ -35,6 +35,7 @@ function toRecurrence(row: RecurrenceRow, today: string): Recurrence {
     title: row.title,
     assigneeId: row.assigneeId,
     pattern: row.pattern,
+    reward: row.reward,
     startOn: row.startOn,
     paused,
     pausedUntil: row.pausedUntil,
@@ -77,6 +78,7 @@ export function recurrenceRoutes(db: Db, now: () => Date) {
           title: input.title,
           assigneeId,
           pattern: input.pattern,
+          reward: input.reward ?? null,
           startOn,
           // Wcześniejszych dni nie nadrabiamy: pierwsze zadanie powstaje dziś albo w dniu startu.
           lastDueOn: addDays(later(startOn, today), -1),

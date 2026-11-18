@@ -58,7 +58,7 @@ export function generateRecurringTasks(db: Db, now: Date, onlyId?: string): Gene
           : undefined;
         // Wyłączone konto nie dostaje nowych zadań: wystąpienie trafia do puli „dla chętnych”.
         const assigneeId = assignee && assignee.disabledAt === null ? rule.assigneeId : null;
-        const values = { title: rule.title, assigneeId, dueOn, recurrenceId: rule.id };
+        const values = { title: rule.title, assigneeId, dueOn, reward: rule.reward, recurrenceId: rule.id };
         const created = tx
           .insert(tasks)
           .values({

@@ -31,7 +31,7 @@ export class BoardPage extends TaskListScreen {
   readonly newTaskForm: Locator = this.main.locator('form').filter({ has: this.page.getByLabel('Nowe zadanie') });
   readonly assigneeSelect: Locator = this.newTaskForm.getByLabel('Osoba');
   readonly dueOnInput: Locator = this.newTaskForm.getByLabel('Termin');
-  /** Wybór nagrody. Dziecko go nie ma. */
+  /** Wybór nagrody. Nie ma go dziecko ani rodzic w rodzinie bez dziecka. */
   readonly rewardOptions: Locator = this.newTaskForm.getByRole('radiogroup', { name: 'Nagroda' });
   /** Wybór koloru karteczki: „Bez koloru” i kolory po nazwie. */
   readonly colorOptions: Locator = this.newTaskForm.getByRole('radiogroup', { name: 'Kolor' });

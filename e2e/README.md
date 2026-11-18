@@ -40,7 +40,7 @@ Hierarchia page objectów:
 - `Screen` → `TaskListScreen` → `TodayPage`, `BoardPage`, `ArchivePage`; `Screen` → `ShoppingPage`, `RecurrencesPage`, `AllowancePage`.
   Ekran zna swój przycisk w nawigacji i sam się otwiera (`open()`). Archiwum nie ma przycisku w nawigacji:
   `ArchivePage.open()` przechodzi przez tablicę, a `back()` na nią wraca.
-- `AllowancePage`: rodzic ma `payoutRow(tydzień, imię)` i `markPaid(tydzień, imię)` (dwa stuknięcia: „Wypłacone”, „Potwierdź”) oraz `paidHistory`, a dziecko `lastPayout`. Tydzień podaje się jak na ekranie, przez `weekLabel(poniedziałek)` z `src/data/dates.ts`.
+- `AllowancePage`: rodzic ma `payoutRow(tydzień, imię)` i `markPaid(tydzień, imię)` (dwa stuknięcia: „Wypłacone”, „Potwierdź”) oraz `paidHistory` z wierszami `paidRow(tydzień, imię)` i `cancelPayout(tydzień, imię)` (dwa stuknięcia: „Cofnij”, „Potwierdź cofnięcie”), a dziecko `lastPayout`. Tydzień podaje się jak na ekranie, przez `weekLabel(poniedziałek)` z `src/data/dates.ts`.
 - `App` składa ramę i ekrany jednej karty; `Actor` to `App` zalogowanej osoby z własnym `ApiClient`.
 
 ## Zasady
