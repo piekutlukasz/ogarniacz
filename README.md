@@ -189,7 +189,7 @@ docker compose pull
 docker compose up -d
 ```
 
-Gotowy obraz (`ghcr.io/piekutlukasz/ogarniacz`, `amd64` i `arm64`) powstaje przy każdym wydaniu; `docker compose up -d --build` buduje go z repozytorium. Obraz jest też budowany i uruchamiany w CI przy każdej zmianie. Baza leży na wolumenie `ogarniacz-data`, a port 3000 jest dostępny tylko lokalnie, dla proxy z HTTPS. Gotowy zestaw z HTTPS (aplikacja i Caddy z automatycznym certyfikatem, wymagana tylko domena) jest w [`deploy/docker`](deploy/docker). Gałąź `prod` wskazuje ostatni commit z `main`, który przeszedł całe CI:
+Gotowy obraz (`ghcr.io/piekutlukasz/ogarniacz`, `amd64` i `arm64`) powstaje przy każdym wydaniu; `docker compose up -d --build` buduje go z repozytorium. Obraz jest też budowany i uruchamiany w CI przy każdej zmianie. Baza leży na wolumenie `ogarniacz-data`, a port 3000 jest dostępny tylko lokalnie, dla proxy z HTTPS. Gotowy zestaw z HTTPS (aplikacja i Caddy z automatycznym certyfikatem, wymagana tylko domena) jest w [`deploy/docker`](deploy/docker), usługa systemd z przykładami proxy w [`deploy/systemd`](deploy/systemd), a skrypty aktualizacji z próbą migracji na kopii w `deploy/update.sh` i `deploy/docker/update.sh`. Gałąź `prod` wskazuje ostatni commit z `main`, który przeszedł całe CI:
 
 ```text
 push na main ──► CI (audyt, typecheck, testy, build, e2e, test dymny, obraz Docker) ──► gałąź prod

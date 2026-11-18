@@ -1,0 +1,12 @@
+# Caddy na serwerze przed aplikacją bez Dockera: /etc/caddy/Caddyfile, DOMENA zamień na swoją domenę.
+# Caddy sam zdobywa i odnawia certyfikat (porty 80 i 443 dostępne z internetu) i przekierowuje http na https.
+DOMENA {
+	# HSTS ustawia ten, kto kończy TLS; aplikacja go nie wysyła.
+	header Strict-Transport-Security "max-age=31536000"
+
+	reverse_proxy 127.0.0.1:3000 {
+		# Adres klienta dla limitu prób logowania, nadpisany, żeby wartość od klienta nie docierała do API.
+		# Host i X-Forwarded-Host Caddy przekazuje sam i nie ufa wartościom od klienta.
+		header_up X-Real-IP {remote_host}
+	}
+}

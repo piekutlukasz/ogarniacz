@@ -73,7 +73,7 @@ Potwierdzone próbą na żywo albo testami:
 
 `createLoginLimiter` (`apps/api/src/auth/rateLimit.ts`) liczy nieudane próby osobno na login i na adres IP. Limit na login nie zależy od tego, kto próbuje. W próbie sześć żądań ze złym hasłem dla loginu `tata` wystarczyło, żeby poprawne hasło dostało `429` na 15 minut. Atak można powtarzać bez końca, a loginy są łatwe do zgadnięcia.
 
-Skutek jest ograniczony: zalogowane telefony działają dalej (sesja trwa 90 dni), więc blokada dotyka tylko nowego logowania. Adresu produkcji nie ma w dokumentach, ale repozytorium ma zostać upublicznione ([PUBLIKACJA.md](../plany/PUBLIKACJA.md)): przykładowe loginy i kod blokady będą wtedy jawne, więc tę poprawkę trzeba wdrożyć przed publikacją.
+Skutek jest ograniczony: zalogowane telefony działają dalej (sesja trwa 90 dni), więc blokada dotyka tylko nowego logowania. Adresu produkcji nie ma w dokumentach, ale repozytorium ma zostać upublicznione ([PUBLIKACJA.md](PUBLIKACJA.md)): przykładowe loginy i kod blokady będą wtedy jawne, więc tę poprawkę trzeba wdrożyć przed publikacją.
 
 **Propozycja:**
 
@@ -183,7 +183,7 @@ Odpowiedź na ustalenie B7 i na pytanie o panel administracyjny ma osobny plan: 
 4. **Analiza statyczna.** CodeQL na prywatnym repozytorium jest, według mojej wiedzy, płatny (wymaga licencji GitHub Code Security); przed decyzją trzeba to potwierdzić w ustawieniach repozytorium. Po upublicznieniu repozytorium CodeQL i skan sekretów są darmowe i warto je włączyć. Darmowa alternatywa to Semgrep z regułami dla TypeScriptu w CI. Do decyzji, czy w ogóle warto przy tej wielkości kodu.
 5. **Jednorazowy skan OWASP ZAP** (tryb „baseline”, a potem z sesją rodzica i dziecka) na lokalnym `npm run demo`. Nigdy na produkcji z danymi rodziny.
 6. **Lista kontrolna przeglądu** powtarzana przed większym wydaniem: trasy przed `requireSession` w `app.ts`, `requireRole` na nowych trasach, test uprawnień dziecka dla każdej nowej trasy, sekrety poza repozytorium, `npm audit`.
-7. **Ochrona gałęzi `main`** w GitHubie: wymagane zielone CI, brak bezpośredniego pusha. Na prywatnym repozytorium niedostępna bez płatnego planu; włączyć zaraz po upublicznieniu ([PUBLIKACJA.md](../plany/PUBLIKACJA.md)).
+7. **Ochrona gałęzi `main`** w GitHubie: wymagane zielone CI, brak bezpośredniego pusha. Na prywatnym repozytorium niedostępna bez płatnego planu; włączyć zaraz po upublicznieniu ([PUBLIKACJA.md](PUBLIKACJA.md)).
 
 Testy uprawnień są już częścią testów API (grupy „role”, „uprawnienia i widoczność”, „wymaga zalogowania”). Warto dodać jeden test przekrojowy: lista wszystkich tras z `app.ts` i sprawdzenie, że każda poza jawnie publicznymi odpowiada bez sesji `401`. Nowa trasa dodana przed `requireSession` przez pomyłkę nie przejdzie wtedy niezauważona.
 

@@ -1,6 +1,6 @@
 # Rozwój po 1.0
 
-Stan na 17 listopada 2026. Drobniejsze prace i pomysły z [PLAN.md](../PLAN.md), które nie mają osobnego planu. Większy wątek po 1.0 ma własny plik: [PUBLIKACJA.md](PUBLIKACJA.md) (instalacja dla innych i publikacja repozytorium). Testy po 1.0 są zrobione: [archiwum/UTWARDZENIE-TESTY.md](../archiwum/UTWARDZENIE-TESTY.md). Dokończenie kieszonkowego też: [archiwum/KIESZONKOWE-DOKONCZENIE.md](../archiwum/KIESZONKOWE-DOKONCZENIE.md).
+Stan na 17 listopada 2026. Drobniejsze prace i pomysły z [PLAN.md](../PLAN.md), które nie mają osobnego planu. Instalacja dla innych i publikacja repozytorium są zrobione: [archiwum/PUBLIKACJA.md](../archiwum/PUBLIKACJA.md). Testy po 1.0 są zrobione: [archiwum/UTWARDZENIE-TESTY.md](../archiwum/UTWARDZENIE-TESTY.md). Dokończenie kieszonkowego też: [archiwum/KIESZONKOWE-DOKONCZENIE.md](../archiwum/KIESZONKOWE-DOKONCZENIE.md).
 
 Kolejność wynika z tego, czego rodzina będzie faktycznie potrzebować.
 
@@ -41,7 +41,7 @@ Dziś okres jest stały: tydzień od poniedziałku do niedzieli, wypłata w nast
 
 Osobna, stała instalacja do testów na żywo, na której sprawdza się to, czego nie pokryją testy automatyczne ani lokalne demo:
 
-- **Instalacja od zera** według instrukcji, z Dockerem i bez ([PUBLIKACJA.md](PUBLIKACJA.md)), łącznie z kreatorem pierwszego uruchomienia.
+- **Instalacja od zera** według instrukcji, z Dockerem i bez ([PUBLIKACJA.md](../archiwum/PUBLIKACJA.md)), łącznie z kreatorem pierwszego uruchomienia.
 - **Aktualizacja** nowej wersji tą samą drogą co produkcja, przed produkcją, na kopii prawdziwych danych albo na danych demo.
 - **Backup i odtworzenie po awarii:** kopia nocna, wysyłka poza serwer, odtworzenie na czystej maszynie z samych kopii i kluczy z menedżera haseł (`CALENDAR_ENCRYPTION_KEY`, klucze VAPID, hasła rclone), z zapisanym czasem odtworzenia.
 - **Push i PWA na prawdziwych telefonach** bez ryzyka dla danych rodziny.

@@ -13,6 +13,18 @@ Ogarniacz to jeden proces Node.js z bazą SQLite w pliku. Da się go uruchomić 
 
 API nasłuchuje domyślnie tylko na `127.0.0.1` (zmienna `HOST`), więc do aplikacji da się dojść wyłącznie przez proxy. Poza Dockerem nie ustawiaj `HOST=0.0.0.0`: nagłówki z adresem klienta i hosta przestałyby być wiarygodne. Nagłówki bezpieczeństwa (CSP i pozostałe) ustawia sama aplikacja, a proxy tylko je przekazuje.
 
+## Wymagania serwera
+
+| | Docker | Node.js bez Dockera |
+|---|---|---|
+| System | Linux z Dockerem i Docker Compose 2.24 lub nowszym, `amd64` albo `arm64` | Linux z systemd (przykład usługi), `git`, `curl` |
+| Node.js | W obrazie | 24 (`.nvmrc`) |
+| Pamięć | Aplikacja zajmuje około 50 MB; 512 MB na serwerze wystarczy | Jak w Dockerze, ale build frontu przy każdej aktualizacji potrzebuje około 400 MB więcej: przyjmij 1 GB albo dodaj swap |
+| Dysk | Obraz około 600 MB, Caddy około 50 MB | Klon z zależnościami około 400 MB |
+| Dane | Baza i 14 kopii: zwykle kilka MB, na wolumenie `/data` | To samo w `apps/api/data` |
+| Sieć | Porty 80 i 443 dla Caddy (wariant A) | Porty 80 i 443 dla proxy |
+| Kopia poza serwer | `rclone` jest w obrazie | `rclone` zainstalowany osobno ([BACKUP.md](BACKUP.md)) |
+
 ## Ustawienia
 
 Wszystkie ustawienia to zmienne środowiskowe. Pełna lista z opisem jest w [`apps/api/.env.example`](../../apps/api/.env.example), a źródłem prawdy jest `apps/api/src/config.ts`. Bez żadnej zmiennej aplikacja startuje; kalendarze, powiadomienia i kopia poza serwerem włączają się dopiero po ustawieniu swoich kluczy.
@@ -58,21 +70,30 @@ Konta i kopie obsługuje CLI w kontenerze:
 docker compose exec ogarniacz node dist/cli.cjs user list
 ```
 
+Obraz zawiera `rclone` do kopii poza serwer. Jego konfiguracja leży na wolumenie (`/data/rclone/rclone.conf`), więc przetrwa nową wersję obrazu; opis w [BACKUP.md](BACKUP.md).
+
 ## Droga 2: Node.js bez Dockera
 
-Wymagany Node.js 24. Build frontu potrzebuje na serwerze kilkuset MB pamięci.
+Wymagany Node.js 24 (wymagania serwera wyżej). Przykład zakłada klon w `/opt/ogarniacz` należący do osobnego użytkownika systemowego `ogarniacz`, a gotowe pliki są w [`deploy/systemd`](../../deploy/systemd): jednostka usługi oraz przykłady Caddy i nginx.
 
 ```bash
-git clone <adres repozytorium> ogarniacz && cd ogarniacz
-npm ci --include=dev && npm run build
-cp apps/api/.env.example apps/api/.env && chmod 600 apps/api/.env
-npm start
+sudo useradd --system --create-home --home-dir /var/lib/ogarniacz --shell /usr/sbin/nologin ogarniacz
+sudo git clone https://github.com/piekutlukasz/ogarniacz.git /opt/ogarniacz
+sudo chown -R ogarniacz:ogarniacz /opt/ogarniacz
+cd /opt/ogarniacz
+sudo -u ogarniacz git checkout -B prod origin/prod
+sudo -u ogarniacz sh -c 'npm ci --include=dev && npm run build'
+sudo -u ogarniacz sh -c 'cp apps/api/.env.example apps/api/.env && chmod 600 apps/api/.env && mkdir -p apps/api/data'
+sudo cp deploy/systemd/ogarniacz.service /etc/systemd/system/
+sudo systemctl enable --now ogarniacz
 ```
 
-`npm start` uruchamia `node dist/index.cjs` w `apps/api` i czyta ustawienia z `apps/api/.env`. Proces powinien pilnować menedżer usług (np. systemd z `Restart=always`), żeby aplikacja wstawała po awarii i po restarcie serwera. CLI do kont i kopii:
+Zamiast `prod` możesz wybrać oznaczone wydanie: `git checkout v1.0.0`. Usługa uruchamia `node dist/index.cjs` w `apps/api`, czyta ustawienia z `apps/api/.env`, wstaje po awarii i po restarcie serwera i może zapisywać tylko w `apps/api/data` i katalogu domowym. Inne ścieżki zmienisz w pliku usługi. Logi: `journalctl -u ogarniacz`. Proxy z HTTPS: `deploy/systemd/Caddyfile` (Caddy sam zdobywa certyfikat) albo `deploy/systemd/nginx.conf`, z domeną w miejscu `DOMENA`.
+
+CLI do kont i kopii:
 
 ```bash
-cd apps/api && node dist/cli.cjs user list
+cd /opt/ogarniacz/apps/api && sudo -u ogarniacz node dist/cli.cjs user list
 ```
 
 ## Proxy z HTTPS
@@ -149,17 +170,37 @@ Ustaw dowolną usługę, która co kilka minut sprawdza `https://DOMENA/api/heal
 
 Są dwa kanały aktualizacji. Oznaczone wydania (tagi `vX.Y.Z`, [lista wydań](https://github.com/piekutlukasz/ogarniacz/releases)) zmieniają się rzadziej i mają opis zmian; w Dockerze to gotowy obraz z GHCR. Gałąź `prod` wskazuje ostatni commit z `main`, który przeszedł całe CI (zadanie `promote` w `.github/workflows/ci.yml`), więc daje każdą sprawdzoną zmianę od razu. Bez Dockera w kroku 2 niżej zamiast `prod` można wskazać tag: `git fetch --tags origin && git checkout v1.0.0`.
 
-Bezpieczna aktualizacja bez Dockera, w tej kolejności:
+Oba skrypty aktualizacji robią to samo, w tej kolejności:
 
-1. Kopia bazy: `node dist/cli.cjs backup` w `apps/api`.
-2. Nowa wersja: `git fetch origin prod && git checkout -B prod origin/prod`.
-3. Zależności i build: `npm ci --include=dev && npm run build`. `--include=dev` jest potrzebne, bo przy `NODE_ENV=production` npm pominąłby narzędzia builda.
-4. Migracje nowej wersji na kopii, a nie na prawdziwej bazie: `node dist/cli.cjs backup verify` w `apps/api`. Błąd oznacza powrót do poprzedniego commita i ponowny build, bez restartu; stara wersja działa dalej.
-5. Restart procesu i sprawdzenie `curl -fsS http://127.0.0.1:3000/api/health`.
+1. Kopia bazy przez CLI.
+2. Nowa wersja.
+3. Migracje nowej wersji na kopii, a nie na prawdziwej bazie (`backup verify`). Błąd oznacza powrót do poprzedniej wersji bez restartu; stara wersja działa dalej.
+4. Restart i sprawdzenie `/api/health`. Gdy nowa wersja nie odpowiada, skrypt przywraca poprzednią i restartuje ją.
 
-Migracje wykonują się same przy starcie. Tylko dodają kolumny i tabele, więc starsza wersja działa na nowszej bazie, a powrót do poprzedniej wersji to te same kroki z wybranym commitem.
+Równoległe uruchomienie blokuje katalog blokady; po przerwanym przebiegu skrypt podaje, który usunąć.
 
-W Dockerze: kopia przez CLI w kontenerze, potem `docker compose pull && docker compose up -d` (gotowy obraz) albo `git pull && docker compose up -d --build` (obraz z klonu).
+**Bez Dockera:** [`deploy/update.sh`](../../deploy/update.sh), jako właściciel klonu. Bez argumentu bierze gałąź `prod`, z argumentem wybrane wydanie (także starsze, czyli powrót wersji):
+
+```bash
+sudo -u ogarniacz RESTART_CMD='sudo systemctl restart ogarniacz' /opt/ogarniacz/deploy/update.sh
+sudo -u ogarniacz /opt/ogarniacz/deploy/update.sh v1.0.0
+```
+
+Restartu nie zrobi użytkownik bez uprawnień, więc pozwól mu na to jedno polecenie (`sudo visudo -f /etc/sudoers.d/ogarniacz`):
+
+```text
+ogarniacz ALL=(root) NOPASSWD: /usr/bin/systemctl restart ogarniacz
+```
+
+`RESTART_CMD` zmienia polecenie restartu (domyślnie właśnie `sudo systemctl restart ogarniacz`), a `HEALTH_URL` adres sprawdzenia, gdy aplikacja nie słucha na porcie 3000. Skrypt odmawia pracy, gdy w klonie są lokalne zmiany w plikach z repozytorium.
+
+**W Dockerze:** [`deploy/docker/update.sh`](../../deploy/docker/update.sh), w katalogu z plikiem compose. Bez argumentu pobiera obraz z GHCR (`docker compose pull`), z `--build` buduje go z klonu (po `git pull`). Powrót wersji w Dockerze to wskazanie pełnego tagu obrazu (np. `ghcr.io/piekutlukasz/ogarniacz:1.0.0`) w pliku compose i ten sam skrypt.
+
+```bash
+cd deploy/docker && ./update.sh
+```
+
+Migracje wykonują się same przy starcie. Tylko dodają kolumny i tabele, więc starsza wersja działa na nowszej bazie.
 
 Jeśli nowa wersja psuje dane, zatrzymaj aplikację i odtwórz kopię zrobioną przed aktualizacją:
 

@@ -103,14 +103,14 @@ Pełny opis: `docs/PROJEKT.md`, rozdział 8.
 ## Wdrożenie
 
 - **Merge do `main` to wdrożenie na produkcję.** Po zielonym CI zadanie `promote` przesuwa gałąź `prod`, a instalacje śledzące `prod` same pobierają nową wersję. Pracuj na gałęzi i przez PR; nie pushuj na `main` ani `prod`. Pilnują tego rulesety z `.github/rulesets`: PR do `main` scala się tylko squashem i po zielonych `test` i `container`, bez wymogu zatwierdzenia, a scalić może tylko właściciel. Na PR otwartym dla właściciela włącz auto-merge (`gh pr merge --auto --squash`): scali się sam po zielonym CI, czyli trafi na produkcję bez dodatkowego przeglądu.
-- Obie drogi instalacji muszą działać: Docker (`Dockerfile`, `docker-compose.yml` dla własnego proxy i `deploy/docker` z Caddy; oba budowane i uruchamiane w CI) i Node 24 bez Dockera (opis: `docs/instrukcje/WDROZENIE.md`). Repozytorium nie opisuje żadnej konkretnej instalacji ani dostawcy hostingu.
+- Obie drogi instalacji muszą działać: Docker (`Dockerfile`, `docker-compose.yml` dla własnego proxy i `deploy/docker` z Caddy; oba budowane i uruchamiane w CI) i Node 24 bez Dockera (`deploy/systemd`, `deploy/update.sh`; opis: `docs/instrukcje/WDROZENIE.md`). Zmiana w `deploy/update.sh` albo `deploy/docker/update.sh` wymaga ręcznej próby aktualizacji i powrotu wersji: CI ich nie uruchamia. Repozytorium nie opisuje żadnej konkretnej instalacji ani dostawcy hostingu.
 - Z produkcji korzystają prawdziwi użytkownicy, a migracje wykonają się na ich danych przy starcie nowej wersji.
 
 ## Dokumentacja i commity
 
 - Mapa dokumentacji i zasady jej utrzymania: `docs/README.md`.
 - `docs/PROJEKT.md` opisuje tylko to, co **jest** w kodzie. Plik jest duży, więc czytaj potrzebny rozdział: 2 funkcje i wygląd, 3 architektura, 4 model danych, 5 tabela tras API, 6 role i uprawnienia, 7 push i kalendarze, 8 offline, 9 bezpieczeństwo, 10 hosting, 11 testy, 12 ryzyka.
-- Wszystko, co planowane (projekt, kryteria „Gotowe, gdy”, decyzje, odrzucone warianty), mieszka w jednym miejscu: w pliku z `docs/plany/` (np. `KONTA.md`, `PUBLIKACJA.md`). `PROJEKT.md` daje do niego najwyżej jedno zdanie z odnośnikiem, bez kopii szczegółów. `docs/PLAN.md` to tylko przegląd etapów: hasło, stan i odnośnik.
+- Wszystko, co planowane (projekt, kryteria „Gotowe, gdy”, decyzje, odrzucone warianty), mieszka w jednym miejscu: w pliku z `docs/plany/` (np. `KONTA.md`, `TESTY.md`). `PROJEKT.md` daje do niego najwyżej jedno zdanie z odnośnikiem, bez kopii szczegółów. `docs/PLAN.md` to tylko przegląd etapów: hasło, stan i odnośnik.
 - Zrobione części planu (analizy, notatki z wykonania) przechodzą do `docs/archiwum/`, a to, co opisuje działający kod, do `PROJEKT.md`. Zamknięty etap przenosi listę do `docs/archiwum/ETAPY.md`.
 - Zmiana funkcji aktualizuje w tym samym PR `PROJEKT.md` (tabele, opis modelu), plik planu (odhaczone punkty), w razie potrzeby wiersz w `PLAN.md` i datę „Stan na”, zmiana konwencji z tego pliku także `CLAUDE.md`, a zmiana page objectów `e2e/README.md`.
 - Przed większą funkcją przeczytaj jej plik w `docs/plany/` (kryteria „Gotowe, gdy”, decyzje już podjęte, odrzucone warianty) i odpowiedni rozdział `PROJEKT.md` (jak działa to, co już jest).

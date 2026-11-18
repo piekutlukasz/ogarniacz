@@ -1,6 +1,6 @@
 name: Obraz
 
-# Gotowy obraz w GHCR dla oznaczonych wydań (docs/plany/PUBLIKACJA.md, D4 i N3).
+# Gotowy obraz w GHCR dla oznaczonych wydań (docs/archiwum/PUBLIKACJA.md, D4 i N3).
 # Tag vX.Y.Z zakłada się na commicie z main, który przeszedł już całe CI, więc tu nie ma ponownych testów.
 # Na PR zmieniającym obraz albo ten plik budowa idzie bez publikacji, żeby błąd wyszedł przed tagiem.
 on:

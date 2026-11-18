@@ -92,6 +92,11 @@ jobs:
             sleep 2
           done
           echo "Stan kontenera: $status"; exit 1
+      # rclone do kopii poza serwer (BACKUP_REMOTE): plik z obrazu rclone i systemowe certyfikaty dla połączeń TLS.
+      - name: Sprawdź rclone w obrazie
+        run: |
+          docker compose exec -T ogarniacz rclone version
+          docker compose exec -T ogarniacz sh -c 'test -s /etc/ssl/certs/ca-certificates.crt && test "$RCLONE_CONFIG" = /data/rclone/rclone.conf'
       - name: Pokaż logi po błędzie
         if: failure()
         run: docker compose logs

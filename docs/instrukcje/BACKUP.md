@@ -74,7 +74,7 @@ BACKUP_REMOTE=ogarniacz-backup:
 RCLONE_PATH=/home/UŻYTKOWNIK/.local/bin/rclone
 ```
 
-Obraz Docker nie zawiera rclone. W Dockerze kopię poza serwer robi się z hosta, z katalogu kopii na wolumenie.
+W Dockerze `RCLONE_PATH` nie jest potrzebne; konfigurację opisuje rozdział „W Dockerze” niżej.
 
 Opcjonalnie `BACKUP_REMOTE_KEEP_DAYS` zmienia czas przechowywania na Dysku (domyślnie 60 dni).
 
@@ -87,6 +87,30 @@ node dist/cli.cjs backup && ~/.local/bin/rclone ls ogarniacz-backup:
 ```
 
 Na Dysku Google, w katalogu `Ogarniacz-backup`, powinny być pliki o nieczytelnych nazwach.
+
+## W Dockerze
+
+Obraz zawiera rclone, a jego konfiguracja leży na wolumenie aplikacji (`/data/rclone/rclone.conf`, zmienna `RCLONE_CONFIG`), więc przetrwa nowy obraz. Krok 1 pomijasz, kroki 2 i 3 są takie same, a pozostałe polecenia uruchamiasz w katalogu z plikiem compose, przez działający kontener.
+
+Krok 4, połączenie z Google Drive:
+
+```bash
+read -rp "Client ID: " CID && read -rsp "Client secret: " CSEC && echo && read -rsp "Token z Maca: " TOKEN && echo && docker compose exec -T ogarniacz rclone config create gdrive drive client_id="$CID" client_secret="$CSEC" scope=drive.file token="$TOKEN" config_refresh_token=false config_change_team_drive=false --non-interactive >/dev/null && unset CSEC TOKEN && docker compose exec -T ogarniacz rclone lsd gdrive: && echo "Połączenie z Google Drive działa"
+```
+
+Krok 5, zaszyfrowany katalog. Hasła losuje `openssl` na serwerze i polecenie **wyświetla je jeden raz**:
+
+```bash
+P1=$(openssl rand -base64 32) && P2=$(openssl rand -base64 32) && docker compose exec -T ogarniacz sh -c 'rclone config create ogarniacz-backup crypt remote=gdrive:Ogarniacz-backup password="$(rclone obscure "$1")" password2="$(rclone obscure "$2")" >/dev/null' sh "$P1" "$P2" && printf '\nZAPISZ W MENEDŻERZE HASEŁ (Ogarniacz, kopie zapasowe):\n  password:  %s\n  password2: %s\n\n' "$P1" "$P2" && unset P1 P2
+```
+
+Krok 6: dopisz `BACKUP_REMOTE=ogarniacz-backup:` do pliku `.env` obok pliku compose i uruchom `docker compose up -d`, żeby kontener wczytał ustawienie. Krok 7:
+
+```bash
+docker compose exec ogarniacz sh -c 'node dist/cli.cjs backup && rclone ls ogarniacz-backup:'
+```
+
+Przy odtwarzaniu na nowym serwerze polecenia z rozdziału niżej działają tak samo z przedrostkiem `docker compose exec ogarniacz`; kopię pobierz do `/data/restore` w kontenerze.
 
 ## Odtworzenie z Google Drive
 
