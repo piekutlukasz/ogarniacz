@@ -298,8 +298,8 @@ Aplikacja przechowuje dane dzieci, harmonogram domu i prywatne linki do kalendar
 Aplikacja działa w Dockerze albo bezpośrednio na Node.js 24, za proxy z HTTPS. Kod nie zależy od żadnego dostawcy hostingu: wszystko, co zależy od instalacji, jest zmienną środowiskową (`apps/api/src/config.ts`). Wymagania, przykład proxy, aktualizacja i obsługa: [instrukcje/WDROZENIE.md](instrukcje/WDROZENIE.md). Planowane ułatwienia instalacji: [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md).
 
 - **Wymagania każdej instalacji:** HTTPS, własna domena albo subdomena, jedna instancja, proxy, które nadpisuje nagłówek z adresem klienta.
-- **Aktualizacje:** commit z `main`, który przeszedł CI, trafia na gałąź `prod`; instalacja może ją śledzić.
-- **Obraz Docker:** CI buduje i uruchamia go przy każdej zmianie, więc obie drogi instalacji pozostają sprawne.
+- **Aktualizacje:** dwa kanały. Oznaczone wydania (tagi `vX.Y.Z`, od 1.0.0 bez sufiksu `-beta`) i gałąź `prod`, na którą trafia każdy commit z `main`, który przeszedł CI.
+- **Obraz Docker:** CI buduje i uruchamia go przy każdej zmianie, więc obie drogi instalacji pozostają sprawne. Tag wydania publikuje gotowy obraz `ghcr.io/piekutlukasz/ogarniacz` dla `amd64` i `arm64` (`.github/workflows/release.yml`) z tagami `1.0.0`, `1.0`, `1` i `latest`; `docker-compose.yml` wskazuje tag `1`.
 - **Domena:** instalacja PWA i subskrypcje push są związane z adresem aplikacji, więc zmiana adresu oznacza ponowną instalację i logowanie na wszystkich telefonach.
 
 **Backup:**

@@ -1,6 +1,6 @@
 # Instalacja dla innych i publikacja repozytorium
 
-Stan na 14 listopada 2026. Plan z [PLAN.md](../PLAN.md).
+Stan na 18 listopada 2026. Plan z [PLAN.md](../PLAN.md).
 
 Dwa cele:
 
@@ -14,7 +14,7 @@ Dwa cele:
 - [ ] Docker: konfiguracja przez `env_file`, proxy z HTTPS (Caddy) w compose, `HEALTHCHECK` (D1, D2, D5)
 - [ ] Zwykły serwer: `deploy/systemd` z jednostką usługi i przykładem proxy; skrypt aktualizacji z kopią i migracjami na kopii (N1, N2)
 - [ ] Kopia poza serwer w Dockerze, opis aktualizacji, wymagania systemu (D3, D7, N4)
-- [ ] Oznaczone wydania i gotowy obraz w GHCR (D4, N3)
+- [x] Oznaczone wydania i gotowy obraz w GHCR dla `amd64` i `arm64`, `docker-compose.yml` wskazuje tag `1` (D4, N3; 18 listopada 2026, wydanie 1.0.0)
 - [x] Publiczne repozytorium z ustawieniami według rozdziału 3 (14 listopada 2026)
 
 ## 1. Co już jest
@@ -118,7 +118,6 @@ Loginy typu `tata` i `mama` są w dokumentach i testach przykładami, a imiona w
 | Pytanie | Propozycja |
 |---|---|
 | `rclone` w obrazie Docker | Tak: jedna droga kopii poza serwer w obu wariantach instalacji |
-| Gotowy obraz w GHCR | Tak, od wydania 1.0 |
 | Proxy w przykładzie Dockera | Caddy, bo sam zdobywa certyfikat |
 
-Podjęte: licencja MIT (11 listopada 2026), imiona w demo i testach są fikcyjne (11 listopada 2026), publikacja jako nowe repozytorium z czystą historią (14 listopada 2026), kanał aktualizacji: oznaczone wydania (tagi `vX.Y.Z`, wersje przed 1.0 z sufiksem `-beta`), a `prod` dla tych, którzy chcą każdą wersję po CI; pierwsze wydanie `v0.9.0-beta` bez obrazu GHCR, przed zamknięciem etapu 8 (14 listopada 2026).
+Podjęte: licencja MIT (11 listopada 2026), imiona w demo i testach są fikcyjne (11 listopada 2026), publikacja jako nowe repozytorium z czystą historią (14 listopada 2026), kanał aktualizacji: oznaczone wydania (tagi `vX.Y.Z`, wersje przed 1.0 z sufiksem `-beta`), a `prod` dla tych, którzy chcą każdą wersję po CI; pierwsze wydanie `v0.9.0-beta` bez obrazu GHCR, przed zamknięciem etapu 8 (14 listopada 2026), gotowy obraz w GHCR od wydania 1.0.0, dla `amd64` i `arm64`, a `docker-compose.yml` wskazuje tag `1` z możliwością budowy z klonu przez `--build` (18 listopada 2026).

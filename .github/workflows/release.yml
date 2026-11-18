@@ -1,0 +1,55 @@
+name: Obraz
+
+# Gotowy obraz w GHCR dla oznaczonych wydań (docs/plany/PUBLIKACJA.md, D4 i N3).
+# Tag vX.Y.Z zakłada się na commicie z main, który przeszedł już całe CI, więc tu nie ma ponownych testów.
+# Na PR zmieniającym obraz albo ten plik budowa idzie bez publikacji, żeby błąd wyszedł przed tagiem.
+on:
+  push:
+    tags: ['v*.*.*']
+  pull_request:
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - .github/workflows/release.yml
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      # arm64 dla serwerów domowych (np. Raspberry Pi). Etap budowania frontu i API biegnie natywnie
+      # (`--platform=$BUILDPLATFORM` w Dockerfile), emulacja dotyczy tylko instalacji zależności produkcyjnych.
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - name: Zaloguj do GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # v1.2.3 daje tagi 1.2.3, 1.2, 1 i latest; wersja z sufiksem (np. -beta) dostaje tylko własny tag.
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

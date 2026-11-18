@@ -162,6 +162,26 @@ Projekt i decyzje (10 listopada 2026): [PROJEKT.md](../PROJEKT.md), rozdział 7.
 
 **Zamknięty 11 listopada 2026.**
 
+## Etap 8: wersja 1.0
+
+**Cel:** cała rodzina może polegać na aplikacji.
+
+- [x] Instalacja na wszystkich telefonach (11 listopada 2026)
+- [x] Codzienne używanie i zebranie uwag: od wdrożenia kont 13 listopada 2026 bez utraty danych i awarii, bez zgłoszonych problemów
+- [x] Naprawa problemów z codziennego używania: ikona powiadomienia na Androidzie, przebudowa panelu ustawień na menu z podstronami i blokada przewijania tła pod arkuszem (13 listopada 2026, [plany/ROZWOJ.md](../plany/ROZWOJ.md)), potwierdzone w Safari na iPhonie 17 listopada 2026
+- [x] Kopia poza serwer: rclone i zaszyfrowany katalog na Google Drive, próba odtworzenia z Dysku (14 listopada 2026), pierwsza nocna wysyłka (15 listopada 2026), [instrukcje/BACKUP.md](../instrukcje/BACKUP.md)
+- [x] Utwardzenie: sprawdzenia na produkcji, poprawki B1–B9, test tras bez sesji, dwa skany ZAP bez podatności (13 i 14 listopada 2026), [UTWARDZENIE-PRZEGLAD.md](UTWARDZENIE-PRZEGLAD.md)
+- [x] Testy przed 1.0: test dymny na buildzie (T1), migracje na kopii przed restartem (T5), ślady Playwright w CI (T6), 13 listopada 2026
+- [x] Konta w aplikacji: zmiana hasła i „wyloguj inne urządzenia”, zaproszenia z linkiem i kodem QR, sekcja „Rodzina”, dziennik logowań, kreator pierwszego uruchomienia (13 listopada 2026), [plany/KONTA.md](../plany/KONTA.md)
+- [x] Dokumentacja utrzymania: aktualizacja i powrót do poprzedniej wersji, próba odtworzenia backupu, nowe konto (13 listopada 2026), [instrukcje/WDROZENIE.md](../instrukcje/WDROZENIE.md)
+- [x] Wydanie `v1.0.0` z gotowym obrazem w GHCR (18 listopada 2026)
+
+**Gotowe, gdy:** przez dwa tygodnie nie ma utraty danych ani awarii, backup działa każdej nocy, a nową osobę i zapomniane hasło da się obsłużyć z aplikacji, bez dostępu do serwera.
+
+**Decyzja przy zamknięciu (18 listopada 2026):** wydanie po pięciu dniach od wdrożenia kont zamiast po dwóch tygodniach. Przez ten czas nie było awarii, utraty danych ani zgłoszonych problemów, a otwartych tematów etapu nie zostało.
+
+**Zamknięty 18 listopada 2026.**
+
 ## Zrobione przed 1.0 z planu rozwoju
 
 **Kieszonkowe i nagrody za zadania (9 listopada 2026, na prośbę rodziny):**

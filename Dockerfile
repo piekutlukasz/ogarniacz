@@ -1,4 +1,6 @@
-FROM node:24-slim AS build
+# Build frontu i API daje sam JavaScript, więc biegnie na platformie budującej, także przy obrazie arm64
+# (.github/workflows/release.yml). Moduły natywne instaluje dopiero etap końcowy, na docelowej platformie.
+FROM --platform=$BUILDPLATFORM node:24-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY apps/api/package.json apps/api/
