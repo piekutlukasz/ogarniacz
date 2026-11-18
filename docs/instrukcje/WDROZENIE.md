@@ -30,9 +30,20 @@ Klucz kalendarzy i klucze VAPID zapisz w menedżerze haseł: nie ma ich w kopii 
 
 ## Droga 1: Docker
 
-Obraz działa jako użytkownik `node`, trzyma bazę i kopie na wolumenie `/data`, a migracje wykonuje sam przy starcie. `docker-compose.yml` wystawia port 3000 tylko lokalnie, dla proxy na tym samym serwerze.
+Obraz działa jako użytkownik `node`, trzyma bazę i kopie na wolumenie `/data`, a migracje wykonuje sam przy starcie. Gotowy obraz dla `linux/amd64` i `linux/arm64` jest w GHCR (`ghcr.io/piekutlukasz/ogarniacz`), publikowany przy każdym wydaniu. Oba pliki compose wskazują tag `1`, czyli ostatnie wydanie 1.x; konkretną wersję daje tag pełny, np. `1.0.0`. `HEALTHCHECK` obrazu co 30 sekund sprawdza `/api/health`, a `docker ps` pokazuje wynik (`healthy`). Wymagany Docker Compose 2.24 lub nowszy.
 
-Gotowy obraz dla `linux/amd64` i `linux/arm64` jest w GHCR (`ghcr.io/piekutlukasz/ogarniacz`), publikowany przy każdym wydaniu. `docker-compose.yml` wskazuje tag `1`, czyli ostatnie wydanie 1.x; konkretną wersję daje tag pełny, np. `1.0.0`.
+Ustawienia z tabeli wyżej wpisz do pliku `.env` obok pliku compose; wzór z opisem to [`deploy/docker/.env.example`](../../deploy/docker/.env.example). Bez pliku aplikacja startuje z wartościami domyślnymi. Trzymaj go poza repozytorium (`chmod 600 .env`).
+
+**Wariant A: gotowy zestaw z HTTPS** ([`deploy/docker`](../../deploy/docker)). Aplikacja i Caddy, który sam zdobywa i odnawia certyfikat Let's Encrypt, nadpisuje `X-Real-IP` adresem klienta i ustawia HSTS. Wystarczą trzy pliki z tego katalogu, bez klonowania repozytorium: `docker-compose.yml`, `Caddyfile` i `.env.example`.
+
+```bash
+cp .env.example .env    # wpisz DOMAIN
+docker compose up -d
+```
+
+Wcześniej rekord DNS domeny musi wskazywać na serwer, a porty 80 i 443 (także 443/udp dla HTTP/3) muszą być otwarte; aplikacja nie wystawia żadnego portu, dostaje ją tylko Caddy. Docker zachowuje adres klienta dla ruchu IPv4. Dla IPv6 bez włączonego IPv6 w Dockerze kontener widzi adres bramy sieci, więc limit prób logowania liczy wtedy wszystkich klientów IPv6 razem. Sprawdzenie, że podrobiony nagłówek nie omija limitu, jest w CI (zadanie `container`).
+
+**Wariant B: własne proxy** (`docker-compose.yml` w katalogu głównym repozytorium). Aplikacja na `127.0.0.1:3000`, dla nginx albo innego proxy na tym samym serwerze, skonfigurowanego jak w rozdziale „Proxy z HTTPS”. Plik `.env` leży wtedy w katalogu głównym klonu.
 
 ```bash
 docker compose pull
@@ -41,7 +52,7 @@ docker compose up -d
 
 Obraz z własnego klonu repozytorium, np. z gałęzi `prod`, buduje `docker compose up -d --build`.
 
-Zmienne z tabeli wyżej dopisz w `docker-compose.yml` (sekcja `environment` albo `env_file`). Konta i kopie obsługuje CLI w kontenerze:
+Konta i kopie obsługuje CLI w kontenerze:
 
 ```bash
 docker compose exec ogarniacz node dist/cli.cjs user list
@@ -66,7 +77,7 @@ cd apps/api && node dist/cli.cjs user list
 
 ## Proxy z HTTPS
 
-Przykład dla nginx, który sam kończy TLS (certyfikat np. z Let's Encrypt):
+W wariancie A dla Dockera proxy jest już skonfigurowane (`deploy/docker/Caddyfile`). Przykład dla nginx, który sam kończy TLS (certyfikat np. z Let's Encrypt):
 
 ```nginx
 server {

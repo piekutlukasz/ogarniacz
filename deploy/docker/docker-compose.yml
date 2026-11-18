@@ -1,0 +1,39 @@
+# Ogarniacz z HTTPS: aplikacja i Caddy, który sam zdobywa i odnawia certyfikat dla domeny z .env.
+# Wystarczą trzy pliki z tego katalogu (bez klonowania repozytorium):
+#   cp .env.example .env    # wpisz DOMAIN
+#   docker compose up -d
+# Opis: docs/instrukcje/WDROZENIE.md, rozdział „Droga 1: Docker”.
+services:
+  ogarniacz:
+    # Tag 1 to ostatnie wydanie 1.x; aktualizacja: `docker compose pull && docker compose up -d`.
+    image: ghcr.io/piekutlukasz/ogarniacz:1
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    # Bez wystawionego portu: aplikacja jest dostępna tylko dla Caddy, w sieci tego compose.
+    volumes:
+      - ogarniacz-data:/data
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      ogarniacz:
+        condition: service_healthy
+    environment:
+      DOMAIN: ${DOMAIN:?Ustaw DOMAIN w pliku .env, np. DOMAIN=ogarniacz.example.org}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Certyfikaty: bez tego wolumenu Caddy prosiłby o nowe przy każdym starcie i trafiłby na limity Let's Encrypt.
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  ogarniacz-data:
+  caddy-data:
+  caddy-config:

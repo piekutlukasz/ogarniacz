@@ -1,3 +1,5 @@
+# Wariant dla serwera, który ma już własne proxy z HTTPS (np. nginx): aplikacja na 127.0.0.1:3000.
+# Gotowy zestaw z HTTPS (Caddy) jest w deploy/docker, opis w docs/instrukcje/WDROZENIE.md.
 services:
   ogarniacz:
     # Gotowy obraz z GHCR: tag 1 to ostatnie wydanie 1.x (`docker compose pull && docker compose up -d`).
@@ -5,7 +7,12 @@ services:
     image: ghcr.io/piekutlukasz/ogarniacz:1
     build: .
     restart: unless-stopped
-    # Port tylko lokalnie: ruch z internetu przechodzi przez nginx.
+    # Ustawienia (kalendarze, powiadomienia): skopiuj deploy/docker/.env.example do .env obok tego pliku.
+    # Bez pliku aplikacja startuje z wartościami domyślnymi.
+    env_file:
+      - path: .env
+        required: false
+    # Port tylko lokalnie: ruch z internetu przechodzi przez proxy z HTTPS.
     ports:
       - "127.0.0.1:3000:3000"
     volumes:

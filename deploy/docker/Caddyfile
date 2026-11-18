@@ -1,0 +1,12 @@
+# Domena z DOMAIN w .env. Caddy sam zdobywa certyfikat (port 80 i 443 muszą być dostępne z internetu)
+# i przekierowuje http na https.
+{$DOMAIN} {
+	# HSTS ustawia ten, kto kończy TLS; aplikacja go nie wysyła.
+	header Strict-Transport-Security "max-age=31536000"
+
+	reverse_proxy ogarniacz:3000 {
+		# Adres klienta dla limitu prób logowania. Nadpisany, żeby wartość wysłana przez klienta nie docierała do API.
+		# Host i X-Forwarded-Host Caddy przekazuje sam i nie ufa wartościom od klienta.
+		header_up X-Real-IP {remote_host}
+	}
+}

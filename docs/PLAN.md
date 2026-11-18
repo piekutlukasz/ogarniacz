@@ -25,7 +25,7 @@ Pełne listy kontrolne zamkniętych etapów i podjęte decyzje: [archiwum/ETAPY.
 
 | Wątek | Hasłowo | Szczegóły |
 |---|---|---|
-| Instalacja dla innych i publikacja | Docker z HTTPS, wariant z systemd, skrypt aktualizacji; zrobione: czysta historia, licencja MIT, ogólna instrukcja wdrożenia, `SECURITY.md`, wydanie `v0.9.0-beta` (14 listopada 2026), wydanie `v1.0.0` z obrazem w GHCR (18 listopada 2026) | [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md) |
+| Instalacja dla innych i publikacja | Wariant z systemd, skrypty aktualizacji, `rclone` w obrazie; zrobione: czysta historia, licencja MIT, ogólna instrukcja wdrożenia, `SECURITY.md`, wydanie `v0.9.0-beta` (14 listopada 2026), wydanie `v1.0.0` z obrazem w GHCR, Docker z HTTPS (Caddy), `.env` i `HEALTHCHECK` (18 listopada 2026) | [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md) |
 | Testy po 1.0 | Zrobione: e2e demo (T7), testy jednostkowe `ShoppingSync`, zegar w e2e, e2e sesji, blokady i wyłączonego konta (T2–T4, 15 listopada 2026), sprawdzenie dostępności axe z poprawkami kontrastu (T8, 17 listopada 2026) | [archiwum/UTWARDZENIE-TESTY.md](archiwum/UTWARDZENIE-TESTY.md) |
 | Pokrycie i nowe testy | Zrobione: pomiar pokrycia w Vitest z progami w CI, testy `shared` z `fast-check` i poprawka konfliktu odhaczenia w zakupach (18 listopada 2026); dalej migracje i powrót wersji, trasy bez e2e, aktualizacja service workera, regresja wizualna, mutacje | [plany/TESTY.md](plany/TESTY.md) |
 | Kieszonkowe: dokończenie | Zamknięte 17 listopada 2026: ukrycie bez dzieci, cofnięcie wypłaty, nagroda w regułach cyklicznych | [archiwum/KIESZONKOWE-DOKONCZENIE.md](archiwum/KIESZONKOWE-DOKONCZENIE.md) |
@@ -35,9 +35,7 @@ Pełne listy kontrolne zamkniętych etapów i podjęte decyzje: [archiwum/ETAPY.
 
 Każda decyzja jest zapisana w jednym miejscu: w pliku planu, którego dotyczy (rozdział „Decyzje”). Podjęte decyzje z zamkniętych etapów są w [archiwum/ETAPY.md](archiwum/ETAPY.md).
 
-| Plik | Najważniejsze otwarte pytania |
-|---|---|
-| [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md), rozdział 4 | `rclone` w obrazie, proxy w przykładzie Dockera |
+Obecnie żaden plan nie ma otwartych decyzji.
 
 ## Ustalenia
 

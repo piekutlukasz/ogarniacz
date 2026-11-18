@@ -277,8 +277,8 @@ Aplikacja przechowuje dane dzieci, harmonogram domu i prywatne linki do kalendar
 - Sekrety (`.env`, klucze VAPID, klucz szyfrowania) poza repozytorium.
 - Bez logowania aplikacji nie wolno wystawiać do internetu.
 - Konto powstaje tylko z kreatora pierwszego uruchomienia (pusta baza i kod z logu serwera), z jednorazowego zaproszenia od rodzica (potwierdzonego jego hasłem) albo przez CLI. Kod kreatora to jedyny sekret, który trafia do logu: działa tylko do założenia pierwszego konta albo do restartu ([plany/KONTA.md](plany/KONTA.md)). Przyjęcie zaproszenia i nowe hasło z linku zostawiają wpis w dzienniku, a pozostali rodzice dostają push; push dostają też przy blokadzie logowania konta (najwyżej raz na godzinę, z poszanowaniem ciszy nocnej).
-- API nasłuchuje tylko na `127.0.0.1` (zmienna `HOST`; w obrazie Docker `0.0.0.0`, a port wystawia mapowanie), bo zaufanie do nagłówków `X-Real-IP` i `X-Forwarded-Host` zakłada ruch wyłącznie przez nginx. nginx sam ustawia `X-Forwarded-Host`.
-- Limit rozmiaru żądania 100 kB w aplikacji, niezależnie od proxy (obraz Docker nie ma nginx).
+- API nasłuchuje tylko na `127.0.0.1` (zmienna `HOST`; w obrazie Docker `0.0.0.0`, a port wystawia mapowanie albo jest dostępny tylko w sieci compose z Caddy), bo zaufanie do nagłówków `X-Real-IP` i `X-Forwarded-Host` zakłada ruch wyłącznie przez proxy. nginx i Caddy (`deploy/docker/Caddyfile`) same ustawiają `X-Forwarded-Host` i nadpisują `X-Real-IP`.
+- Limit rozmiaru żądania 100 kB w aplikacji, niezależnie od proxy.
 - Nagłówki bezpieczeństwa na każdej odpowiedzi: CSP bez zewnętrznych źródeł i bez skryptów wpisanych w stronę (skrypt motywu to osobny plik `theme.js`), `frame-ancestors 'none'`, `nosniff`, `Referrer-Policy: no-referrer`, `Permissions-Policy` bez kamery, mikrofonu i lokalizacji. HSTS dodaje proxy hostingu (`max-age` dwa lata), więc aplikacja go nie wysyła.
 
 **Przegląd z 11 listopada 2026** ([archiwum/UTWARDZENIE-PRZEGLAD.md](archiwum/UTWARDZENIE-PRZEGLAD.md)) potwierdził powyższe próbą na lokalnej instancji i wskazał luki. Poprawki B1–B6, B8 i B9 są wdrożone 13 listopada 2026, a konta w aplikacji (ustalenie B7) w krokach 1 i 2.
@@ -299,7 +299,7 @@ Aplikacja działa w Dockerze albo bezpośrednio na Node.js 24, za proxy z HTTPS.
 
 - **Wymagania każdej instalacji:** HTTPS, własna domena albo subdomena, jedna instancja, proxy, które nadpisuje nagłówek z adresem klienta.
 - **Aktualizacje:** dwa kanały. Oznaczone wydania (tagi `vX.Y.Z`, od 1.0.0 bez sufiksu `-beta`) i gałąź `prod`, na którą trafia każdy commit z `main`, który przeszedł CI.
-- **Obraz Docker:** CI buduje i uruchamia go przy każdej zmianie, więc obie drogi instalacji pozostają sprawne. Tag wydania publikuje gotowy obraz `ghcr.io/piekutlukasz/ogarniacz` dla `amd64` i `arm64` (`.github/workflows/release.yml`) z tagami `1.0.0`, `1.0`, `1` i `latest`; `docker-compose.yml` wskazuje tag `1`.
+- **Obraz Docker:** CI buduje i uruchamia go przy każdej zmianie, więc obie drogi instalacji pozostają sprawne. Tag wydania publikuje gotowy obraz `ghcr.io/piekutlukasz/ogarniacz` dla `amd64` i `arm64` (`.github/workflows/release.yml`) z tagami `1.0.0`, `1.0`, `1` i `latest`; oba pliki compose wskazują tag `1`. `HEALTHCHECK` sprawdza `/api/health`. `docker-compose.yml` w katalogu głównym wystawia aplikację na `127.0.0.1:3000` dla własnego proxy, a `deploy/docker` to gotowy zestaw z Caddy (certyfikat, HSTS, `X-Real-IP`); oba czytają ustawienia z opcjonalnego `.env`. CI uruchamia oba i sprawdza, że podrobiony `X-Real-IP` nie omija limitu logowań.
 - **Domena:** instalacja PWA i subskrypcje push są związane z adresem aplikacji, więc zmiana adresu oznacza ponowną instalację i logowanie na wszystkich telefonach.
 
 **Backup:**
