@@ -17,7 +17,7 @@ jobs:
     # przebiegu przez apt (18 listopada 2026 wolny serwer Ubuntu zatrzymał instalację na 19 minut).
     # Wersja obrazu = wersja @playwright/test z package-lock.json; po podbiciu Playwright zmień oba miejsca.
     container:
-      image: mcr.microsoft.com/playwright:v1.65.0-noble
+      image: mcr.microsoft.com/playwright:v1.65.1-noble
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
