@@ -12,8 +12,8 @@ Wymagany Node.js 22.12 lub nowszy (CI i produkcja: 24). Wszystko uruchamiaj z ka
 |---|---|
 | `npm run dev` | Front na `:5173` i API na `:3000`; Vite przekazuje `/api` do API |
 | `npm run typecheck` | `tsc --noEmit` we wszystkich paczkach. To jedyna statyczna kontrola: nie ma ESLinta ani Prettiera, formatowanie wyznacza `.editorconfig` |
-| `npm test` | Vitest: API i front (`apps/web`: kolejka zakupów `ShoppingSync` z `fake-indexeddb`) |
-| `npm run test:coverage` | To samo co `npm test` z pomiarem pokrycia (`@vitest/coverage-v8`, raport w `apps/*/coverage`); spadek poniżej progów z `vitest.config.ts` kończy przebieg błędem. Podsumowanie: `node scripts/coverage-summary.mjs`. Progi: `docs/plany/TESTY.md` |
+| `npm test` | Vitest: `packages/shared` (reguły wspólne, testy właściwości `fast-check`), API i front (`apps/web`: kolejka zakupów `ShoppingSync` z `fake-indexeddb`, `format.ts`) |
+| `npm run test:coverage` | To samo co `npm test` z pomiarem pokrycia (`@vitest/coverage-v8`, raport w `coverage/` każdej paczki); spadek poniżej progów z `vitest.config.ts` kończy przebieg błędem. Podsumowanie: `node scripts/coverage-summary.mjs`. Progi: `docs/plany/TESTY.md` |
 | `npm run test:e2e` | Playwright na profilach iPhone 15 i Pixel 7, na własnym serwerze (porty 5180 i 3080) |
 | `npm run test:smoke` | Test dymny na zbudowanej aplikacji (po `npm run build`): service worker, start bez sieci, CSP; port 3090, tryb demo (wejście jednym przyciskiem, baner) na 3091, kreator pierwszego uruchomienia na 3092 i 3093 (puste bazy); jednorazowe bazy |
 | `npm run build` | Front do `apps/api/public`, API do `apps/api/dist` |
@@ -93,6 +93,8 @@ Pełny opis: `docs/PROJEKT.md`, rozdział 8.
 **API (Vitest).** Każdy test otwiera świeżą bazę `openDatabase(':memory:', './drizzle')`, składa `createApp({ db, now })` z własnym zegarem i woła `app.request()` z nagłówkiem `Cookie`; odpowiedzi parsuje schematami z `shared`. Ścieżka `./drizzle` jest względna wobec `apps/api`, dlatego testy uruchamiaj przez workspace, jak wyżej.
 
 **E2E (Playwright).** Przed pisaniem testów przeczytaj `e2e/README.md`. Najważniejsze zasady: `test` i `expect` importuj z `src/fixtures`; selektory tylko w page objectach, po roli i etykiecie; `parent` i `child` to aktorzy w osobnych kontekstach i nie wolno ich wylogowywać; dane przygotowuj przez `actor.api`; baza `apps/api/data/e2e.db` nie jest czyszczona, a projekty `iphone` i `android` biegną naraz, więc nazwy buduj przez `uniqueTitle()`.
+
+**Reguły wspólne (Vitest, `fast-check`).** `packages/shared/src/*.test.ts` sprawdzają reguły na losowych danych: zamiast kilku przykładów niezmiennik („powtórzona zmiana niczego nie zmienia”, „dzień RRRR-MM-DD po `addDays` w obie strony wraca do siebie”). Zgodność telefonu i serwera dla zakupów sprawdza `apps/api/src/shoppingSync.test.ts`. Zmiana reguły w `shared` albo w `routes/shopping.ts` ma przejść oba.
 
 **Front (Vitest).** Testy jednostkowe w `apps/web/src/**/*.test.ts` biegną w Node z własnym `vitest.config.ts` (bez wtyczek PWA i Tailwind). IndexedDB daje `fake-indexeddb`, a serwer to atrapa `fetch`; stan modułów resetuje `vi.resetModules()`.
 

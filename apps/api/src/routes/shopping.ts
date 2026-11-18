@@ -129,11 +129,13 @@ export function shoppingRoutes(db: Db, now: () => Date) {
       const checked = !checkWins
         ? {}
         : change.checked
-          ? // Ponowne odhaczenie nie przesuwa czasu ani osoby, więc powtórzone żądanie niczego nie psuje.
+          ? // Ponowne odhaczenie nie zmienia czasu ani osoby w koszyku, ale przesuwa czas ostatniej zmiany odhaczenia:
+            // inaczej starsze odznaczenie z innego telefonu, które dotrze później, cofnęłoby nowsze odhaczenie.
+            // Powtórzone żądanie ma ten sam `changedAt`, więc niczego nie zmienia.
             {
               checkedAt: existing.checkedAt ?? changedAt,
               checkedById: existing.checkedById ?? user.id,
-              checkedChangedAt: existing.checkedAt ? existing.checkedChangedAt : changedAt,
+              checkedChangedAt: changedAt,
             }
           : { checkedAt: null, checkedById: null, checkedChangedAt: changedAt };
       const edited = !editWins

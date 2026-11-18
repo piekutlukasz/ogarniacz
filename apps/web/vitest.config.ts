@@ -14,8 +14,12 @@ export default defineConfig({
       // Pliki `api.ts` i `hooks.ts` to cienkie opakowania TanStack Query, które przechodzi e2e.
       exclude: ['src/**/*.test.ts', 'src/**/*.d.ts', 'src/features/*/api.ts', 'src/features/*/hooks.ts'],
       reporter: ['text-summary', 'html', 'json-summary'],
-      // Próg tylko dla kolejki zakupów: reszta logiki frontu nie ma jeszcze testów (docs/plany/TESTY.md).
+      // Podłoga tuż pod bieżącym stanem i wyższa dla kolejki zakupów (docs/plany/TESTY.md).
       thresholds: {
+        lines: 74,
+        statements: 72,
+        branches: 72,
+        functions: 73,
         'src/features/shopping/sync.ts': { lines: 86, branches: 77 },
       },
     },
