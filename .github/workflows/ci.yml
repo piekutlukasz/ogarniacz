@@ -84,8 +84,40 @@ jobs:
         run: |
           curl --fail --silent --show-error http://localhost:3000/api/setup | grep -q '"needed":true'
           docker compose logs | grep -Eq 'kod pierwszego uruchomienia: [2-9A-Z]{4}-[2-9A-Z]{4}'
+      - name: Sprawdź HEALTHCHECK obrazu
+        run: |
+          for i in $(seq 1 30); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' "$(docker compose ps -q ogarniacz)")
+            [ "$status" = healthy ] && exit 0
+            sleep 2
+          done
+          echo "Stan kontenera: $status"; exit 1
       - name: Pokaż logi po błędzie
         if: failure()
+        run: docker compose logs
+      - run: docker compose down -v
+      # Zestaw z Caddy na obrazie zbudowanym wyżej (ta sama nazwa, więc compose go nie pobiera).
+      # Dla localhost Caddy wystawia certyfikat z własnego CA, stąd curl -k.
+      - name: Uruchom zestaw z HTTPS (deploy/docker)
+        working-directory: deploy/docker
+        run: |
+          echo DOMAIN=localhost > .env
+          docker compose up -d --wait
+          curl --fail --silent --show-error --insecure --retry 10 --retry-delay 2 --retry-all-errors https://localhost/api/health
+          curl --silent --insecure --head https://localhost/ | grep -qi '^strict-transport-security:'
+      # Proxy musi nadpisać X-Real-IP: z podrobionym, zmiennym adresem limit prób na adres i tak blokuje (429).
+      - name: Sprawdź, że podrobiony adres klienta nie omija limitu logowań
+        run: |
+          for i in $(seq 1 40); do
+            code=$(curl --silent --insecure -o /dev/null -w '%{http_code}' -X POST https://localhost/api/auth/login \
+              -H 'Content-Type: application/json' -H 'Origin: https://localhost' -H "X-Real-IP: 10.0.0.$i" \
+              -d "{\"login\":\"nikt$i\",\"password\":\"zlehaslo123\"}")
+            [ "$code" = 429 ] && exit 0
+          done
+          echo "Brak blokady po 40 próbach: proxy przepuszcza X-Real-IP od klienta"; exit 1
+      - name: Pokaż logi zestawu z HTTPS po błędzie
+        if: failure()
+        working-directory: deploy/docker
         run: docker compose logs
 
   # Instalacje śledzące gałąź prod pobierają z niej nowe wersje,

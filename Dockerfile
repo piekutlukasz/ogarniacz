@@ -32,4 +32,8 @@ USER node
 WORKDIR /app/apps/api
 VOLUME /data
 EXPOSE 3000
+# Obraz nie ma curl, więc /api/health sprawdza sam Node. W start-period (migracje przy starcie) sprawdza co 2 s,
+# żeby Caddy z deploy/docker, który czeka na zdrową aplikację, ruszył zaraz po niej.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --start-interval=2s --retries=3 \
+  CMD ["node", "-e", "fetch('http://127.0.0.1:' + (process.env.PORT || 3000) + '/api/health').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
 CMD ["node", "dist/index.cjs"]
