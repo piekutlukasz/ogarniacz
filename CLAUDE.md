@@ -30,7 +30,7 @@ npm run test -w @ogarniacz/e2e -- tests/shopping.spec.ts --project=iphone -g "fr
 
 W worktree `node_modules` bywa starsze niż `package-lock.json`. Gdy Vite albo testy zgłaszają brak modułu, uruchom `npm ci`.
 
-CI (`.github/workflows/ci.yml`) uruchamia po kolei: `npm audit --omit=dev --audit-level=high`, `typecheck`, `test:coverage`, `build`, `test:e2e`, `test:smoke`, a osobno build i start kontenera Docker. Po błędzie e2e ślady Playwright są w artefakcie przebiegu. Przed zgłoszeniem zmiany przejdź tę samą kolejność.
+CI (`.github/workflows/ci.yml`) uruchamia po kolei: `npm audit --omit=dev --audit-level=high`, `typecheck`, `test:coverage`, `build`, `test:e2e`, `test:smoke`, a osobno build i start kontenera Docker. Po błędzie e2e ślady Playwright są w artefakcie przebiegu. Zadanie `test` biegnie w oficjalnym obrazie Playwright (`container.image` w `ci.yml`), który ma przeglądarki i biblioteki systemowe; jego wersja musi być równa `@playwright/test` z `package-lock.json`, więc podbicie Playwright zmienia oba miejsca (inaczej CI pobierze przeglądarki i zostawi ostrzeżenie). Pakiety npm CI bierze z pamięci podręcznej `setup-node` (`cache: npm`, klucz z sumy kontrolnej `package-lock.json`). Przed zgłoszeniem zmiany przejdź tę samą kolejność.
 
 Publicznej rejestracji nie ma. Na pustej bazie aplikacja pokazuje kreator pierwszego uruchomienia z kodem z logu API (`[start] pusta baza, kod pierwszego uruchomienia: …`); trasy `/api/setup` są w `routes/setup.ts`, a kod w `auth/setup.ts`. Zapasowo konto zakłada CLI: `npm run cli -w @ogarniacz/api -- user add --login tata --name Tata --role parent` (hasło z klawiatury albo `--password-stdin`).
 
