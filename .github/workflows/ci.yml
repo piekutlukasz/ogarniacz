@@ -23,7 +23,21 @@ jobs:
       # Tylko zależności produkcyjne i tylko wysokie: niska podatność w narzędziu budowania nie blokuje wdrożeń.
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run typecheck
-      - run: npm test
+      # Testy API i frontu z pomiarem pokrycia; spadek poniżej progów z vitest.config.ts kończy krok błędem.
+      - run: npm run test:coverage
+      - name: Podsumuj pokrycie
+        if: ${{ !cancelled() }}
+        run: node scripts/coverage-summary.mjs >> "$GITHUB_STEP_SUMMARY"
+      - name: Zapisz raport pokrycia
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: pokrycie-${{ github.run_attempt }}
+          path: |
+            apps/api/coverage
+            apps/web/coverage
+          retention-days: 14
+          if-no-files-found: ignore
       - run: npm run build
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:e2e

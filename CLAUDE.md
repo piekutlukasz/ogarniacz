@@ -13,6 +13,7 @@ Wymagany Node.js 22.12 lub nowszy (CI i produkcja: 24). Wszystko uruchamiaj z ka
 | `npm run dev` | Front na `:5173` i API na `:3000`; Vite przekazuje `/api` do API |
 | `npm run typecheck` | `tsc --noEmit` we wszystkich paczkach. To jedyna statyczna kontrola: nie ma ESLinta ani Prettiera, formatowanie wyznacza `.editorconfig` |
 | `npm test` | Vitest: API i front (`apps/web`: kolejka zakupów `ShoppingSync` z `fake-indexeddb`) |
+| `npm run test:coverage` | To samo co `npm test` z pomiarem pokrycia (`@vitest/coverage-v8`, raport w `apps/*/coverage`); spadek poniżej progów z `vitest.config.ts` kończy przebieg błędem. Podsumowanie: `node scripts/coverage-summary.mjs`. Progi: `docs/plany/TESTY.md` |
 | `npm run test:e2e` | Playwright na profilach iPhone 15 i Pixel 7, na własnym serwerze (porty 5180 i 3080) |
 | `npm run test:smoke` | Test dymny na zbudowanej aplikacji (po `npm run build`): service worker, start bez sieci, CSP; port 3090, tryb demo (wejście jednym przyciskiem, baner) na 3091, kreator pierwszego uruchomienia na 3092 i 3093 (puste bazy); jednorazowe bazy |
 | `npm run build` | Front do `apps/api/public`, API do `apps/api/dist` |
@@ -29,7 +30,7 @@ npm run test -w @ogarniacz/e2e -- tests/shopping.spec.ts --project=iphone -g "fr
 
 W worktree `node_modules` bywa starsze niż `package-lock.json`. Gdy Vite albo testy zgłaszają brak modułu, uruchom `npm ci`.
 
-CI (`.github/workflows/ci.yml`) uruchamia po kolei: `npm audit --omit=dev --audit-level=high`, `typecheck`, `test`, `build`, `test:e2e`, `test:smoke`, a osobno build i start kontenera Docker. Po błędzie e2e ślady Playwright są w artefakcie przebiegu. Przed zgłoszeniem zmiany przejdź tę samą kolejność.
+CI (`.github/workflows/ci.yml`) uruchamia po kolei: `npm audit --omit=dev --audit-level=high`, `typecheck`, `test:coverage`, `build`, `test:e2e`, `test:smoke`, a osobno build i start kontenera Docker. Po błędzie e2e ślady Playwright są w artefakcie przebiegu. Przed zgłoszeniem zmiany przejdź tę samą kolejność.
 
 Publicznej rejestracji nie ma. Na pustej bazie aplikacja pokazuje kreator pierwszego uruchomienia z kodem z logu API (`[start] pusta baza, kod pierwszego uruchomienia: …`); trasy `/api/setup` są w `routes/setup.ts`, a kod w `auth/setup.ts`. Zapasowo konto zakłada CLI: `npm run cli -w @ogarniacz/api -- user add --login tata --name Tata --role parent` (hasło z klawiatury albo `--password-stdin`).
 

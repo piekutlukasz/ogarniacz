@@ -1,6 +1,6 @@
 # Ogarniacz: dokumentacja projektu
 
-Stan na 17 listopada 2026. Kolejność prac opisuje [PLAN.md](PLAN.md).
+Stan na 18 listopada 2026. Kolejność prac opisuje [PLAN.md](PLAN.md).
 
 Plik opisuje tylko to, co **jest** w kodzie. Planowane prace, ich projekt i decyzje są w [plany/](plany/), a tutaj najwyżej jednym zdaniem z odnośnikiem.
 
@@ -323,6 +323,8 @@ Aplikacja działa w Dockerze albo bezpośrednio na Node.js 24, za proxy z HTTPS.
 | Test dymny | Playwright na zbudowanej aplikacji (`npm run test:smoke`) | Service worker, start bez sieci, CSP, nagłówki pamięci podręcznej; tryb demo: wejście jednym przyciskiem, baner, blokada indeksowania; kreator pierwszego uruchomienia na dwóch serwerach z pustą bazą |
 | Wdrożenie | `backup verify` w CLI, krok aktualizacji z [instrukcje/WDROZENIE.md](instrukcje/WDROZENIE.md) | Migracje nowej wersji na kopii bazy przed restartem |
 | Ręczne | Prawdziwy iPhone i Android | Instalacja, push, offline |
+
+**Pokrycie.** `npm run test:coverage` mierzy pokrycie testów API (razem z `packages/shared`) i frontu przez `@vitest/coverage-v8`; progi są w `vitest.config.ts` każdej paczki, a CI pokazuje tabelę w podsumowaniu przebiegu i zapisuje raport HTML jako artefakt. Zasady progów i dalsze testy: [plany/TESTY.md](plany/TESTY.md).
 
 Test przekrojowy `routes.test.ts` zbiera wszystkie trasy z aplikacji i sprawdza, że każda poza jawnie publicznymi odpowiada bez sesji `401`. Po nieudanym przebiegu e2e CI zapisuje ślady Playwright i raport HTML jako artefakt.
 

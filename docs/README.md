@@ -27,6 +27,7 @@ Każdy plik ma na początku listę kontrolną do odhaczania, potem analizę i uz
 |---|---|---|
 | [plany/KONTA.md](plany/KONTA.md) | 8 | Konta w aplikacji: zaproszenia, sekcja „Rodzina”, kreator pierwszego uruchomienia; wszystkie trzy kroki zrobione 13 listopada 2026 |
 | [plany/PUBLIKACJA.md](plany/PUBLIKACJA.md) | 9 | Instalacja z Dockerem i bez, publikacja repozytorium |
+| [plany/TESTY.md](plany/TESTY.md) | 9 | Pomiar pokrycia i nowe rodzaje testów: `shared`, migracje, trasy bez e2e, service worker, regresja wizualna, mutacje |
 | [plany/ROZWOJ.md](plany/ROZWOJ.md) | 9 | Pomysły |
 
 ## Instrukcje
