@@ -96,7 +96,7 @@ Zaproszenie wymaga istniejącego rodzica, więc pierwszego trzeba założyć ina
 - **Tylko na pustej bazie.** Warunek „brak kont” jest sprawdzany w tej samej transakcji, w której powstaje konto, więc dwa równoczesne żądania nie założą dwóch kont. Liczą się także konta wyłączone: baza, w której kiedykolwiek było konto, kreatora nie pokaże.
 - **Poza kreatorem trasy odpowiadają `404`,** tak jak trasy demo poza trybem demo. Nie `401`, bo front traktuje `401` jako wylogowanie.
 - **Demo.** W trybie `DEMO_MODE` baza jest wypełniana przy starcie, więc kreator nigdy się nie pokazuje, a jego trasy nie są montowane.
-- **Produkcja rodziny** ma już konta, więc kreatora nie zobaczy. Służy nowym instalacjom ([PUBLIKACJA.md](PUBLIKACJA.md)) i pozwala usunąć z instrukcji wdrożenia krok „załóż konta przez CLI”.
+- **Produkcja rodziny** ma już konta, więc kreatora nie zobaczy. Służy nowym instalacjom ([PUBLIKACJA.md](../archiwum/PUBLIKACJA.md)) i pozwala usunąć z instrukcji wdrożenia krok „załóż konta przez CLI”.
 - **Pomyłka w ścieżce bazy.** Literówka w `DATABASE_PATH` albo przeniesiony katalog danych dają na działającej instalacji pustą bazę, a z nią publiczny kreator. Przed obcym chroni wtedy kod. Sygnałem dla administratora jest wpis `[start] pusta baza` w logu działającej instalacji; rodzina zobaczy kreator zamiast logowania i nie powinna go przechodzić, tylko zgłosić problem. Pomysł na później: wypisywać przy tym pełną ścieżkę bazy, żeby zły plik był widoczny od razu.
 
 ## Zasady bezpieczeństwa

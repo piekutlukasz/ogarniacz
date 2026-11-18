@@ -1,6 +1,6 @@
 # Instalacja dla innych i publikacja repozytorium
 
-Stan na 18 listopada 2026. Plan z [PLAN.md](../PLAN.md).
+Stan na 18 listopada 2026. Plan zamknięty 18 listopada 2026: wszystkie punkty zrobione, a to, jak instalacja działa dziś, opisuje [instrukcje/WDROZENIE.md](../instrukcje/WDROZENIE.md). Plik zostaje jako zapis decyzji i zasad ochrony gałęzi (rozdział 3).
 
 Dwa cele:
 
@@ -12,8 +12,8 @@ Dwa cele:
 - [x] Repozytorium z czystą historią, bez danych konkretnej instalacji, z licencją MIT (14 listopada 2026)
 - [x] Ogólna instrukcja wdrożenia, bez wskazywania dostawcy: [instrukcje/WDROZENIE.md](../instrukcje/WDROZENIE.md) (14 listopada 2026)
 - [x] Docker: konfiguracja przez `env_file`, gotowy zestaw z Caddy w `deploy/docker`, `HEALTHCHECK` (D1, D2, D5; 18 listopada 2026)
-- [ ] Zwykły serwer: `deploy/systemd` z jednostką usługi i przykładem proxy; skrypt aktualizacji z kopią i migracjami na kopii (N1, N2)
-- [ ] `rclone` w obrazie, skrypt aktualizacji w Dockerze, wymagania systemu (D3, D7, N4)
+- [x] Zwykły serwer: `deploy/systemd` z jednostką usługi i przykładami Caddy i nginx; `deploy/update.sh` z kopią, migracjami na kopii i powrotem wersji (N1, N2; 18 listopada 2026)
+- [x] `rclone` w obrazie, `deploy/docker/update.sh`, wymagania serwera w instrukcji wdrożenia (D3, D7, N4; 18 listopada 2026)
 - [x] Oznaczone wydania i gotowy obraz w GHCR dla `amd64` i `arm64`, `docker-compose.yml` wskazuje tag `1` (D4, N3; 18 listopada 2026, wydanie 1.0.0)
 - [x] Publiczne repozytorium z ustawieniami według rozdziału 3 (14 listopada 2026)
 
@@ -44,32 +44,32 @@ Wymagania wspólne dla każdej instalacji (HTTPS, własna domena, jedna instancj
 |---|---|---|---|---|
 | D1 | `docker-compose.yml` nie ma miejsca na konfigurację | Kluczy kalendarzy i push nie da się ustawić bez edycji pliku | Zrobione 18 listopada 2026: opcjonalny `.env` w obu plikach compose, wzór w `deploy/docker/.env.example` | S |
 | D2 | Brak HTTPS | Telefony nie zainstalują aplikacji ani nie dostaną push | Zrobione 18 listopada 2026: `deploy/docker` z Caddy (certyfikat, `X-Real-IP`, HSTS), domena jako jedyna wymagana zmienna; CI sprawdza HTTPS i limit logowań z podrobionym adresem | S |
-| D3 | W obrazie nie ma `rclone` | `BACKUP_REMOTE` w Dockerze nie zadziała; kopia zostaje tylko na wolumenie | `rclone` w obrazie (decyzja w rozdziale 4) i konfiguracja `rclone.conf` na wolumenie | S |
+| D3 | W obrazie nie ma `rclone` | `BACKUP_REMOTE` w Dockerze nie zadziała; kopia zostaje tylko na wolumenie | Zrobione 18 listopada 2026: `rclone` z oficjalnego obrazu (wersję podbija Dependabot) i `ca-certificates`, konfiguracja w `/data/rclone/rclone.conf` na wolumenie; obraz urósł z około 450 do 590 MB | S |
 | D4 | Brak gotowego obrazu | Każdy musi sklonować repozytorium i budować | Zrobione 18 listopada 2026: obraz w GHCR przy wydaniu; aktualizacja to `docker compose pull && docker compose up -d` | M |
 | D5 | Brak `HEALTHCHECK` | Docker nie wie, czy aplikacja odpowiada | Zrobione 18 listopada 2026: `HEALTHCHECK` na `/api/health` w `Dockerfile` (przez Node, obraz nie ma curl); Caddy czeka na zdrową aplikację | S |
-| D7 | Aktualizacja w Dockerze nie sprawdza migracji na kopii | Błąd migracji wychodzi dopiero na prawdziwej bazie | Krótki skrypt: kopia przez CLI, nowy obraz, `backup verify` w nowym obrazie, restart, sprawdzenie `/api/health` | S |
+| D7 | Aktualizacja w Dockerze nie sprawdza migracji na kopii | Błąd migracji wychodzi dopiero na prawdziwej bazie | Zrobione 18 listopada 2026: `deploy/docker/update.sh` (kopia, nowy obraz z GHCR albo `--build`, `backup verify` nowym obrazem, restart, `/api/health`, powrót do poprzedniego obrazu) | S |
 
-Obraz ma około 450 MB. Da się go zmniejszyć, ale nie jest to potrzebne do działania.
+Obraz ma około 590 MB, z czego `rclone` to około 80 MB. Da się go zmniejszyć, ale nie jest to potrzebne do działania.
 
 ### 2.2. Bez Dockera
 
 | Nr | Brak | Propozycja | Rozmiar |
 |---|---|---|---|
-| N1 | Nie ma gotowej konfiguracji usługi | `deploy/systemd/`: jednostka usługi (`Restart=always`, `EnvironmentFile`, osobny użytkownik), przykładowa konfiguracja nginx albo Caddy z certyfikatem | S |
-| N2 | Aktualizację trzeba przeprowadzić ręcznie, krok po kroku | `deploy/update.sh`: blokada przed równoległym uruchomieniem, kopia, wersja z `prod` albo z tagu, `npm ci`, build, `backup verify` nowym kodem, restart, sprawdzenie `/api/health`, powrót do poprzedniego commita po błędzie; polecenie restartu jako ustawienie | M |
+| N1 | Nie ma gotowej konfiguracji usługi | Zrobione 18 listopada 2026: `deploy/systemd/ogarniacz.service` (`Restart=always`, osobny użytkownik, zapis tylko do danych i katalogu domowego; ustawienia z `apps/api/.env`, więc bez `EnvironmentFile`), `Caddyfile` i `nginx.conf` | S |
+| N2 | Aktualizację trzeba przeprowadzić ręcznie, krok po kroku | Zrobione 18 listopada 2026: `deploy/update.sh` z blokadą, kopią, wersją z `prod` albo z tagu, buildem, `backup verify` nowym kodem, restartem (`RESTART_CMD`), sprawdzeniem `/api/health` i powrotem do poprzedniego commita po błędzie; sprawdzony na aktualizacji `v0.9.0-beta` → `prod` i na powrocie po nieudanym restarcie | M |
 | N3 | Aktualizacja idzie za gałęzią `prod` | Zrobione 14 listopada 2026: oznaczone wydania (tagi `vX.Y.Z`) obok `prod` | S |
-| N4 | Brak listy wymagań systemu | Node 24, miejsce i pamięć na build frontu na serwerze, `rclone` tylko dla kopii poza serwerem | S |
+| N4 | Brak listy wymagań systemu | Zrobione 18 listopada 2026: tabela „Wymagania serwera” w instrukcji wdrożenia (aplikacja około 50 MB pamięci, build około 400 MB więcej) | S |
 
-### 2.3. Proponowany układ
+### 2.3. Układ
 
 ```text
 deploy/
-  docker/     compose z Caddy, Caddyfile, .env.example (są); skrypt aktualizacji (D7)
-  systemd/    jednostka usługi, przykład nginx/Caddy
-  update.sh   wspólna aktualizacja dla instalacji bez Dockera
+  docker/     compose z Caddy, Caddyfile, .env.example, update.sh
+  systemd/    jednostka usługi, przykłady Caddy i nginx
+  update.sh   aktualizacja instalacji bez Dockera
 ```
 
-Kolejność: D1, D2, D5 i D4 są zrobione; dalej N1 i N2, potem D3, D7 i N4.
+Wszystkie punkty są zrobione.
 
 ## 3. Publiczne repozytorium
 

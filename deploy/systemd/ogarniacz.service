@@ -1,0 +1,39 @@
+# Usługa systemd dla instalacji bez Dockera. Opis: docs/instrukcje/WDROZENIE.md, „Droga 2”.
+# Zakłada klon w /opt/ogarniacz należący do użytkownika systemowego ogarniacz:
+#   sudo useradd --system --create-home --home-dir /var/lib/ogarniacz --shell /usr/sbin/nologin ogarniacz
+#   sudo cp deploy/systemd/ogarniacz.service /etc/systemd/system/ && sudo systemctl enable --now ogarniacz
+# Inne ścieżki zmień tutaj (WorkingDirectory, ReadWritePaths, ExecStart).
+[Unit]
+Description=Ogarniacz
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ogarniacz
+Group=ogarniacz
+# Aplikacja czyta ustawienia z .env w tym katalogu (wzór: apps/api/.env.example). DATABASE_PATH i BACKUP_DIR
+# trzymaj w katalogu data obok, a nie w kodzie, który podmienia aktualizacja.
+WorkingDirectory=/opt/ogarniacz/apps/api
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node dist/index.cjs
+Restart=always
+RestartSec=5
+# Na zatrzymanie aplikacja kończy zapisy; po 20 s systemd ją zabija.
+TimeoutStopSec=20
+
+# Ograniczenia: zapis tylko do katalogu danych i domowego (konfiguracja rclone i odnawiany token Google).
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ReadWritePaths=/opt/ogarniacz/apps/api/data /var/lib/ogarniacz
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target
