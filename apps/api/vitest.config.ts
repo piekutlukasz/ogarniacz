@@ -11,13 +11,13 @@ export default defineConfig({
       // `index.ts` w shared to same ponowne eksporty.
       exclude: ['src/**/*.test.ts', '../../packages/shared/src/index.ts'],
       reporter: ['text-summary', 'html', 'json-summary'],
-      // Progi to podłoga tuż pod stanem z 18 listopada 2026: pokrycie może rosnąć, spadek kończy CI błędem.
+      // Progi to podłoga tuż pod bieżącym stanem (18 listopada 2026): pokrycie może rosnąć, spadek kończy CI błędem.
       // Wyższe progi mają uprawnienia i trasy, bo to w nich błąd wpuszcza obcą osobę albo psuje dane.
       thresholds: {
-        lines: 80,
-        statements: 79,
-        branches: 75,
-        functions: 78,
+        lines: 83,
+        statements: 82,
+        branches: 77,
+        functions: 81,
         'src/auth/**': { lines: 95, branches: 88 },
         'src/routes/**': { lines: 97, branches: 89 },
       },

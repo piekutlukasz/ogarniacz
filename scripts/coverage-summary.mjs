@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const packages = [
+  ['Reguły wspólne (`packages/shared`, własne testy)', 'packages/shared'],
   ['API (z `packages/shared`)', 'apps/api'],
   ['Front', 'apps/web'],
 ];

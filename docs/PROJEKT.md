@@ -259,7 +259,7 @@ Offline dotyczy tylko listy zakupów, bo w sklepie bywa słaby zasięg.
 - Kolejkę wysyłamy po kolei: po starcie aplikacji, powrocie na pierwszy plan, odzyskaniu sieci i zaraz po każdej zmianie. Nie zakładamy Background Sync, bo nie jest dostępny w Safari. Brak sieci i błąd 5xx zostawiają zmianę w kolejce, a ostateczną odmowę serwera, np. odhaczenie wyczyszczonego już produktu, pomijamy.
 - Licznik „Niewysłane zmiany” rośnie dopiero po zapisie kolejki na telefonie, więc pokazane zmiany przetrwają zamknięcie aplikacji.
 - Każdą zmianę można bezpiecznie powtórzyć: dodanie ma identyfikator z telefonu, a czyszczenie listę produktów.
-- Konflikty: przy tym samym produkcie wygrywa późniejsza zmiana według czasu z telefonu (`changedAt`), osobno dla odhaczenia i dla nazwy z ilością, więc odhaczenie w sklepie nie kasuje zmiany ilości z domu. Czas z przyszłości serwer przycina do bieżącego. Usunięcie wygrywa zawsze.
+- Konflikty: przy tym samym produkcie wygrywa późniejsza zmiana według czasu z telefonu (`changedAt`), osobno dla odhaczenia i dla nazwy z ilością, więc odhaczenie w sklepie nie kasuje zmiany ilości z domu. Wynik nie zależy od kolejności, w jakiej zmiany docierają: ponowne odhaczenie produktu, który już jest w koszyku, zostawia pierwszy czas i osobę, ale przesuwa czas ostatniej zmiany odhaczenia, więc starsze odznaczenie z innego telefonu go nie cofnie. Czas z przyszłości serwer przycina do bieżącego. Usunięcie wygrywa zawsze. Pilnują tego testy właściwości w `apps/api/src/shoppingSync.test.ts`: losowe ciągi zmian dają tę samą listę na telefonie (`applyShoppingChange`) i na serwerze, także po ponownej wysyłce i w dowolnej kolejności dotarcia.
 - Aplikacja otwiera się bez sieci: service worker podaje zbudowany front, a zalogowaną osobę pamiętamy w `localStorage`. Sesję sprawdza serwer przy pierwszym żądaniu po powrocie sieci. Bez sieci działa tylko lista zakupów; inne ekrany pokazują błąd połączenia.
 - Wylogowanie usuwa z telefonu kopię listy i niewysłane zmiany. Po wygaśnięciu sesji kolejka czeka i wysyła się po ponownym zalogowaniu tej samej osoby; zalogowanie innej osoby ją porzuca.
 
@@ -318,13 +318,14 @@ Aplikacja działa w Dockerze albo bezpośrednio na Node.js 24, za proxy z HTTPS.
 | Poziom | Narzędzie | Zakres |
 |---|---|---|
 | API | Vitest, SQLite w pamięci | Logika, uprawnienia, parser ICS, reguły cykliczne |
-| Front | Vitest, `fake-indexeddb` w miejscu IndexedDB | Kolejka zakupów offline (`ShoppingSync`): kolejność wysyłki, ponawianie, ostateczna odmowa, wygaśnięcie sesji, zmiana konta |
+| Reguły wspólne | Vitest i `fast-check` w `packages/shared` | Czas w strefie `Europe/Warsaw` (zmiany czasu, przełom roku), reguły cykliczne, `applyShoppingChange`, uprawnienia, hasło, cisza nocna; testy właściwości sprawdzają je na losowych danych |
+| Front | Vitest, `fake-indexeddb` w miejscu IndexedDB | Kolejka zakupów offline (`ShoppingSync`): kolejność wysyłki, ponawianie, ostateczna odmowa, wygaśnięcie sesji, zmiana konta; formatowanie dat i liczebników (`format.ts`) |
 | Przepływy | Playwright, profile iPhone i Android | Główne ścieżki w przeglądarce, na serwerze deweloperskim |
 | Test dymny | Playwright na zbudowanej aplikacji (`npm run test:smoke`) | Service worker, start bez sieci, CSP, nagłówki pamięci podręcznej; tryb demo: wejście jednym przyciskiem, baner, blokada indeksowania; kreator pierwszego uruchomienia na dwóch serwerach z pustą bazą |
 | Wdrożenie | `backup verify` w CLI, krok aktualizacji z [instrukcje/WDROZENIE.md](instrukcje/WDROZENIE.md) | Migracje nowej wersji na kopii bazy przed restartem |
 | Ręczne | Prawdziwy iPhone i Android | Instalacja, push, offline |
 
-**Pokrycie.** `npm run test:coverage` mierzy pokrycie testów API (razem z `packages/shared`) i frontu przez `@vitest/coverage-v8`; progi są w `vitest.config.ts` każdej paczki, a CI pokazuje tabelę w podsumowaniu przebiegu i zapisuje raport HTML jako artefakt. Zasady progów i dalsze testy: [plany/TESTY.md](plany/TESTY.md).
+**Pokrycie.** `npm run test:coverage` mierzy pokrycie testów `packages/shared`, API (razem z `shared`) i frontu przez `@vitest/coverage-v8`; progi są w `vitest.config.ts` każdej paczki, a CI pokazuje tabelę w podsumowaniu przebiegu i zapisuje raport HTML jako artefakt. Zasady progów i dalsze testy: [plany/TESTY.md](plany/TESTY.md).
 
 Test przekrojowy `routes.test.ts` zbiera wszystkie trasy z aplikacji i sprawdza, że każda poza jawnie publicznymi odpowiada bez sesji `401`. Po nieudanym przebiegu e2e CI zapisuje ślady Playwright i raport HTML jako artefakt.
 
@@ -334,7 +335,7 @@ Serwer testów e2e startuje z `TEST_CLOCK=true`: nagłówek `X-Test-Now` ustawia
 
 Playwright nie zastąpi testu push na iPhonie, bo profil telefonu to tylko emulacja.
 
-Stan na 17 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 334 testy API i 19 testów frontu. Sprawdzenie dostępności (`accessibility.spec.ts`, axe, WCAG 2.2 A i AA) przechodzi każdy ekran rodzica i podstrony ustawień we wszystkich wyglądach i obu trybach oraz ekran logowania; wynik i poprawki: [archiwum/UTWARDZENIE-TESTY.md](archiwum/UTWARDZENIE-TESTY.md), T8.
+Stan na 18 listopada 2026: 44 scenariusze e2e i 8 scenariuszy testu dymnego, każdy na profilu iPhone i Android, 337 testów API, 75 testów `shared` i 50 testów frontu. Sprawdzenie dostępności (`accessibility.spec.ts`, axe, WCAG 2.2 A i AA) przechodzi każdy ekran rodzica i podstrony ustawień we wszystkich wyglądach i obu trybach oraz ekran logowania; wynik i poprawki: [archiwum/UTWARDZENIE-TESTY.md](archiwum/UTWARDZENIE-TESTY.md), T8.
 
 ## 12. Główne ryzyka
 

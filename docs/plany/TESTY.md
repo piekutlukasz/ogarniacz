@@ -5,7 +5,7 @@ Plan z 18 listopada 2026, etap 9. Wychodzi z rozmowy o tym, czego brakuje obecny
 ## Lista kontrolna
 
 - [x] 1. Pomiar pokrycia w Vitest (API z `packages/shared`, front), progi i podsumowanie w CI, 18 listopada 2026
-- [ ] 2. Własne testy `packages/shared`, w tym testy właściwości (`fast-check`)
+- [x] 2. Własne testy `packages/shared`, w tym testy właściwości (`fast-check`), i testy `format.ts` frontu, 18 listopada 2026; poprawiony konflikt odhaczenia
 - [ ] 3. Test migracji i powrotu do poprzedniej wersji
 - [ ] 4. Pokrycie e2e: trasy API bez scenariusza i ekrany bez sprawdzenia dostępności
 - [ ] 5. Aktualizacja service workera w teście dymnym
@@ -31,6 +31,8 @@ Plan z 18 listopada 2026, etap 9. Wychodzi z rozmowy o tym, czego brakuje obecny
 | API z `packages/shared` | 83,4% | 76,7% | 80,5% |
 | Front (logika bez widoku) | 53,5% | 29,7% | 56,9% |
 
+Po punkcie 2 progi są wyższe; aktualne wartości są w `vitest.config.ts` każdej paczki.
+
 Najmocniej pokryte są trasy (`src/routes`: 98,7% linii) i uprawnienia (`src/auth`: 97%). Bez testów: start i konfiguracja serwera (`index.ts`, `config.ts`, `jobs/scheduler.ts`), CLI, wysyłka push (`push/sender.ts`), pliki `format.ts` frontu i `lib/theme.ts`. Z `shared` najsłabiej `shopping.ts` (62% w raporcie API), bo `applyShoppingChange` działa na telefonie.
 
 **Progi:** podłoga tuż pod stanem wyjściowym, nie docelowy procent. Globalny próg API (linie 80%, gałęzie 75%) oraz wyższe dla `src/auth/**` (linie 95%, gałęzie 88%) i `src/routes/**` (linie 97%, gałęzie 89%). Front ma próg tylko dla `ShoppingSync` (linie 86%, gałęzie 77%). Kiedy nowe testy podniosą wynik, podnosimy też próg w tym samym PR.
@@ -43,6 +45,18 @@ Najmocniej pokryte są trasy (`src/routes`: 98,7% linii) i uprawnienia (`src/aut
 - `warsawDate` i `addDays`: zmiana czasu w marcu i w październiku, przełom roku, północ w Warszawie przy innej strefie procesu.
 - Reguły cykliczne: każdy wyliczony dzień pasuje do reguły i żadnego nie brakuje w zadanym przedziale.
 - Zwykłe testy dla uprawnień (`canChangeTask`, `canTakeTask`, `canReleaseTask`) i `passwordProblem`, oraz dla `format.ts` we froncie.
+
+**Wykonanie (18 listopada 2026):**
+
+- `packages/shared` ma własny `vitest.config.ts` z progami i 75 testów w czterech plikach: `time.test.ts` (zmiany czasu 29 marca i 25 października 2026, sylwester, 29 lutego; `addDays` odwracalne i zgodne z `daysBetween`; `weekStart` zawsze poniedziałek), `recurrences.test.ts` (każdy wzorzec: nigdy przed startem, „co tydzień” tyle razy w tygodniu, ile dni, „co N dni” dokładnie co N, „co miesiąc” raz w miesiącu; `nextOccurrence` i `latestOccurrence` zgodne z wyliczeniem dzień po dniu), `shopping.test.ts` (powtórzona zmiana niczego nie zmienia, usunięcie wygrywa, czyszczenie zabiera tylko odhaczone, nazwa i ilość porządkowane tak jak schematy serwera) oraz `rules.test.ts` (uprawnienia do zadań, hasło, tytuł, cisza nocna, kod kreatora, zamknięty tydzień). `npm test` uruchamia je razem z API i frontem.
+- `apps/api/src/shoppingSync.test.ts`: dwa testy właściwości dla telefonu i serwera. Pierwszy wysyła losowy ciąg dodań, odhaczeń, edycji, usunięć i czyszczeń po kolei, część dwa razy, i po każdym kroku porównuje listę serwera z `applyShoppingChange`. Drugi wysyła losowe odhaczenia i edycje jednego produktu z czasami z telefonu w losowej kolejności i sprawdza, że wygrywa najpóźniejsza zmiana. Ogranicza się do tego, co robi aplikacja: edycja wysyła nazwę razem z ilością, a telefon nie dodaje drugi raz produktu, który zniknął z listy, pod tym samym UUID.
+- Front: `format.test.ts` dla zadań, kieszonkowego i kalendarzy (dziś, jutro, wczoraj, tydzień na przełomie miesięcy, godziny wydarzeń latem i zimą, wydarzenia przez noc, liczebniki).
+- Pokrycie: `shared` 90,9% linii i 100% gałęzi, API 84,2% linii (było 83,4%), front 74,7% linii (było 53,5%). Progi podniesione do nowego stanu.
+
+**Znalezione błędy:**
+
+- **Konflikt odhaczenia (poprawiony).** Drugi test właściwości od razu znalazł kolejność, w której starsza zmiana cofała nowszą. Przykład: mama odhacza mleko o 11:01, Ola bez sieci odhacza je o 11:10, gdy jest już w koszyku, a na końcu dociera odznaczenie taty z 11:05 zrobione bez sieci. Mleko wracało na listę „do kupienia”, choć ostatnia zmiana mówiła „w koszyku”. Przyczyna: ponowne odhaczenie nie przesuwało `checked_changed_at`. Teraz przesuwa (czas i osoba w koszyku zostają pierwsze), a scenariusz ma też zwykły test w `shopping.test.ts`. Migracja niepotrzebna.
+- **Komentarz przy regule hasła (poprawiony).** Przykład „Ola” jako słowa, które nie blokuje hasła, był błędny: blokują słowa od 3 znaków, zgodnie z dokumentacją i testem API.
 
 ## 3. Migracje i powrót do poprzedniej wersji
 
