@@ -13,6 +13,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Oficjalny obraz Playwright ma przeglądarki i biblioteki systemowe, więc CI nie pobiera ich przy każdym
+    # przebiegu przez apt (18 listopada 2026 wolny serwer Ubuntu zatrzymał instalację na 19 minut).
+    # Wersja obrazu = wersja @playwright/test z package-lock.json; po podbiciu Playwright zmień oba miejsca.
+    container:
+      image: mcr.microsoft.com/playwright:v1.65.0-noble
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -39,7 +44,16 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
       - run: npm run build
-      - run: npx playwright install --with-deps chromium webkit
+      # Przy zgodnej wersji obrazu nic nie pobiera. Gdy Dependabot podbije @playwright/test, a obraz zostanie stary,
+      # pobiera przeglądarki z serwera Playwright (bez apt) i zostawia ostrzeżenie, żeby podbić też obraz.
+      - name: Sprawdź przeglądarki Playwright
+        shell: bash
+        run: |
+          set -o pipefail
+          npx playwright install chromium webkit 2>&1 | tee "$RUNNER_TEMP/playwright-install.log"
+          if grep -q 'Downloading' "$RUNNER_TEMP/playwright-install.log"; then
+            echo "::warning::Obraz Playwright w ci.yml nie pasuje do wersji @playwright/test: podbij container.image"
+          fi
       - run: npm run test:e2e
       # Test dymny na zbudowanej aplikacji: service worker, start bez sieci, CSP, nagłówki pamięci podręcznej.
       - run: npm run test:smoke
