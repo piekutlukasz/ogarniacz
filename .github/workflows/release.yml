@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       # v1.2.3 daje tagi 1.2.3, 1.2, 1 i latest; wersja z sufiksem (np. -beta) dostaje tylko własny tag.
       - id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
